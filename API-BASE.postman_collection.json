@@ -1,0 +1,212 @@
+{
+	"info": {
+		"_postman_id": "2d29b00f-6f08-46b6-9359-996ec80575b4",
+		"name": "API-BASE",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Login",
+			"item": [
+				{
+					"name": "New Request",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "user_name",
+									"value": "gesang",
+									"type": "text"
+								},
+								{
+									"key": "user_password",
+									"value": "p@ssw0rd",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{api-base}}/auth/login/user",
+							"host": [
+								"{{api-base}}"
+							],
+							"path": [
+								"auth",
+								"login",
+								"user"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Get",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api-base}}/master/user",
+							"host": [
+								"{{api-base}}"
+							],
+							"path": [
+								"master",
+								"user"
+							],
+							"query": [
+								{
+									"key": "dksajkda",
+									"value": "0-900",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Insert",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "user_name",
+									"value": "admin",
+									"type": "text"
+								},
+								{
+									"key": "user_email",
+									"value": "admin@admin.com",
+									"type": "text"
+								},
+								{
+									"key": "user_password",
+									"value": "p@ssw0rd",
+									"type": "text"
+								},
+								{
+									"key": "section_id",
+									"value": "1",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{api-base}}/master/user",
+							"host": [
+								"{{api-base}}"
+							],
+							"path": [
+								"master",
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "user_id",
+									"value": "14",
+									"type": "text"
+								},
+								{
+									"key": "user_email",
+									"value": "gesangseto@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "user_password",
+									"value": "p@ssw0rd",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "section_id",
+									"value": "1",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{api-base}}/master/user",
+							"host": [
+								"{{api-base}}"
+							],
+							"path": [
+								"master",
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "user_id",
+									"value": "14",
+									"type": "text"
+								},
+								{
+									"key": "user_email",
+									"value": "admin@admin.com",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "user_password",
+									"value": "p@ssw0rd",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "section_id",
+									"value": "1",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{api-base}}/master/user",
+							"host": [
+								"{{api-base}}"
+							],
+							"path": [
+								"master",
+								"user"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
