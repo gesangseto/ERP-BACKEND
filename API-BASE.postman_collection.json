@@ -9,7 +9,7 @@
 			"name": "Login",
 			"item": [
 				{
-					"name": "New Request",
+					"name": "Login",
 					"request": {
 						"method": "POST",
 						"header": [],
@@ -82,12 +82,12 @@
 							"urlencoded": [
 								{
 									"key": "user_name",
-									"value": "admin",
+									"value": "gesang",
 									"type": "text"
 								},
 								{
 									"key": "user_email",
-									"value": "admin@admin.com",
+									"value": "gesangseto@gmail.com",
 									"type": "text"
 								},
 								{
@@ -201,6 +201,513 @@
 							"path": [
 								"master",
 								"user"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User Department",
+			"item": [
+				{
+					"name": "Get",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api-base}}/master/user_department",
+							"host": [
+								"{{api-base}}"
+							],
+							"path": [
+								"master",
+								"user_department"
+							],
+							"query": [
+								{
+									"key": "dksajkda",
+									"value": "0-900",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Insert",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "department_name",
+									"value": "Information Technology",
+									"type": "text"
+								},
+								{
+									"key": "department_code",
+									"value": "IT",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{api-base}}/master/user_department",
+							"host": [
+								"{{api-base}}"
+							],
+							"path": [
+								"master",
+								"user_department"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "department_id",
+									"value": "5",
+									"type": "text"
+								},
+								{
+									"key": "department_name",
+									"value": "ADMIN",
+									"type": "text"
+								},
+								{
+									"key": "department_code",
+									"value": "ADMIN",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{api-base}}/master/user_department",
+							"host": [
+								"{{api-base}}"
+							],
+							"path": [
+								"master",
+								"user_department"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "department_id",
+									"value": "1",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{api-base}}/master/user_department",
+							"host": [
+								"{{api-base}}"
+							],
+							"path": [
+								"master",
+								"user_department"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User Section",
+			"item": [
+				{
+					"name": "Get",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api-base}}/master/user_section",
+							"host": [
+								"{{api-base}}"
+							],
+							"path": [
+								"master",
+								"user_section"
+							],
+							"query": [
+								{
+									"key": "dksajkda",
+									"value": "0-900",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Insert",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "section_name",
+									"value": "Testing",
+									"type": "text"
+								},
+								{
+									"key": "section_code",
+									"value": "TEST",
+									"type": "text"
+								},
+								{
+									"key": "department_id",
+									"value": "1",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{api-base}}/master/user_section",
+							"host": [
+								"{{api-base}}"
+							],
+							"path": [
+								"master",
+								"user_section"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "section_id",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "section_name",
+									"value": "Development",
+									"type": "text"
+								},
+								{
+									"key": "section_code",
+									"value": "DEV",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{api-base}}/master/user_section",
+							"host": [
+								"{{api-base}}"
+							],
+							"path": [
+								"master",
+								"user_section"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "section_id",
+									"value": "1",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{api-base}}/master/user_section",
+							"host": [
+								"{{api-base}}"
+							],
+							"path": [
+								"master",
+								"user_section"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Menu Parent",
+			"item": [
+				{
+					"name": "Get",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api-base}}/menu/parent",
+							"host": [
+								"{{api-base}}"
+							],
+							"path": [
+								"menu",
+								"parent"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Insert",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "menu_parent_name",
+									"value": "Administrator",
+									"type": "text"
+								},
+								{
+									"key": "menu_parent_url",
+									"value": "/administrators",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{api-base}}/menu/parent",
+							"host": [
+								"{{api-base}}"
+							],
+							"path": [
+								"menu",
+								"parent"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "menu_parent_id",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "menu_parent_name",
+									"value": "Administrator",
+									"type": "text"
+								},
+								{
+									"key": "menu_parent_url",
+									"value": "/administrator",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{api-base}}/menu/parent",
+							"host": [
+								"{{api-base}}"
+							],
+							"path": [
+								"menu",
+								"parent"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "menu_parent_id",
+									"value": "3",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{api-base}}/menu/parent",
+							"host": [
+								"{{api-base}}"
+							],
+							"path": [
+								"menu",
+								"parent"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Menu Child",
+			"item": [
+				{
+					"name": "Get",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api-base}}/menu/child",
+							"host": [
+								"{{api-base}}"
+							],
+							"path": [
+								"menu",
+								"child"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Insert",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "menu_child_url",
+									"value": "/users",
+									"type": "text"
+								},
+								{
+									"key": "menu_child_name",
+									"value": "Users",
+									"type": "text"
+								},
+								{
+									"key": "menu_parent_id",
+									"value": "1",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{api-base}}/menu/child",
+							"host": [
+								"{{api-base}}"
+							],
+							"path": [
+								"menu",
+								"child"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "menu_child_id",
+									"value": "3",
+									"type": "text"
+								},
+								{
+									"key": "menu_child_name",
+									"value": "Development",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{api-base}}/menu/child",
+							"host": [
+								"{{api-base}}"
+							],
+							"path": [
+								"menu",
+								"child"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "menu_child_id",
+									"value": "3",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{api-base}}/menu/child",
+							"host": [
+								"{{api-base}}"
+							],
+							"path": [
+								"menu",
+								"child"
 							]
 						}
 					},

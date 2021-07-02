@@ -20,14 +20,14 @@ exports.user_login = async function (req, res) {
     }
   }
   // LINE WAJIB DIBAWA
-  // query
-  //   const client_conn = new utils.DB();
-  //   client_conn.open();
-  const check = await utils.exec_query(
-    `SELECT * FROM user WHERE user_name='${req.body.user_name}' AND user_password='${req.body.user_password}' LIMIT 1`
-  );
-  //   client_conn.close();
-  // query
+
+  var $query = `
+    SELECT * 
+    FROM user AS a 
+    LEFT JOIN user_section AS b ON a.section_id = b.section_id
+    Left JOIN user_department AS c ON b.department_id = c.department_id
+    WHERE user_name='${req.body.user_name}' AND user_password='${req.body.user_password}' LIMIT 1`;
+  const check = await utils.exec_query($query);
   if (check.error || check.total == 0) {
     check.message = "Wrong Username Or Password !";
     return response.response(check, res);
