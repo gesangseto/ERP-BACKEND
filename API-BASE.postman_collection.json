@@ -714,6 +714,134 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "Menu Role",
+			"item": [
+				{
+					"name": "Get",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api-base}}/menu/role?section_id=1",
+							"host": [
+								"{{api-base}}"
+							],
+							"path": [
+								"menu",
+								"role"
+							],
+							"query": [
+								{
+									"key": "section_id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Insert",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "menu_child_url",
+									"value": "/users",
+									"type": "text"
+								},
+								{
+									"key": "menu_child_name",
+									"value": "Users",
+									"type": "text"
+								},
+								{
+									"key": "menu_parent_id",
+									"value": "1",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{api-base}}/menu/child",
+							"host": [
+								"{{api-base}}"
+							],
+							"path": [
+								"menu",
+								"child"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "menu_child_id",
+									"value": "3",
+									"type": "text"
+								},
+								{
+									"key": "menu_child_name",
+									"value": "Development",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{api-base}}/menu/child",
+							"host": [
+								"{{api-base}}"
+							],
+							"path": [
+								"menu",
+								"child"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "menu_child_id",
+									"value": "3",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{api-base}}/menu/child",
+							"host": [
+								"{{api-base}}"
+							],
+							"path": [
+								"menu",
+								"child"
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		}
 	]
 }
