@@ -1,46 +1,53 @@
 "use strict";
 const response = require("../response");
-const utils = require("../utils");
+const models = require("../models");
 const perf = require("execution-time")();
 
 exports.get = async function (req, res) {
-  // LINE WAJIB DIBAWA
-  perf.start();
-  console.log(`req : ${JSON.stringify(req.query)}`);
   var data = { data: req.query };
-  const require_data = [];
-  for (const row of require_data) {
-    if (!req.query[`${row}`]) {
-      data.error = true;
-      data.message = `${row} is required!`;
-      return response.response(data, res);
+  try {
+    // LINE WAJIB DIBAWA
+    perf.start();
+    console.log(`req : ${JSON.stringify(req.query)}`);
+    const require_data = [];
+    for (const row of require_data) {
+      if (!req.query[`${row}`]) {
+        data.error = true;
+        data.message = `${row} is required!`;
+        return response.response(data, res);
+      }
     }
-  }
-  // LINE WAJIB DIBAWA
-  var $query = `
+    // LINE WAJIB DIBAWA
+    var $query = `
     SELECT * 
     FROM user AS a 
     LEFT JOIN user_section AS b ON a.section_id = b.section_id
     Left JOIN user_department AS c ON b.department_id = c.department_id
     WHERE 1+1=2 `;
-  for (const k in req.query) {
-    if (k != "page" || k != "limit") {
-      $query += ` AND a.${k}='${req.query[k]}'`;
+    for (const k in req.query) {
+      if (k != "page" && k != "limit") {
+        $query += ` AND a.${k}='${req.query[k]}'`;
+      }
     }
-  }
-  if (req.query.page || req.query.limit) {
-    var start =
-      parseInt(req.query.page) == 1 ? 0 : req.query.page * req.query.limit;
-    var end = parseInt(start) + parseInt(req.query.limit);
-    $query += ` LIMIT ${start},${end} `;
-  }
-  // query
-  const check = await utils.exec_query($query);
-  // query
-  if (check.error) {
+    if (req.query.page || req.query.limit) {
+      var start =
+        parseInt(req.query.page) == 1 ? 0 : req.query.page * req.query.limit;
+      var end = parseInt(start) + parseInt(req.query.limit);
+      $query += ` LIMIT ${start},${end} `;
+    }
+    // console.log($query);
+    // query
+    const check = await models.get_query($query);
+    // query
+    if (check.error) {
+      return response.response(check, res);
+    }
     return response.response(check, res);
+  } catch (error) {
+    data.error = true;
+    data.message = `${error}`;
+    return response.response(data, res);
   }
-  return response.response(check, res);
 };
 
 exports.insert = async function (req, res) {
@@ -71,7 +78,7 @@ exports.insert = async function (req, res) {
   // LINE WAJIB DIBAWA
 
   var _insert = `INSERT INTO user (${key}) VALUES (${val})`;
-  var _res = await utils.exec_query(_insert);
+  var _res = await models.exec_query(_insert);
   if (_res.error) {
     return response.response(_res, res);
   }
@@ -97,7 +104,7 @@ exports.update = async function (req, res) {
   _data = _data.join(",");
   // LINE WAJIB DIBAWA
   var _update = `UPDATE user SET ${_data} WHERE user_id='${req.body.user_id}'`;
-  var _res = await utils.exec_query(_update);
+  var _res = await models.exec_query(_update);
   if (_res.error) {
     return response.response(_res, res);
   }
@@ -118,7 +125,7 @@ exports.delete = async function (req, res) {
   }
   // LINE WAJIB DIBAWA
   var _delete = `DELETE FROM user  WHERE user_id = ${req.body.user_id}`;
-  var _res = await utils.exec_query(_delete);
+  var _res = await models.exec_query(_delete);
   if (_res.error) {
     return response.response(_res, res);
   }

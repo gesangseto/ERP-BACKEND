@@ -13,6 +13,32 @@ var db_config = {
 var pool = mysql.createPool(db_config);
 
 async function exec_query(query_sql) {
+  var data_set = {
+    error: false,
+    data: [],
+    total: 0,
+    total_row: 0,
+    message: "Success",
+  };
+  return await new Promise((resolve) =>
+    pool.getConnection(function (err, connection) {
+      connection.query(query_sql, function (err, rows) {
+        connection.release();
+        if (err) {
+          data_set.error = true;
+          data_set.message = err.sqlMessage || "Oops, something wrong";
+          return resolve(data_set);
+        }
+        data_set.data = rows;
+        data_set.total = rows.length;
+        data_set.total_row = rows.length;
+        return resolve(data_set);
+      });
+    })
+  );
+}
+
+async function get_query(query_sql) {
   var data_set = { error: false, data: [], total: 0, message: "Success" };
   return await new Promise((resolve) =>
     pool.getConnection(function (err, connection) {
@@ -33,4 +59,5 @@ async function exec_query(query_sql) {
 
 module.exports = {
   exec_query,
+  get_query,
 };

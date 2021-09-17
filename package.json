@@ -20,7 +20,7 @@
     "express-fileupload": "^1.2.1",
     "fs": "0.0.1-security",
     "js-file-download": "^0.4.12",
-    "moment": "^2.26.0",
+    "moment": "^2.29.1",
     "mysql": "^2.18.1"
   }
 }

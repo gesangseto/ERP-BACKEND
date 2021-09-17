@@ -1,6 +1,6 @@
 "use strict";
 const response = require("../response");
-const utils = require("../utils");
+const models = require("../models");
 const perf = require("execution-time")();
 
 exports.get = async function (req, res) {
@@ -34,7 +34,7 @@ exports.get = async function (req, res) {
     $query += ` LIMIT ${start},${end} `;
   }
   // query
-  const check = await utils.exec_query($query);
+  const check = await models.exec_query($query);
   // query
   if (check.error) {
     return response.response(check, res);
@@ -65,7 +65,7 @@ exports.insert = async function (req, res) {
   // LINE WAJIB DIBAWA
 
   var _insert = `INSERT INTO sys_menu_child (${key}) VALUES (${val})`;
-  var _res = await utils.exec_query(_insert);
+  var _res = await models.exec_query(_insert);
   if (_res.error) {
     return response.response(_res, res);
   }
@@ -91,7 +91,7 @@ exports.update = async function (req, res) {
   _data = _data.join(",");
   // LINE WAJIB DIBAWA
   var _update = `UPDATE sys_menu_child SET ${_data} WHERE menu_child_id='${req.body.menu_child_id}'`;
-  var _res = await utils.exec_query(_update);
+  var _res = await models.exec_query(_update);
   if (_res.error) {
     return response.response(_res, res);
   }
@@ -112,7 +112,7 @@ exports.delete = async function (req, res) {
   }
   // LINE WAJIB DIBAWA
   var _delete = `DELETE FROM sys_menu_child  WHERE menu_child_id = ${req.body.menu_child_id}`;
-  var _res = await utils.exec_query(_delete);
+  var _res = await models.exec_query(_delete);
   if (_res.error) {
     return response.response(_res, res);
   }

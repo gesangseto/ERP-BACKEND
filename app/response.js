@@ -8,6 +8,7 @@ exports.response = function (data = null, res) {
     error: data.error || false,
     message: data.message || null,
     total: data.error ? null : data.total || 0,
+    total_row: data.error ? null : data.total_row || 0,
     data: data.error ? [] : data.data || [],
   };
   console.log(`res : ${JSON.stringify(body_res)}`);
