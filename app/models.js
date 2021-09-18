@@ -105,6 +105,7 @@ async function update_query({ data, key, table }) {
   }
   _data = _data.join(",");
   var query_sql = `UPDATE ${table} SET ${_data} WHERE ${key}='${data[key]}'`;
+  console.log(query_sql);
   return await new Promise((resolve) =>
     pool.getConnection(function (err, connection) {
       connection.query(query_sql, function (err, rows) {
