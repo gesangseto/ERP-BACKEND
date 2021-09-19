@@ -30,13 +30,14 @@ exports.get = async function (req, res) {
       return response.response(_menu, res);
     }
     var _new_role = [];
-    var _temp_parent = {};
 
     var nested_menu = await utils.nestedData({
       data: _menu.data,
       unique: "menu_parent_id",
     });
+
     for (const i in nested_menu) {
+      var _temp_parent = {};
       var _new_child = [];
       _temp_parent.menu_parent_id = nested_menu[i][0].menu_parent_id;
       _temp_parent.menu_parent_name = nested_menu[i][0].menu_parent_name;
