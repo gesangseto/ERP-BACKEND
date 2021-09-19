@@ -4,117 +4,124 @@ const models = require("../models");
 const perf = require("execution-time")();
 
 exports.get = async function (req, res) {
-  // LINE WAJIB DIBAWA
-  perf.start();
-  console.log(`req : ${JSON.stringify(req.query)}`);
   var data = { data: req.query };
-  const require_data = [];
-  for (const row of require_data) {
-    if (!req.query[`${row}`]) {
-      data.error = true;
-      data.message = `${row} is required!`;
-      return response.response(data, res);
+  try {
+    // LINE WAJIB DIBAWA
+    perf.start();
+    console.log(`req : ${JSON.stringify(req.query)}`);
+    const require_data = [];
+    for (const row of require_data) {
+      if (!req.query[`${row}`]) {
+        data.error = true;
+        data.message = `${row} is required!`;
+        return response.response(data, res);
+      }
     }
-  }
-  // LINE WAJIB DIBAWA
-  var $query = `
-    SELECT * 
-    FROM sys_menu_child AS a
-    LEFT JOIN sys_menu_parent AS b ON a.menu_parent_id=b.menu_parent_id
+    // LINE WAJIB DIBAWA
+    var $query = `
+    SELECT * ,a.status AS status
+    FROM sys_menu_child AS a 
+    LEFT JOIN sys_menu_parent AS b ON a.menu_parent_id = b.menu_parent_id
     WHERE 1+1=2 `;
-  for (const k in req.query) {
-    if (k != "page" || k != "limit") {
-      $query += ` AND a.${k}='${req.query[k]}'`;
+    for (const k in req.query) {
+      if (k != "page" && k != "limit") {
+        $query += ` AND a.${k}='${req.query[k]}'`;
+      }
     }
-  }
-  if (req.query.page || req.query.limit) {
-    var start =
-      parseInt(req.query.page) == 1 ? 0 : req.query.page * req.query.limit;
-    var end = parseInt(start) + parseInt(req.query.limit);
-    $query += ` LIMIT ${start},${end} `;
-  }
-  // query
-  const check = await models.exec_query($query);
-  // query
-  if (check.error) {
+    if (req.query.page || req.query.limit) {
+      var start =
+        parseInt(req.query.page) == 1 ? 0 : req.query.page * req.query.limit;
+      var end = parseInt(start) + parseInt(req.query.limit);
+      $query += ` LIMIT ${start},${end} `;
+    }
+    const check = await models.get_query($query);
     return response.response(check, res);
+  } catch (error) {
+    data.error = true;
+    data.message = `${error}`;
+    return response.response(data, res);
   }
-  return response.response(check, res);
 };
 
 exports.insert = async function (req, res) {
-  perf.start();
-  console.log(`req : ${JSON.stringify(req.body)}`);
   var data = { data: req.body };
-  const require_data = ["menu_parent_id", "menu_child_name", "menu_child_url"];
-  for (const row of require_data) {
-    if (!req.body[`${row}`]) {
-      data.error = true;
-      data.message = `${row} is required!`;
-      return response.response(data, res);
+  try {
+    perf.start();
+    console.log(`req : ${JSON.stringify(req.body)}`);
+    const require_data = [
+      "menu_parent_id",
+      "menu_child_name",
+      "menu_child_url",
+    ];
+    for (const row of require_data) {
+      if (!req.body[`${row}`]) {
+        data.error = true;
+        data.message = `${row} is required!`;
+        return response.response(data, res);
+      }
     }
-  }
-  var key = [];
-  var val = [];
-  for (const k in req.body) {
-    key.push(k);
-    val.push(req.body[k]);
-  }
-  key = key.toString();
-  val = "'" + val.join("','") + "'";
-  // LINE WAJIB DIBAWA
-
-  var _insert = `INSERT INTO sys_menu_child (${key}) VALUES (${val})`;
-  var _res = await models.exec_query(_insert);
-  if (_res.error) {
+    var _res = await models.insert_query({
+      data: req.body,
+      table: "sys_menu_child",
+    });
     return response.response(_res, res);
+  } catch (error) {
+    data.error = true;
+    data.message = `${error}`;
+    return response.response(data, res);
   }
-  return response.response(_res, res);
 };
 
 exports.update = async function (req, res) {
-  perf.start();
-  console.log(`req : ${JSON.stringify(req.body)}`);
   var data = { data: req.body };
-  const require_data = ["menu_child_id"];
-  for (const row of require_data) {
-    if (!req.body[`${row}`]) {
-      data.error = true;
-      data.message = `${row} is required!`;
-      return response.response(data, res);
+  try {
+    perf.start();
+    console.log(`req : ${JSON.stringify(req.body)}`);
+    const require_data = ["menu_child_id"];
+    for (const row of require_data) {
+      if (!req.body[`${row}`]) {
+        data.error = true;
+        data.message = `${row} is required!`;
+        return response.response(data, res);
+      }
     }
-  }
-  var _data = [];
-  for (const k in req.body) {
-    _data.push(` ${k} = '${req.body[k]}'`);
-  }
-  _data = _data.join(",");
-  // LINE WAJIB DIBAWA
-  var _update = `UPDATE sys_menu_child SET ${_data} WHERE menu_child_id='${req.body.menu_child_id}'`;
-  var _res = await models.exec_query(_update);
-  if (_res.error) {
+
+    var _res = await models.update_query({
+      data: req.body,
+      table: "sys_menu_child",
+      key: "menu_child_id",
+    });
     return response.response(_res, res);
+  } catch (error) {
+    data.error = true;
+    data.message = `${error}`;
+    return response.response(data, res);
   }
-  return response.response(_res, res);
 };
 
 exports.delete = async function (req, res) {
-  perf.start();
-  console.log(`req : ${JSON.stringify(req.body)}`);
   var data = { data: req.body };
-  const require_data = ["menu_child_id"];
-  for (const row of require_data) {
-    if (!req.body[`${row}`]) {
-      data.error = true;
-      data.message = `${row} is required!`;
-      return response.response(data, res);
+  try {
+    perf.start();
+    console.log(`req : ${JSON.stringify(req.body)}`);
+    const require_data = ["menu_child_id"];
+    for (const row of require_data) {
+      if (!req.body[`${row}`]) {
+        data.error = true;
+        data.message = `${row} is required!`;
+        return response.response(data, res);
+      }
     }
-  }
-  // LINE WAJIB DIBAWA
-  var _delete = `DELETE FROM sys_menu_child  WHERE menu_child_id = ${req.body.menu_child_id}`;
-  var _res = await models.exec_query(_delete);
-  if (_res.error) {
+    // LINE WAJIB DIBAWA
+    var _res = await models.delete_query({
+      data: req.body,
+      table: "sys_menu_child",
+      key: "menu_child_id",
+    });
     return response.response(_res, res);
+  } catch (error) {
+    data.error = true;
+    data.message = `${error}`;
+    return response.response(data, res);
   }
-  return response.response(_res, res);
 };

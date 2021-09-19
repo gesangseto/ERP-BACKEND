@@ -5,22 +5,20 @@ module.exports = function (app) {
   app.route("/api/auth/login/user").post(login.user_login);
 
   var menu_parent = require("./controller/menu_parent");
-  app.route("/menu/parent").get(menu_parent.get);
-  app.route("/menu/parent").put(menu_parent.insert);
-  app.route("/menu/parent").post(menu_parent.update);
-  app.route("/menu/parent").delete(menu_parent.delete);
+  app.route("/api/menu/parent").get(menu_parent.get);
+  app.route("/api/menu/parent").put(menu_parent.insert);
+  app.route("/api/menu/parent").post(menu_parent.update);
+  app.route("/api/menu/parent").delete(menu_parent.delete);
 
   var menu_child = require("./controller/menu_child");
-  app.route("/menu/child").get(menu_child.get);
-  app.route("/menu/child").put(menu_child.insert);
-  app.route("/menu/child").post(menu_child.update);
-  app.route("/menu/child").delete(menu_child.delete);
+  app.route("/api/menu/child").get(menu_child.get);
+  app.route("/api/menu/child").put(menu_child.insert);
+  app.route("/api/menu/child").post(menu_child.update);
+  app.route("/api/menu/child").delete(menu_child.delete);
 
   var menu_role = require("./controller/menu_role");
-  app.route("/menu/role").get(menu_role.get);
-  app.route("/menu/role").put(menu_role.insert);
-  app.route("/menu/role").post(menu_role.update);
-  app.route("/menu/role").delete(menu_role.delete);
+  app.route("/api/menu/role").get(menu_role.get);
+  app.route("/api/menu/role").post(menu_role.update);
 
   var user_department = require("./controller/user_department");
   app.route("/api/master/user_department").get(user_department.get);
