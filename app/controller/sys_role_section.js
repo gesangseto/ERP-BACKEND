@@ -60,7 +60,7 @@ exports.get = async function (req, res) {
           _temp_child.flag_print = 0;
           _temp_child.flag_download = 0;
           var get_role = `
-          SELECT * FROM sys_menu_role AS a
+          SELECT * FROM sys_role_section AS a
           LEFT JOIN user_section AS b ON a.section_id=b.section_id
           WHERE a.menu_child_id='${row.menu_child_id}' AND a.section_id='${req.query.section_id}'`;
           get_role = await models.exec_query(get_role);
@@ -127,7 +127,7 @@ exports.update = async function (req, res) {
     var prepare_query = [];
     for (const row of req.body.roles) {
       if (row.menu_role_id) {
-        prepare_query.push(`UPDATE sys_menu_role SET
+        prepare_query.push(`UPDATE sys_role_section SET
         flag_create='${row.flag_create}',
         flag_read='${row.flag_read}',
         flag_update='${row.flag_update}',
@@ -137,14 +137,14 @@ exports.update = async function (req, res) {
         WHERE menu_role_id='${row.menu_role_id}' `);
       } else {
         var check = await models.exec_query(
-          `SELECT * FROM sys_menu_role WHERE section_id='${row.section_id}' AND menu_child_id='${row.menu_child_id}' LIMIT 1 ;`
+          `SELECT * FROM sys_role_section WHERE section_id='${row.section_id}' AND menu_child_id='${row.menu_child_id}' LIMIT 1 ;`
         );
         if (check.total > 0) {
           data.error = true;
           data.message = `Duplicate section_id: ${row.section_id} and menu_child_id: ${row.menu_child_id}, or maybe you forgot to set menu_role_id`;
           return response.response(data, res);
         }
-        prepare_query.push(` INSERT INTO sys_menu_role 
+        prepare_query.push(` INSERT INTO sys_role_section 
         (section_id,menu_child_id,flag_create,flag_read,flag_update,flag_delete,flag_print,flag_download) 
         VALUES 
         ('${row.section_id}','${row.menu_child_id}','${row.flag_create}','${row.flag_read}','${row.flag_update}','${row.flag_delete}','${row.flag_print}','${row.flag_download}')`);

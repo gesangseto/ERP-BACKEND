@@ -106,13 +106,13 @@ INSERT INTO `sys_menu_parent` VALUES (1,'Administrator','/administrator','',NULL
 UNLOCK TABLES;
 
 --
--- Table structure for table `sys_menu_role`
+-- Table structure for table `sys_role_section`
 --
 
-DROP TABLE IF EXISTS `sys_menu_role`;
+DROP TABLE IF EXISTS `sys_role_section`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `sys_menu_role` (
+CREATE TABLE `sys_role_section` (
   `menu_role_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `menu_child_id` int(11) unsigned NOT NULL,
   `section_id` int(11) unsigned NOT NULL,
@@ -129,19 +129,19 @@ CREATE TABLE `sys_menu_role` (
   PRIMARY KEY (`menu_role_id`),
   UNIQUE KEY `menu_child_id` (`menu_child_id`,`section_id`),
   KEY `section_id` (`section_id`),
-  CONSTRAINT `sys_menu_role_ibfk_1` FOREIGN KEY (`menu_child_id`) REFERENCES `sys_menu_child` (`menu_child_id`),
-  CONSTRAINT `sys_menu_role_ibfk_2` FOREIGN KEY (`section_id`) REFERENCES `user_section` (`section_id`)
+  CONSTRAINT `sys_role_section_ibfk_1` FOREIGN KEY (`menu_child_id`) REFERENCES `sys_menu_child` (`menu_child_id`),
+  CONSTRAINT `sys_role_section_ibfk_2` FOREIGN KEY (`section_id`) REFERENCES `user_section` (`section_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `sys_menu_role`
+-- Dumping data for table `sys_role_section`
 --
 
-LOCK TABLES `sys_menu_role` WRITE;
-/*!40000 ALTER TABLE `sys_menu_role` DISABLE KEYS */;
-INSERT INTO `sys_menu_role` VALUES (1,1,1,1,1,1,1,1,1,1,NULL,'2021-07-06 12:26:31',1),(2,2,1,1,1,1,1,1,1,1,NULL,'2021-07-06 12:26:33',1);
-/*!40000 ALTER TABLE `sys_menu_role` ENABLE KEYS */;
+LOCK TABLES `sys_role_section` WRITE;
+/*!40000 ALTER TABLE `sys_role_section` DISABLE KEYS */;
+INSERT INTO `sys_role_section` VALUES (1,1,1,1,1,1,1,1,1,1,NULL,'2021-07-06 12:26:31',1),(2,2,1,1,1,1,1,1,1,1,NULL,'2021-07-06 12:26:33',1);
+/*!40000 ALTER TABLE `sys_role_section` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
