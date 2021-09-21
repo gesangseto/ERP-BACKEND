@@ -6,7 +6,7 @@ module.exports = function (app) {
 
   var sys_configuration = require("./controller/sys_configuration");
   app.route("/api/configuration").get(sys_configuration.get);
-  app.route("/api/configuration").put(sys_configuration.update);
+  app.route("/api/configuration").post(sys_configuration.update);
 
   var sys_menu_parent = require("./controller/sys_menu_parent");
   app.route("/api/menu/parent").get(sys_menu_parent.get);
