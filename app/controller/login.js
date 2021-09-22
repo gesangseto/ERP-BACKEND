@@ -1,6 +1,7 @@
 "use strict";
 const response = require("../response");
 const models = require("../models");
+const utils = require("../utils");
 const perf = require("execution-time")();
 const dotenv = require("dotenv");
 
@@ -19,15 +20,34 @@ exports.user_login = async function (req, res) {
       return response.response(data, res);
     }
   }
-  // LINE WAJIB DIBAWA
 
+  // LINE WAJIB DIBAWA
+  req.body.user_password = await utils.encrypt({ string: req.body.user_password })
+
+  // CHECK IS SUPER ADMIN
+  var $query = `
+  SELECT *, 
+  '0' AS user_id,
+  'super_admin' AS user_name,
+  'super_admin' AS token,
+  'super_admin' AS section_id, 'super_admin' AS section_name,
+  'super_admin' AS department_id, 'super_admin' AS department_name
+  FROM sys_configuration AS a 
+  WHERE a.user_name='${req.body.user_name}' AND a.user_password='${req.body.user_password}' LIMIT 1`;
+  var check = await models.exec_query($query);
+  console.log(check);
+  if (check.total > 0) {
+    return response.response(check, res);
+  }
+
+  // CHECK IS USER
   var $query = `
     SELECT * 
     FROM user AS a 
     LEFT JOIN user_section AS b ON a.section_id = b.section_id
     Left JOIN user_department AS c ON b.department_id = c.department_id
     WHERE user_name='${req.body.user_name}' AND user_password='${req.body.user_password}' LIMIT 1`;
-  const check = await models.exec_query($query);
+  var check = await models.exec_query($query);
   if (check.error || check.total == 0) {
     check.message = "Wrong Username Or Password !";
     return response.response(check, res);

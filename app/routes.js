@@ -2,7 +2,10 @@
 
 module.exports = function (app) {
   var login = require("./controller/login");
-  app.route("/api/auth/login/user").post(login.user_login);
+  app.route("/api/login/user").post(login.user_login);
+
+  var menu = require("./controller/menu");
+  app.route("/api/menu/user").get(menu.user_menu);
 
   var sys_configuration = require("./controller/sys_configuration");
   app.route("/api/configuration").get(sys_configuration.get);
