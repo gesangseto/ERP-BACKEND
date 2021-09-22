@@ -14,6 +14,7 @@ exports.get = async function (req, res) {
     var $query = `SELECT * FROM  sys_configuration AS a LIMIT 1 `;
     // query
     var conf = await models.exec_query($query);
+    conf.data.forEach(function (v) { delete v.user_password });
     return response.response(conf, res);
   } catch (error) {
     data.error = true;
@@ -27,6 +28,9 @@ exports.update = async function (req, res) {
   try {
     perf.start();
     console.log(`req : ${JSON.stringify(req.body)}`);
+    if (req.body.user_password) {
+      req.body.user_password = await utils.encrypt({ string: req.body.user_password })
+    }
     var _res = await models.update_query({
       data: req.body,
       key: "id",

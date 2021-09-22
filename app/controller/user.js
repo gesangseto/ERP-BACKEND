@@ -1,6 +1,7 @@
 "use strict";
 const response = require("../response");
 const models = require("../models");
+const utils = require("../utils");
 const perf = require("execution-time")();
 
 exports.get = async function (req, res) {
@@ -35,13 +36,8 @@ exports.get = async function (req, res) {
       var end = parseInt(start) + parseInt(req.query.limit);
       $query += ` LIMIT ${start},${end} `;
     }
-    // console.log($query);
-    // query
     const check = await models.get_query($query);
-    // query
-    if (check.error) {
-      return response.response(check, res);
-    }
+    check.data.forEach(function (v) { delete v.user_password });
     return response.response(check, res);
   } catch (error) {
     data.error = true;
@@ -68,6 +64,10 @@ exports.insert = async function (req, res) {
         return response.response(data, res);
       }
     }
+    if (req.body.user_password) {
+      req.body.user_password = await utils.encrypt({ string: req.body.user_password })
+    }
+
     var _res = await models.insert_query({ data: req.body, table: "user" });
     return response.response(_res, res);
   } catch (error) {
@@ -89,6 +89,10 @@ exports.update = async function (req, res) {
         data.message = `${row} is required!`;
         return response.response(data, res);
       }
+    }
+
+    if (req.body.user_password) {
+      req.body.user_password = await utils.encrypt({ string: req.body.user_password })
     }
 
     var _res = await models.update_query({
