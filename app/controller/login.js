@@ -49,6 +49,7 @@ exports.user_login = async function (req, res) {
     WHERE user_name='${req.body.user_name}' AND user_password='${req.body.user_password}' LIMIT 1`;
   var check = await models.exec_query($query);
   if (check.error || check.total == 0) {
+    check.error = true;
     check.message = "Wrong Username Or Password !";
     return response.response(check, res);
   }

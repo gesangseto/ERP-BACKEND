@@ -60,7 +60,7 @@ exports.user_menu = async function (req, res) {
 
           // Required for template
           _temp_child._tag = 'CSidebarNavItem';
-          _temp_child.name = nested_menu[i][0].menu_child_name;
+          _temp_child.name = row.menu_child_name;
           _temp_child.to = `${row.menu_parent_url}${row.menu_child_url}`;
           // Required for template
 
