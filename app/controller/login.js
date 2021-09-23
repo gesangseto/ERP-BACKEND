@@ -22,7 +22,9 @@ exports.user_login = async function (req, res) {
   }
 
   // LINE WAJIB DIBAWA
-  req.body.user_password = await utils.encrypt({ string: req.body.user_password })
+  req.body.user_password = await utils.encrypt({
+    string: req.body.user_password,
+  });
 
   // CHECK IS SUPER ADMIN
   var $query = `
@@ -42,7 +44,7 @@ exports.user_login = async function (req, res) {
 
   // CHECK IS USER
   var $query = `
-    SELECT * 
+    SELECT * ,'dummy_token' AS token
     FROM user AS a 
     LEFT JOIN user_section AS b ON a.section_id = b.section_id
     Left JOIN user_department AS c ON b.department_id = c.department_id
