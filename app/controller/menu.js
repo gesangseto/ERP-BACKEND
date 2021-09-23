@@ -38,6 +38,12 @@ exports.user_menu = async function (req, res) {
       unique: "menu_parent_id",
     });
 
+    _new_role.push({
+      // Required for template
+      _tag: "CSidebarNavItem",
+      name: "Dashboard",
+      to: `/dashboard`,
+    });
     for (const i in nested_menu) {
       var _temp_parent = {};
       var _new_child = [];
