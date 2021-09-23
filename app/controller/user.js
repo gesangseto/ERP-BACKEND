@@ -31,13 +31,17 @@ exports.get = async function (req, res) {
       }
     }
     if (req.query.page || req.query.limit) {
-      var start =
-        parseInt(req.query.page) == 1 ? 0 : req.query.page * req.query.limit;
+      var start = 0;
+      if (req.query.page > 1) {
+        start = parseInt((req.query.page - 1) * req.query.limit);
+      }
       var end = parseInt(start) + parseInt(req.query.limit);
       $query += ` LIMIT ${start},${end} `;
     }
     const check = await models.get_query($query);
-    check.data.forEach(function (v) { delete v.user_password });
+    check.data.forEach(function (v) {
+      delete v.user_password;
+    });
     return response.response(check, res);
   } catch (error) {
     data.error = true;
@@ -65,7 +69,9 @@ exports.insert = async function (req, res) {
       }
     }
     if (req.body.user_password) {
-      req.body.user_password = await utils.encrypt({ string: req.body.user_password })
+      req.body.user_password = await utils.encrypt({
+        string: req.body.user_password,
+      });
     }
 
     var _res = await models.insert_query({ data: req.body, table: "user" });
@@ -92,7 +98,9 @@ exports.update = async function (req, res) {
     }
 
     if (req.body.user_password) {
-      req.body.user_password = await utils.encrypt({ string: req.body.user_password })
+      req.body.user_password = await utils.encrypt({
+        string: req.body.user_password,
+      });
     }
 
     var _res = await models.update_query({
