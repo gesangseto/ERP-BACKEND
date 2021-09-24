@@ -4,6 +4,9 @@ module.exports = function (app) {
   var login = require("./controller/login");
   app.route("/api/login/user").post(login.user_login);
 
+  var audit_log = require("./controller/audit_log");
+  app.route("/api/audit/log").get(audit_log.get);
+
   var menu = require("./controller/menu");
   app.route("/api/menu/user").get(menu.user_menu);
 

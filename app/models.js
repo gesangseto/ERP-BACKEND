@@ -1,7 +1,7 @@
 const mysql = require("mysql");
-const dotenv = require("dotenv");
 const moment = require("moment");
 
+const dotenv = require("dotenv");
 dotenv.config(); //- MYSQL Module
 
 var db_config = {
@@ -69,6 +69,29 @@ async function get_query(query_sql) {
   );
 }
 
+async function get_configuration({ property = null }) {
+  var data_set = {
+    error: false,
+    data: [],
+    total: 0,
+    total_row: 0,
+    message: "Success",
+  };
+  return await new Promise((resolve) =>
+    pool.getConnection(function (err, connection) {
+      connection.query("SELECT * FROM sys_configuration LIMIT 1", function (err, rows) {
+        connection.release();
+        if (err) {
+          data_set.error = true;
+          data_set.message = err.sqlMessage || "Oops, something wrong";
+          return resolve(data_set);
+        }
+        return resolve(rows[0]);
+      });
+    })
+  );
+}
+
 async function update_query({ data, key, table }) {
   var data_set = {
     error: false,
@@ -97,7 +120,7 @@ async function update_query({ data, key, table }) {
     if (isColumAvalaible) {
       if (it != null && it != "created_at") {
         if (moment(it, moment.ISO_8601, true).isValid()) {
-          it = moment(it).format("YYYY-MM-DD");
+          it = moment(it).format("YYYY-MM-DD HH:mm:ss");
         }
         _data.push(` ${k} = '${it}'`);
       }
@@ -153,7 +176,7 @@ async function insert_query({ data, key, table }) {
     if (isColumAvalaible) {
       if (it != null) {
         if (moment(it, moment.ISO_8601, true).isValid()) {
-          it = moment(it).format("YYYY-MM-DD");
+          it = moment(it).format("YYYY-MM-DD HH:mm:ss");
         }
         key.push(k);
         val.push(it);
@@ -225,6 +248,7 @@ async function delete_query({ data, key, table }) {
 }
 
 module.exports = {
+  get_configuration,
   exec_query,
   get_query,
   update_query,
