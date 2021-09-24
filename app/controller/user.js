@@ -9,7 +9,7 @@ exports.get = async function (req, res) {
   try {
     // LINE WAJIB DIBAWA
     perf.start();
-    console.log(`req : ${JSON.stringify(req.query)}`);
+
     const require_data = [];
     for (const row of require_data) {
       if (!req.query[`${row}`]) {
@@ -54,7 +54,7 @@ exports.insert = async function (req, res) {
   var data = { data: req.body };
   try {
     perf.start();
-    console.log(`req : ${JSON.stringify(req.body)}`);
+
     const require_data = [
       "user_name",
       "user_email",
@@ -87,7 +87,7 @@ exports.update = async function (req, res) {
   var data = { data: req.body };
   try {
     perf.start();
-    console.log(`req : ${JSON.stringify(req.body)}`);
+
     const require_data = ["user_id"];
     for (const row of require_data) {
       if (!req.body[`${row}`]) {
@@ -123,7 +123,7 @@ exports.delete = async function (req, res) {
   var data = { data: req.body };
   try {
     perf.start();
-    console.log(`req : ${JSON.stringify(req.body)}`);
+
     const require_data = ["user_id"];
     for (const row of require_data) {
       if (!req.body[`${row}`]) {

@@ -9,7 +9,7 @@ exports.get = async function (req, res) {
   try {
     // LINE WAJIB DIBAWA
     perf.start();
-    console.log(`req : ${JSON.stringify(req.query)}`);
+
     const require_data = ["section_id"];
     for (const row of require_data) {
       if (!req.query[`${row}`]) {
@@ -102,7 +102,7 @@ exports.update = async function (req, res) {
   var data = { data: req.body };
   try {
     perf.start();
-    console.log(`req : ${JSON.stringify(req.body)}`);
+
     const require_data = ["roles"];
     for (const row of require_data) {
       if (!req.body[`${row}`]) {

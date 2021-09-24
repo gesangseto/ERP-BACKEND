@@ -10,7 +10,7 @@ dotenv.config(); //- MYSQL Module
 exports.user_login = async function (req, res) {
   // LINE WAJIB DIBAWA
   perf.start();
-  console.log(`req : ${JSON.stringify(req.body)}`);
+
   var data = { data: req.body };
   const require_data = ["user_name", "user_password"];
   for (const row of require_data) {
@@ -21,10 +21,10 @@ exports.user_login = async function (req, res) {
     }
   }
 
-
-
   // LINE WAJIB DIBAWA
-  req.body.user_password = await utils.encrypt({ string: req.body.user_password })
+  req.body.user_password = await utils.encrypt({
+    string: req.body.user_password,
+  });
   // CHECK IS SUPER ADMIN
   let $query = `
   SELECT *, 
@@ -38,15 +38,12 @@ exports.user_login = async function (req, res) {
   FROM sys_configuration AS a 
   WHERE a.user_name='${req.body.user_name}' AND a.user_password='${req.body.user_password}' LIMIT 1`;
   var check = await models.exec_query($query);
-  console.log(check);
   if (check.total > 0) {
     return response.response(check, res);
   }
 
-
-
   let configuration = await models.get_configuration({});
-  let token = await utils.encrypt({ string: moment().format("YMMDHHmmss") })
+  let token = await utils.encrypt({ string: moment().format("YMMDHHmmss") });
   // CHECK IS USER
   $query = `
     SELECT *, '${token}' AS token
@@ -63,11 +60,17 @@ exports.user_login = async function (req, res) {
   if (check.data[0]) {
     var _temp = {
       user_id: check.data[0].user_id,
-      expired_at: `${moment().add(configuration.expired_token, 'days').format('YYYY-MM-DD HH:mm:ss')}`,
+      expired_at: `${moment()
+        .add(configuration.expired_token, "days")
+        .format("YYYY-MM-DD HH:mm:ss")}`,
       token: token,
-    }
+    };
     if (configuration.multi_login != 1) {
-      await models.delete_query({ data: _temp, key: "user_id", table: "user_authentication" });
+      await models.delete_query({
+        data: _temp,
+        key: "user_id",
+        table: "user_authentication",
+      });
     }
     await models.insert_query({ data: _temp, table: "user_authentication" });
   }

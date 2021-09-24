@@ -9,7 +9,7 @@ exports.get = async function (req, res) {
   try {
     // LINE WAJIB DIBAWA
     perf.start();
-    console.log(`req : ${JSON.stringify(req.query)}`);
+
     const require_data = [];
     for (const row of require_data) {
       if (!req.query[`${row}`]) {
@@ -36,7 +36,9 @@ exports.get = async function (req, res) {
       $query += ` LIMIT ${start},${end} `;
     }
     const check = await models.get_query($query);
-    check.data.forEach(function (v) { delete v.user_password });
+    check.data.forEach(function (v) {
+      delete v.user_password;
+    });
     return response.response(check, res);
   } catch (error) {
     data.error = true;

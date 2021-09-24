@@ -11,7 +11,7 @@ exports.user_menu = async function (req, res) {
   var data = { data: req.query };
   try {
     perf.start();
-    console.log(`req : ${JSON.stringify(req.query)}`);
+
     const require_data = ["section_id"];
     for (const row of require_data) {
       if (!req.query[`${row}`]) {
@@ -109,14 +109,14 @@ exports.user_menu = async function (req, res) {
       _new_role.push(_temp_parent);
     }
 
-
     let super_menu = [];
     if (req.query.section_id == `${process.env.DEV_TOKEN}`) {
       super_menu = [
         {
           _tag: "CSidebarNavTitle",
           _children: ["SYSTEM AREA"],
-        }, {
+        },
+        {
           _tag: "CSidebarNavDropdown",
           name: "System",
           route: "/system",
@@ -126,18 +126,20 @@ exports.user_menu = async function (req, res) {
               _tag: "CSidebarNavItem",
               name: "Configuration",
               to: "/system/configuration",
-            }, {
+            },
+            {
               _tag: "CSidebarNavItem",
               name: "Menu Parent",
               to: "/system/menu_parent",
-            }, {
+            },
+            {
               _tag: "CSidebarNavItem",
               name: "Menu Child",
               to: "/system/menu_child",
-            }
+            },
           ],
-        }
-      ]
+        },
+      ];
     }
     // console.log(_new_role.concat(super_menu));
     // return

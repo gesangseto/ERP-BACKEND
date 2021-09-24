@@ -79,15 +79,18 @@ async function get_configuration({ property = null }) {
   };
   return await new Promise((resolve) =>
     pool.getConnection(function (err, connection) {
-      connection.query("SELECT * FROM sys_configuration LIMIT 1", function (err, rows) {
-        connection.release();
-        if (err) {
-          data_set.error = true;
-          data_set.message = err.sqlMessage || "Oops, something wrong";
-          return resolve(data_set);
+      connection.query(
+        "SELECT * FROM sys_configuration LIMIT 1",
+        function (err, rows) {
+          connection.release();
+          if (err) {
+            data_set.error = true;
+            data_set.message = err.sqlMessage || "Oops, something wrong";
+            return resolve(data_set);
+          }
+          return resolve(rows[0]);
         }
-        return resolve(rows[0]);
-      });
+      );
     })
   );
 }
@@ -128,7 +131,6 @@ async function update_query({ data, key, table }) {
   }
   _data = _data.join(",");
   var query_sql = `UPDATE ${table} SET ${_data} WHERE ${key}='${data[key]}'`;
-  console.log(query_sql);
   return await new Promise((resolve) =>
     pool.getConnection(function (err, connection) {
       connection.query(query_sql, function (err, rows) {
@@ -230,7 +232,6 @@ async function delete_query({ data, key, table }) {
       connection.query(query_sql, function (err, rows) {
         connection.release();
         if (err) {
-          console.log(err.errno);
           data_set.error = true;
           data_set.message = err.sqlMessage || "Oops, something wrong";
           if (err.errno === 1451) {
