@@ -20,7 +20,9 @@ exports.get = async function (req, res) {
     }
     // LINE WAJIB DIBAWA
     var $query = `
-    SELECT *,a.status AS status
+    SELECT *,
+    a.status AS status,
+    a.created_at AS created_at
     FROM audit_log AS a 
     LEFT JOIN user AS b ON a.user_id = b.user_id
     WHERE 1+1=2 `;
