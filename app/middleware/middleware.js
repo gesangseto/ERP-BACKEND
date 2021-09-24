@@ -73,6 +73,7 @@ async function create_log(req, res) {
       data: JSON.stringify(req.body),
       ip_address: req.headers["x-forwarded-for"] || req.socket.remoteAddress,
       user_agent: req.get("User-Agent"),
+      created_at: moment().format("YYYY-MM-DD HH:mm:ss"),
     };
     if (process.env.DEV_TOKEN != req.headers.token) {
       await models.insert_query({ data: params, table: "audit_log" });
