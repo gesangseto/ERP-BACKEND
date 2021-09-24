@@ -129,6 +129,11 @@ exports.user_menu = async function (req, res) {
             },
             {
               _tag: "CSidebarNavItem",
+              name: "Audit Log",
+              to: "/system/audit_log",
+            },
+            {
+              _tag: "CSidebarNavItem",
               name: "Menu Parent",
               to: "/system/menu_parent",
             },
