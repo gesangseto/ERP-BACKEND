@@ -111,40 +111,7 @@ exports.user_menu = async function (req, res) {
 
     let super_menu = [];
     if (req.query.section_id == `${process.env.DEV_TOKEN}`) {
-      super_menu = [
-        {
-          _tag: "CSidebarNavTitle",
-          _children: ["SYSTEM AREA"],
-        },
-        {
-          _tag: "CSidebarNavDropdown",
-          name: "System",
-          route: "/system",
-          icon: "",
-          _children: [
-            {
-              _tag: "CSidebarNavItem",
-              name: "Configuration",
-              to: "/system/configuration",
-            },
-            {
-              _tag: "CSidebarNavItem",
-              name: "Audit Log",
-              to: "/system/audit_log",
-            },
-            {
-              _tag: "CSidebarNavItem",
-              name: "Menu Parent",
-              to: "/system/menu_parent",
-            },
-            {
-              _tag: "CSidebarNavItem",
-              name: "Menu Child",
-              to: "/system/menu_child",
-            },
-          ],
-        },
-      ];
+      super_menu = await utils.super_menu();
     }
     // console.log(_new_role.concat(super_menu));
     // return
