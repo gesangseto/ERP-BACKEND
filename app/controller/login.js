@@ -24,14 +24,7 @@ exports.user_login = async function (req, res) {
 
 
   // LINE WAJIB DIBAWA
-<<<<<<< HEAD
   req.body.user_password = await utils.encrypt({ string: req.body.user_password })
-=======
-  req.body.user_password = await utils.encrypt({
-    string: req.body.user_password,
-  });
-
->>>>>>> 350be09bbaabd7735364a1a8966eec3f1519c3ea
   // CHECK IS SUPER ADMIN
   let $query = `
   SELECT *, 
