@@ -31,8 +31,10 @@ exports.user_login = async function (req, res) {
   '0' AS user_id,
   'super_admin' AS user_name,
   '${process.env.DEV_TOKEN}' AS token,
-  'super_admin' AS section_id, 'super_admin' AS section_name,
-  'super_admin' AS department_id, 'super_admin' AS department_name
+  '${process.env.DEV_TOKEN}' AS section_id, 
+  'super_admin' AS section_name,
+  'super_admin' AS department_id,
+  'super_admin' AS department_name
   FROM sys_configuration AS a 
   WHERE a.user_name='${req.body.user_name}' AND a.user_password='${req.body.user_password}' LIMIT 1`;
   var check = await models.exec_query($query);

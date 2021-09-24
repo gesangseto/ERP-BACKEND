@@ -70,12 +70,6 @@ exports.user_menu = async function (req, res) {
           _temp_child.to = `${row.menu_parent_url}${row.menu_child_url}`;
           // Required for template
 
-          // _temp_child.section_id = req.query.section_id;
-          // _temp_child.menu_child_id = row.menu_child_id;
-          // _temp_child.menu_child_name = row.menu_child_name;
-          // _temp_child.menu_child_url = row.menu_child_url;
-          // _temp_child.menu_child_icon = row.menu_child_icon;
-          // _temp_child.menu_url = `${row.menu_parent_url}${row.menu_child_url}`;
           _temp_child.menu_role_id = null;
           _temp_child.flag_create = 0;
           _temp_child.flag_read = 0;
@@ -98,7 +92,8 @@ exports.user_menu = async function (req, res) {
             _temp_child.flag_print = role.flag_print;
             _temp_child.flag_download = role.flag_download;
           }
-          if (req.query.section_id == "super_admin") {
+
+          if (req.query.section_id == `${process.env.DEV_TOKEN}`) {
             _temp_child.flag_create = 1;
             _temp_child.flag_read = 1;
             _temp_child.flag_update = 1;
@@ -113,15 +108,40 @@ exports.user_menu = async function (req, res) {
       // _temp_parent.menu_child = _new_child;
       _new_role.push(_temp_parent);
     }
-    if (req.query.section_id == "super_admin") {
-      _new_role.push({
-        // Required for template
-        _tag: "CSidebarNavItem",
-        name: "Configuration",
-        to: `/configuration`,
-      });
+
+
+    let super_menu = [];
+    if (req.query.section_id == `${process.env.DEV_TOKEN}`) {
+      super_menu = [
+        {
+          _tag: "CSidebarNavTitle",
+          _children: ["SYSTEM AREA"],
+        }, {
+          _tag: "CSidebarNavDropdown",
+          name: "System",
+          route: "/system",
+          icon: "",
+          _children: [
+            {
+              _tag: "CSidebarNavItem",
+              name: "Configuration",
+              to: "/system/configuration",
+            }, {
+              _tag: "CSidebarNavItem",
+              name: "Menu Parent",
+              to: "/system/menu_parent",
+            }, {
+              _tag: "CSidebarNavItem",
+              name: "Menu Child",
+              to: "/system/menu_child",
+            }
+          ],
+        }
+      ]
     }
-    _menu.data = _new_role;
+    // console.log(_new_role.concat(super_menu));
+    // return
+    _menu.data = _new_role.concat(super_menu);
     return response.response(_menu, res);
   } catch (error) {
     data.error = true;

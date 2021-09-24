@@ -16,7 +16,7 @@ app.use(bodyParser.json());
 // LOAD MIDDLEWARE OAUTH
 var oauth = require('./app/middleware/middleware')
 app.use(async function (req, res, next) {
-    if (req.originalUrl == '/api/login/user') {
+    if (req.originalUrl == '/api/login/user' || req.originalUrl == '/api/configuration') {
         next();
     } else {
         var check = await oauth.check_token(req, res);
