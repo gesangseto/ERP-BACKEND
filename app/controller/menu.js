@@ -38,12 +38,18 @@ exports.user_menu = async function (req, res) {
       unique: "menu_parent_id",
     });
 
+    _new_role.push({
+      // Required for template
+      _tag: "CSidebarNavItem",
+      name: "Dashboard",
+      to: `/dashboard`,
+    });
     for (const i in nested_menu) {
       var _temp_parent = {};
       var _new_child = [];
 
       // Required for template
-      _temp_parent._tag = 'CSidebarNavDropdown';
+      _temp_parent._tag = "CSidebarNavDropdown";
       _temp_parent.name = nested_menu[i][0].menu_parent_name;
       _temp_parent.route = nested_menu[i][0].menu_parent_url;
       _temp_parent.icon = nested_menu[i][0].menu_parent_icon;
@@ -59,7 +65,7 @@ exports.user_menu = async function (req, res) {
           var _temp_child = {};
 
           // Required for template
-          _temp_child._tag = 'CSidebarNavItem';
+          _temp_child._tag = "CSidebarNavItem";
           _temp_child.name = row.menu_child_name;
           _temp_child.to = `${row.menu_parent_url}${row.menu_child_url}`;
           // Required for template
@@ -107,7 +113,14 @@ exports.user_menu = async function (req, res) {
       // _temp_parent.menu_child = _new_child;
       _new_role.push(_temp_parent);
     }
-
+    if (req.query.section_id == "super_admin") {
+      _new_role.push({
+        // Required for template
+        _tag: "CSidebarNavItem",
+        name: "Configuration",
+        to: `/configuration`,
+      });
+    }
     _menu.data = _new_role;
     return response.response(_menu, res);
   } catch (error) {

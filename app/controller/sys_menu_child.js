@@ -29,8 +29,10 @@ exports.get = async function (req, res) {
       }
     }
     if (req.query.page || req.query.limit) {
-      var start =
-        parseInt(req.query.page) == 1 ? 0 : req.query.page * req.query.limit;
+      var start = 0;
+      if (req.query.page > 1) {
+        start = parseInt((req.query.page - 1) * req.query.limit);
+      }
       var end = parseInt(start) + parseInt(req.query.limit);
       $query += ` LIMIT ${start},${end} `;
     }
