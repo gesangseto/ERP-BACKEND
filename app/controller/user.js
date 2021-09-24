@@ -24,7 +24,7 @@ exports.get = async function (req, res) {
     FROM user AS a 
     LEFT JOIN user_section AS b ON a.section_id = b.section_id
     Left JOIN user_department AS c ON b.department_id = c.department_id
-    WHERE 1+1=2 `;
+    WHERE a.flag_delete='0' `;
     for (const k in req.query) {
       if (k != "page" && k != "limit") {
         $query += ` AND a.${k}='${req.query[k]}'`;
@@ -137,6 +137,7 @@ exports.delete = async function (req, res) {
       data: req.body,
       table: "user",
       key: "user_id",
+      deleted: false,
     });
     return response.response(_res, res);
   } catch (error) {

@@ -206,7 +206,7 @@ async function insert_query({ data, key, table }) {
   );
 }
 
-async function delete_query({ data, key, table }) {
+async function delete_query({ data, key, table, deleted = true }) {
   var data_set = {
     error: false,
     data: [],
@@ -226,7 +226,12 @@ async function delete_query({ data, key, table }) {
     data_set.message = "Cannot delete data, must set data to Inactive";
     return data_set;
   }
-  var query_sql = `DELETE FROM ${table} WHERE ${key}='${data[key]}'`;
+  let query_sql = ``;
+  if (deleted) {
+    query_sql = `DELETE FROM ${table} WHERE ${key}='${data[key]}'`;
+  } else {
+    query_sql = `UPDATE ${table} SET flag_delete='1' WHERE ${key}='${data[key]}'`;
+  }
   return await new Promise((resolve) =>
     pool.getConnection(function (err, connection) {
       connection.query(query_sql, function (err, rows) {
