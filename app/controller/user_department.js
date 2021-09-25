@@ -62,7 +62,7 @@ exports.insert = async function (req, res) {
         return response.response(data, res);
       }
     }
-
+    req.body.created_by = req.headers.user_id;
     var _res = await models.insert_query({
       data: req.body,
       table: "user_department",

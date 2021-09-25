@@ -111,6 +111,10 @@ async function update_query({ data, key, table }) {
     return data_set;
   }
   column = column.data;
+  var haveUpdatedAt = column.find((x) => x.COLUMN_NAME === "updated_at");
+  if (haveUpdatedAt) {
+    data["updated_at"] = moment().format("YYYY-MM-DD HH:mm:ss");
+  }
   var _data = [];
   for (const k in data) {
     var it = data[k];
@@ -164,6 +168,10 @@ async function insert_query({ data, key, table }) {
     return data_set;
   }
   column = column.data;
+  var haveCreatedAt = column.find((x) => x.COLUMN_NAME === "created_at");
+  if (haveCreatedAt) {
+    data["created_at"] = moment().format("YYYY-MM-DD HH:mm:ss");
+  }
   var _data = [];
   var key = [];
   var val = [];

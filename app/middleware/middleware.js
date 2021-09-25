@@ -21,10 +21,12 @@ async function check_token(req, res) {
       data.message = `Authentication failed, token header is required`;
       return response.response(data, res);
     }
-    if (process.env.DEV_TOKEN == token) {
-      return res;
-    }
     let configuration = await models.get_configuration({});
+    if (process.env.DEV_TOKEN == token) {
+      req.headers.configuration = configuration;
+      req.headers.user_id = 0;
+      return true;
+    }
     let $query = `SELECT * FROM user_authentication WHERE token='${token}'`;
     $query = await models.exec_query($query);
     if ($query.error || $query.total == 0) {

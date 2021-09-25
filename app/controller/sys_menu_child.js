@@ -50,6 +50,7 @@ exports.insert = async function (req, res) {
   try {
     perf.start();
 
+    req.body.created_by = req.headers.user_id;
     const require_data = [
       "menu_parent_id",
       "menu_child_name",
