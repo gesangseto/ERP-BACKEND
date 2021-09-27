@@ -20,7 +20,7 @@ var middleware = require("./app/middleware/middleware");
 app.use(async function (req, res, next) {
   if (
     req.originalUrl == "/api/login/user" ||
-    req.originalUrl == "/api/configuration"
+    (req.originalUrl == "/api/configuration" && req.method == "GET")
   ) {
     next();
     return;
