@@ -25,6 +25,13 @@ async function check_token(req, res) {
     if (process.env.DEV_TOKEN == token) {
       req.headers.configuration = configuration;
       req.headers.user_id = 0;
+      if (req.method == "PUT") {
+        req.body.created_by = '0';
+        req.body.created_at = moment().format("YYYY-MM-DD HH:mm:ss");
+      } else if (req.method == "POST" || req.method == "DELETE") {
+        req.body.updated_by = '0';
+        req.body.updated_at = moment().format("YYYY-MM-DD HH:mm:ss");
+      }
       return true;
     }
     let $query = `SELECT * FROM user_authentication WHERE token='${token}'`;
@@ -45,6 +52,13 @@ async function check_token(req, res) {
 
     req.headers.configuration = configuration;
     req.headers.user_id = $query.data[0].user_id;
+    if (req.method == "PUT") {
+      req.body.created_by = $query.data[0].user_id;
+      req.body.created_at = moment().format("YYYY-MM-DD HH:mm:ss");
+    } else if (req.method == "POST" || req.method == "DELETE") {
+      req.body.updated_by = $query.data[0].user_id;
+      req.body.updated_at = moment().format("YYYY-MM-DD HH:mm:ss");
+    }
     let _temp = {
       user_id: $query.data[0].user_id,
       expired_at: moment()

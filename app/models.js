@@ -95,63 +95,6 @@ async function get_configuration({ property = null }) {
   );
 }
 
-async function update_query({ data, key, table }) {
-  var data_set = {
-    error: false,
-    data: [],
-    total: 0,
-    total_row: 0,
-    message: "Success",
-  };
-  var column = `SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS  WHERE TABLE_NAME = '${table}'`;
-  column = await exec_query(column);
-  if (column.error) {
-    data_set.error = true;
-    data_set.message = column.message || "Oops, something wrong";
-    return data_set;
-  }
-  column = column.data;
-  var haveUpdatedAt = column.find((x) => x.COLUMN_NAME === "updated_at");
-  if (haveUpdatedAt) {
-    data["updated_at"] = moment().format("YYYY-MM-DD HH:mm:ss");
-  }
-  var _data = [];
-  for (const k in data) {
-    var it = data[k];
-    var isColumAvalaible = false;
-    for (const col_name of column) {
-      if (k == col_name.COLUMN_NAME) {
-        isColumAvalaible = true;
-      }
-    }
-    if (isColumAvalaible) {
-      if (it != null && it != "created_at") {
-        if (moment(it, moment.ISO_8601, true).isValid()) {
-          it = moment(it).format("YYYY-MM-DD HH:mm:ss");
-        }
-        _data.push(` ${k} = '${it}'`);
-      }
-    }
-  }
-  _data = _data.join(",");
-  var query_sql = `UPDATE ${table} SET ${_data} WHERE ${key}='${data[key]}'`;
-  return await new Promise((resolve) =>
-    pool.getConnection(function (err, connection) {
-      connection.query(query_sql, function (err, rows) {
-        connection.release();
-        if (err) {
-          data_set.error = true;
-          data_set.message = err.sqlMessage || "Oops, something wrong";
-          return resolve(data_set);
-        }
-        data_set.data = rows;
-        data_set.total_row = rows.length;
-        return resolve(data_set);
-      });
-    })
-  );
-}
-
 async function insert_query({ data, key, table }) {
   var data_set = {
     error: false,
@@ -160,18 +103,13 @@ async function insert_query({ data, key, table }) {
     total_row: 0,
     message: "Success",
   };
-  var column = `SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS  WHERE TABLE_NAME = '${table}'`;
-  column = await exec_query(column);
+  var column = `SELECT COLUMN_NAME  FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = N'${table}' AND TABLE_SCHEMA ='${process.env.DB_DATABASE}'`; column = await exec_query(column);
   if (column.error) {
     data_set.error = true;
     data_set.message = column.message || "Oops, something wrong";
     return data_set;
   }
   column = column.data;
-  var haveCreatedAt = column.find((x) => x.COLUMN_NAME === "created_at");
-  if (haveCreatedAt) {
-    data["created_at"] = moment().format("YYYY-MM-DD HH:mm:ss");
-  }
   var _data = [];
   var key = [];
   var val = [];
@@ -197,6 +135,59 @@ async function insert_query({ data, key, table }) {
   val = "'" + val.join("','") + "'";
   _data = _data.join(",");
   var query_sql = `INSERT INTO ${table} (${key}) VALUES (${val})`;
+  return await new Promise((resolve) =>
+    pool.getConnection(function (err, connection) {
+      connection.query(query_sql, function (err, rows) {
+        connection.release();
+        if (err) {
+          data_set.error = true;
+          data_set.message = err.sqlMessage || "Oops, something wrong";
+          return resolve(data_set);
+        }
+        data_set.data = rows;
+        data_set.total_row = rows.length;
+        return resolve(data_set);
+      });
+    })
+  );
+}
+
+async function update_query({ data, key, table }) {
+  var data_set = {
+    error: false,
+    data: [],
+    total: 0,
+    total_row: 0,
+    message: "Success",
+  };
+  var column = `SELECT COLUMN_NAME  FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = N'${table}' AND TABLE_SCHEMA ='${process.env.DB_DATABASE}'`;
+  column = await exec_query(column);
+  if (column.error) {
+    data_set.error = true;
+    data_set.message = column.message || "Oops, something wrong";
+    return data_set;
+  }
+  column = column.data;
+  var _data = [];
+  for (const k in data) {
+    var it = data[k];
+    var isColumAvalaible = false;
+    for (const col_name of column) {
+      if (k == col_name.COLUMN_NAME) {
+        isColumAvalaible = true;
+      }
+    }
+    if (isColumAvalaible) {
+      if (it != null && it != "created_at") {
+        if (moment(it, moment.ISO_8601, true).isValid()) {
+          it = moment(it).format("YYYY-MM-DD HH:mm:ss");
+        }
+        _data.push(` ${k} = '${it}'`);
+      }
+    }
+  }
+  _data = _data.join(",");
+  var query_sql = `UPDATE ${table} SET ${_data} WHERE ${key}='${data[key]}'`;
   return await new Promise((resolve) =>
     pool.getConnection(function (err, connection) {
       connection.query(query_sql, function (err, rows) {
@@ -265,7 +256,7 @@ module.exports = {
   get_configuration,
   exec_query,
   get_query,
-  update_query,
   insert_query,
+  update_query,
   delete_query,
 };
