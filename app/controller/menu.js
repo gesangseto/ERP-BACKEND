@@ -101,14 +101,22 @@ exports.user_menu = async function (req, res) {
             _temp_child.flag_print = 1;
             _temp_child.flag_download = 1;
           }
-          _new_child.push(_temp_child);
+
+          if (
+            _temp_child.flag_create != 0 &&
+            _temp_child.flag_read != 0 &&
+            _temp_child.flag_update != 0 &&
+            _temp_child.flag_delete != 0
+          ) {
+            _new_child.push(_temp_child);
+          }
         }
       }
       _temp_parent._children = _new_child;
-      // _temp_parent.menu_child = _new_child;
-      _new_role.push(_temp_parent);
+      if (_new_child.length != 0) {
+        _new_role.push(_temp_parent);
+      }
     }
-
     let super_menu = [];
     if (req.query.section_id == `${process.env.DEV_TOKEN}`) {
       super_menu = await utils.super_menu();
