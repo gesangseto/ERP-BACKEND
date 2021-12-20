@@ -268,33 +268,32 @@ async function delete_query({
       data_set.message = "Cannot delete data, must set data to Inactive";
       return data_set;
     }
-  } else {
-    let query_sql = ``;
-    if (deleted) {
-      query_sql = `DELETE FROM ${table} WHERE ${key}='${data[key]}'`;
-    } else {
-      query_sql = `UPDATE ${table} SET flag_delete='1' WHERE ${key}='${data[key]}'`;
-    }
-    return await new Promise((resolve) =>
-      pool.getConnection(function (err, connection) {
-        connection.query(query_sql, function (err, rows) {
-          connection.release();
-          if (err) {
-            data_set.error = true;
-            data_set.message = err.sqlMessage || "Oops, something wrong";
-            if (err.errno === 1451) {
-              data_set.message =
-                "Cannot delete data, this data have connection on other transaction";
-            }
-            return resolve(data_set);
-          }
-          data_set.data = rows;
-          data_set.total_row = rows.length;
-          return resolve(data_set);
-        });
-      })
-    );
   }
+  let query_sql = ``;
+  if (deleted) {
+    query_sql = `DELETE FROM ${table} WHERE ${key}='${data[key]}'`;
+  } else {
+    query_sql = `UPDATE ${table} SET flag_delete='1' WHERE ${key}='${data[key]}'`;
+  }
+  return await new Promise((resolve) =>
+    pool.getConnection(function (err, connection) {
+      connection.query(query_sql, function (err, rows) {
+        connection.release();
+        if (err) {
+          data_set.error = true;
+          data_set.message = err.sqlMessage || "Oops, something wrong";
+          if (err.errno === 1451) {
+            data_set.message =
+              "Cannot delete data, this data have connection on other transaction";
+          }
+          return resolve(data_set);
+        }
+        data_set.data = rows;
+        data_set.total_row = rows.length;
+        return resolve(data_set);
+      });
+    })
+  );
 }
 function isInt(value) {
   return (
