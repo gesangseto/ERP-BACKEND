@@ -38,18 +38,18 @@ exports.user_menu = async function (req, res) {
       unique: "menu_parent_id",
     });
 
-    _new_role.push({
-      // Required for template
-      _tag: "CSidebarNavItem",
-      name: "Dashboard",
-      to: `/dashboard`,
-    });
+    // _new_role.push({
+    //   // Required for template
+    //   _tag: "CSidebarNavItem",
+    //   name: "Dashboard",
+    //   to: `/dashboard`,
+    // });
     for (const i in nested_menu) {
       var _temp_parent = {};
       var _new_child = [];
 
       // Required for template
-      _temp_parent._tag = "CSidebarNavDropdown";
+      // _temp_parent._tag = "CSidebarNavDropdown";
       _temp_parent.name = nested_menu[i][0].menu_parent_name;
       _temp_parent.route = nested_menu[i][0].menu_parent_url;
       _temp_parent.icon = nested_menu[i][0].menu_parent_icon;
@@ -65,7 +65,7 @@ exports.user_menu = async function (req, res) {
           var _temp_child = {};
 
           // Required for template
-          _temp_child._tag = "CSidebarNavItem";
+          // _temp_child._tag = "CSidebarNavItem";
           _temp_child.name = row.menu_child_name;
           _temp_child.to = `${row.menu_parent_url}${row.menu_child_url}`;
           // Required for template

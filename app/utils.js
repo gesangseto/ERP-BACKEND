@@ -28,18 +28,18 @@ async function encrypt({ string = null }) {
 
 async function super_menu() {
   let super_menu = [
+    // {
+    //   _tag: "CSidebarNavTitle",
+    //   _children: ["SYSTEM AREA"],
+    // },
     {
-      _tag: "CSidebarNavTitle",
-      _children: ["SYSTEM AREA"],
-    },
-    {
-      _tag: "CSidebarNavDropdown",
+      // _tag: "CSidebarNavDropdown",
       name: "System",
       route: "/system",
       icon: "",
       _children: [
         {
-          _tag: "CSidebarNavItem",
+          // _tag: "CSidebarNavItem",
           name: "Configuration",
           to: "/system/configuration",
           flag_create: 1,
@@ -49,7 +49,7 @@ async function super_menu() {
           flag_download: 1,
         },
         {
-          _tag: "CSidebarNavItem",
+          // _tag: "CSidebarNavItem",
           name: "Audit Log",
           to: "/system/audit_log",
           flag_create: 1,
@@ -59,7 +59,7 @@ async function super_menu() {
           flag_download: 1,
         },
         {
-          _tag: "CSidebarNavItem",
+          // _tag: "CSidebarNavItem",
           name: "Menu Parent",
           to: "/system/menu_parent",
           flag_create: 1,
@@ -69,7 +69,7 @@ async function super_menu() {
           flag_download: 1,
         },
         {
-          _tag: "CSidebarNavItem",
+          // _tag: "CSidebarNavItem",
           name: "Menu Child",
           to: "/system/menu_child",
           flag_create: 1,

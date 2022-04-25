@@ -47,10 +47,16 @@ async function get_query(query_sql) {
     total_row: 0,
     message: "Success",
   };
+
   var _where = query_sql.split("FROM") || query_sql.split("from");
   _where = _where[1].split("LIMIT") || _where[1].split("limit");
   var count = `SELECT COUNT(*) AS total FROM ${_where[0]}`;
   count = await exec_query(count);
+  if (count.error) {
+    data_set.error = true;
+    data_set.message = count.message;
+    return data_set;
+  }
   data_set.total = count.data[0].total;
   return await new Promise((resolve) =>
     pool.getConnection(function (err, connection) {
