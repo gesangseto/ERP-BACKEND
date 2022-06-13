@@ -10,7 +10,7 @@ var db_config = {
   password: process.env.DB_PASSWORD,
   database: process.env.DB_DATABASE,
   connectionLimit: 10,
-  multipleStatements: true,
+  // multipleStatements: true,
 };
 
 var pool = mysql.createPool(db_config);
@@ -46,6 +46,53 @@ async function exec_query(query_sql) {
   );
 }
 
+async function generate_query_insert({ table, values }) {
+  let get_structure = `DESCRIBE ${table};`;
+  get_structure = await exec_query(get_structure);
+  let column = "";
+  let datas = "";
+  let query = `INSERT INTO ${table} `;
+  if (typeof values === "object" && values !== null) {
+    for (const key_v in values) {
+      for (const it of get_structure.data) {
+        let key = it.Field;
+        if (key_v === key) {
+          if (values[key_v]) {
+            column += ` ${key_v},`;
+            datas += ` '${values[key_v]}',`;
+          }
+        }
+      }
+    }
+    column = ` (${column.substring(0, column.length - 1)}) `;
+    datas = ` (${datas.substring(0, datas.length - 1)}) `;
+    query += ` ${column} VALUES ${datas} ;`;
+  }
+  return query;
+}
+
+async function generate_query_update({ table, values, key }) {
+  let get_structure = `DESCRIBE ${table};`;
+  get_structure = await exec_query(get_structure);
+  let column = "";
+  let query = `UPDATE ${table} SET`;
+  if (typeof values === "object" && values !== null) {
+    for (const key_v in values) {
+      for (const itm of get_structure.data) {
+        if (key_v === itm.Field) {
+          if (values[key_v]) {
+            column += ` ${key_v}= '${values[key_v]}',`;
+          }
+        }
+      }
+    }
+    column = ` ${column.substring(0, column.length - 1)}`;
+    query += ` ${column} WHERE ${key} = '${values[key]}'; `;
+  }
+  console.log(query);
+  console.log("===========================");
+  return query;
+}
 async function get_query(query_sql) {
   var data_set = {
     error: false,
@@ -323,4 +370,6 @@ module.exports = {
   insert_query,
   update_query,
   delete_query,
+  generate_query_update,
+  generate_query_insert,
 };

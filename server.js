@@ -31,25 +31,25 @@ app.use(async function (req, res, next) {
   };
   console.log("======================================================");
   console.log(`req : ${JSON.stringify(request)}`);
-  next();
-  return;
+  // next();
+  // return;
   // End Create log for request
-  // if (
-  //   req.originalUrl == "/api/login/user" ||
-  //   (req.originalUrl == "/api/configuration" && req.method == "GET")
-  // ) {
-  //   next();
-  //   return;
-  // }
-  // let check_token = await middleware.check_token(req, res);
-  // let create_log = true;
-  // if (check_token && req.method != "GET") {
-  //   create_log = await middleware.create_log(req, res);
-  // }
-  // if (check_token && create_log) {
-  //   next();
-  //   return;
-  // }
+  if (
+    req.originalUrl == "/api/login/user" ||
+    (req.originalUrl == "/api/configuration" && req.method == "GET")
+  ) {
+    next();
+    return;
+  }
+  let check_token = await middleware.check_token(req, res);
+  let create_log = true;
+  if (check_token && req.method != "GET") {
+    create_log = await middleware.create_log(req, res);
+  }
+  if (check_token && create_log) {
+    next();
+    return;
+  }
 });
 // END MIDDLEWARE OAUTH
 

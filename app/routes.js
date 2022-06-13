@@ -47,4 +47,10 @@ module.exports = function (app) {
   app.route("/api/master/user").put(user.insert);
   app.route("/api/master/user").post(user.update);
   app.route("/api/master/user").delete(user.delete);
+
+  var approval = require("./controller/approval");
+  app.route("/api/master/approval").get(approval.get);
+  app.route("/api/master/approval").put(approval.insert);
+  app.route("/api/master/approval").post(approval.update);
+  app.route("/api/master/approval").delete(approval.delete);
 };
