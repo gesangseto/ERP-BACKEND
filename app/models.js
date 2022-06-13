@@ -9,6 +9,8 @@ var db_config = {
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_DATABASE,
+  connectionLimit: 10,
+  multipleStatements: true,
 };
 
 var pool = mysql.createPool(db_config);
@@ -23,6 +25,11 @@ async function exec_query(query_sql) {
   };
   return await new Promise((resolve) =>
     pool.getConnection(function (err, connection) {
+      if (err) {
+        data_set.error = true;
+        data_set.message = err.sqlMessage || "Oops, something wrong";
+        return resolve(data_set);
+      }
       connection.query(query_sql, function (err, rows) {
         connection.release();
         if (err) {

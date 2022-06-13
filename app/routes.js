@@ -1,8 +1,8 @@
 "use strict";
 
 module.exports = function (app) {
-  var login = require("./controller/login");
-  app.route("/api/login/user").post(login.user_login);
+  var authentication = require("./controller/authentication");
+  app.route("/api/login/user").post(authentication.user_login);
 
   var audit_log = require("./controller/audit_log");
   app.route("/api/audit/log").get(audit_log.get);
