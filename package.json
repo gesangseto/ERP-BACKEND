@@ -23,6 +23,7 @@
     "js-file-download": "^0.4.12",
     "moment": "^2.29.1",
     "moment-timezone": "^0.5.33",
-    "mysql": "^2.18.1"
+    "mysql": "^2.18.1",
+    "pg": "^8.7.3"
   }
 }

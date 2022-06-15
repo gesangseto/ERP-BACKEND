@@ -8,7 +8,7 @@ exports.response = function (data = null, res, useLog = true) {
     error: data.error || false,
     message: data.message || null,
     total: data.error ? null : data.total || 0,
-    total_row: data.error ? null : data.total_row || 0,
+    grand_total: data.error ? null : data.grand_total || 0,
     data: data.data || [],
   };
   if (data.status_code) {

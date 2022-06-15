@@ -21,23 +21,11 @@ exports.get = async function (req, res) {
     // LINE WAJIB DIBAWA
     var $query = `
     SELECT *,a.status AS status
-    FROM user AS a 
+    FROM "user" AS a 
     LEFT JOIN user_section AS b ON a.section_id = b.section_id
     Left JOIN user_department AS c ON b.department_id = c.department_id
     WHERE a.flag_delete='0' `;
-    for (const k in req.query) {
-      if (k != "page" && k != "limit") {
-        $query += ` AND a.${k}='${req.query[k]}'`;
-      }
-    }
-    if (req.query.page || req.query.limit) {
-      var start = 0;
-      if (req.query.page > 1) {
-        start = parseInt((req.query.page - 1) * req.query.limit);
-      }
-      var end = parseInt(start) + parseInt(req.query.limit);
-      $query += ` LIMIT ${start},${end} `;
-    }
+    $query = await models.filter_query($query, req.query);
     const check = await models.get_query($query);
     check.data.forEach(function (v) {
       delete v.user_password;
@@ -108,6 +96,7 @@ exports.update = async function (req, res) {
       key: "user_id",
       table: "user",
     });
+
     if (_res.error) {
       return response.response(_res, res);
     }
@@ -133,6 +122,7 @@ exports.delete = async function (req, res) {
       }
     }
     // LINE WAJIB DIBAWA
+    console.log(req.body);
     var _res = await models.delete_query({
       data: req.body,
       table: "user",

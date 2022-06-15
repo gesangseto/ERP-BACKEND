@@ -84,8 +84,16 @@ async function super_menu() {
   return super_menu;
 }
 
+function isInt(value) {
+  return (
+    !isNaN(value) &&
+    parseInt(Number(value)) == value &&
+    !isNaN(parseInt(value, 20))
+  );
+}
 module.exports = {
   nestedData,
   encrypt,
   super_menu,
+  isInt,
 };

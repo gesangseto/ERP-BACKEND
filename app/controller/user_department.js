@@ -32,7 +32,7 @@ exports.get = async function (req, res) {
         start = parseInt((req.query.page - 1) * req.query.limit);
       }
       var end = parseInt(start) + parseInt(req.query.limit);
-      $query += ` LIMIT ${start},${end} `;
+      $query += ` LIMIT ${start} OFFSET ${end} `;
     }
     // query
     const check = await models.get_query($query);
@@ -123,7 +123,6 @@ exports.delete = async function (req, res) {
       }
     }
 
-    // LINE WAJIB DIBAWA
     var _res = await models.delete_query({
       data: req.body,
       key: "department_id",

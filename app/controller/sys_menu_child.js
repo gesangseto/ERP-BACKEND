@@ -34,7 +34,7 @@ exports.get = async function (req, res) {
         start = parseInt((req.query.page - 1) * req.query.limit);
       }
       var end = parseInt(start) + parseInt(req.query.limit);
-      $query += ` LIMIT ${start},${end} `;
+      $query += ` LIMIT ${start} OFFSET ${end} `;
     }
     const check = await models.get_query($query);
     return response.response(check, res);
