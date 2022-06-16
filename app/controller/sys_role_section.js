@@ -4,10 +4,94 @@ const models = require("../models");
 const utils = require("../utils");
 const perf = require("execution-time")();
 
-exports.get = async function (req, res) {
+const _flag = {
+  flag_create: 0,
+  flag_read: 0,
+  flag_update: 0,
+  flag_delete: 0,
+  flag_print: 0,
+  flag_download: 0,
+};
+
+const generateMenuRole = async (array, section_id, show_all) => {
+  let SA = section_id == `${process.env.DEV_TOKEN}`;
+  let _format_data = [];
+  for (const it of array) {
+    let _data = {
+      role_section_id: null,
+      section_id: section_id,
+      ..._flag,
+      ...it,
+    };
+    if (_data.hasOwnProperty("children") && _data.children.length > 0) {
+      let _ch = await generateMenuRole(_data.children, section_id, show_all);
+      _data.children = _ch;
+    } else {
+      let get_role = `SELECT * FROM sys_role_section WHERE menu_id='${_data.menu_id}' AND section_id='${section_id}' LIMIT 1`;
+      get_role = await models.exec_query(get_role);
+      if (get_role.total == 1 || SA) {
+        var role = get_role.data[0];
+        _data.role_section_id = SA ? null : role.role_section_id;
+        _data.flag_create = SA ? 1 : role.flag_create;
+        _data.flag_read = SA ? 1 : role.flag_read;
+        _data.flag_update = SA ? 1 : role.flag_update;
+        _data.flag_delete = SA ? 1 : role.flag_delete;
+        _data.flag_print = SA ? 1 : role.flag_print;
+        _data.flag_download = SA ? 1 : role.flag_download;
+      }
+    }
+    if (show_all) {
+      _format_data.push(_data);
+    } else {
+      if (
+        _data.flag_create == 1 ||
+        _data.flag_read == 1 ||
+        _data.flag_update == 1 ||
+        _data.flag_delete == 1 ||
+        _data.children.length > 0
+      ) {
+        _format_data.push(_data);
+      }
+    }
+  }
+  return _format_data;
+};
+
+const generateQueryMenuRole = async (array) => {
+  let sa_token = `${process.env.DEV_TOKEN}`;
+  let query = [];
+  for (const it of array) {
+    if (sa_token == it.section_id) {
+      return "";
+    }
+    if (it.hasOwnProperty("children") && it.children.length > 0) {
+      let _query = await generateQueryMenuRole(it.children);
+      query = query.concat(_query);
+    } else {
+      if (it.role_section_id) {
+        query.push(
+          await models.generate_query_update({
+            table: "sys_role_section",
+            values: it,
+            key: "role_section_id",
+          })
+        );
+      } else {
+        query.push(
+          await models.generate_query_insert({
+            table: "sys_role_section",
+            values: it,
+          })
+        );
+      }
+    }
+  }
+  return query;
+};
+
+exports.getRoleMenu = async function (req, res) {
   var data = { data: req.query };
   try {
-    // LINE WAJIB DIBAWA
     perf.start();
 
     const require_data = ["section_id"];
@@ -18,79 +102,22 @@ exports.get = async function (req, res) {
         return response.response(data, res);
       }
     }
-    // LINE WAJIB DIBAWA
-    var $query = `	
-	SELECT  * FROM  sys_menu_child AS a 
-	LEFT JOIN sys_menu_parent AS b ON a.menu_parent_id =b.menu_parent_id 
-  WHERE a.status='1' `;
+
+    var $query = `SELECT  * FROM  sys_menu AS a WHERE a.status='1' `;
     // query
     var _menu = await models.exec_query($query);
     // query
     if (_menu.error || _menu.total == 0) {
       return response.response(_menu, res);
     }
-    var _new_role = [];
 
-    var nested_menu = await utils.nestedData({
-      data: _menu.data,
-      unique: "menu_parent_id",
-    });
+    let show_all = req.query.show_all;
+    let section_id = req.query.section_id;
 
-    for (const i in nested_menu) {
-      var _temp_parent = {};
-      var _new_child = [];
-      _temp_parent.menu_parent_id = nested_menu[i][0].menu_parent_id;
-      _temp_parent.menu_parent_name = nested_menu[i][0].menu_parent_name;
-      _temp_parent.menu_parent_url = nested_menu[i][0].menu_parent_url;
-      _temp_parent.menu_parent_icon = nested_menu[i][0].menu_parent_icon;
-      if (nested_menu[i].length > 0) {
-        for (const row of nested_menu[i]) {
-          var _temp_child = {};
-          _temp_child.section_id = req.query.section_id;
-          _temp_child.menu_child_id = row.menu_child_id;
-          _temp_child.menu_child_name = row.menu_child_name;
-          _temp_child.menu_child_url = row.menu_child_url;
-          _temp_child.menu_child_icon = row.menu_child_icon;
-          _temp_child.menu_url = `${row.menu_parent_url}${row.menu_child_url}`;
-          _temp_child.menu_role_id = null;
-          _temp_child.flag_create = 0;
-          _temp_child.flag_read = 0;
-          _temp_child.flag_update = 0;
-          _temp_child.flag_delete = 0;
-          _temp_child.flag_print = 0;
-          _temp_child.flag_download = 0;
-          var get_role = `
-          SELECT * FROM sys_role_section AS a
-          LEFT JOIN user_section AS b ON a.section_id=b.section_id
-          WHERE a.menu_child_id='${row.menu_child_id}' AND a.section_id='${req.query.section_id}'`;
-          get_role = await models.exec_query(get_role);
-          if (get_role.total == 1) {
-            var role = get_role.data[0];
-            _temp_child.menu_role_id = role.menu_role_id;
-            _temp_child.flag_create = role.flag_create;
-            _temp_child.flag_read = role.flag_read;
-            _temp_child.flag_update = role.flag_update;
-            _temp_child.flag_delete = role.flag_delete;
-            _temp_child.flag_print = role.flag_print;
-            _temp_child.flag_download = role.flag_download;
-          }
-          if (req.query.section_id == "super_admin") {
-            _temp_child.flag_create = 1;
-            _temp_child.flag_read = 1;
-            _temp_child.flag_update = 1;
-            _temp_child.flag_delete = 1;
-            _temp_child.flag_print = 1;
-            _temp_child.flag_download = 1;
-          }
-          _new_child.push(_temp_child);
-        }
-      }
-      _temp_parent.menu_child = _new_child;
-      _new_role.push(_temp_parent);
-    }
-
-    _menu.data = _new_role;
-    return response.response(_menu, res);
+    var treeObj = utils.treeify(_menu.data, "menu_id", "menu_parent_id");
+    let _format = await generateMenuRole(treeObj, section_id, show_all);
+    _menu.data = _format;
+    return response.response(_menu, res, false);
   } catch (error) {
     data.error = true;
     data.message = `${error}`;
@@ -98,68 +125,32 @@ exports.get = async function (req, res) {
   }
 };
 
-exports.update = async function (req, res) {
+exports.insertUpdateRoleMenu = async function (req, res) {
   var data = { data: req.body };
   try {
     perf.start();
 
-    const require_data = ["roles"];
-    for (const row of require_data) {
-      if (!req.body[`${row}`]) {
+    let roles = req.body;
+    if (Array.isArray(roles)) {
+      if (roles.length === 0) {
         data.error = true;
-        data.message = `${row} is required!`;
+        data.message = `No data to change`;
         return response.response(data, res);
-      }
-    }
-
-    for (const row of req.body.roles) {
-      if (!row.menu_child_id) {
-        data.error = true;
-        data.message = `menu_child_id is required!`;
-        return response.response(data, res);
-      }
-      if (!row.section_id) {
-        data.error = true;
-        data.message = `section_id is required!`;
-        return response.response(data, res);
-      }
-    }
-    var prepare_query = [];
-    for (const row of req.body.roles) {
-      if (row.menu_role_id) {
-        prepare_query.push(`UPDATE sys_role_section SET
-        flag_create='${row.flag_create}',
-        flag_read='${row.flag_read}',
-        flag_update='${row.flag_update}',
-        flag_delete='${row.flag_delete}',
-        flag_print='${row.flag_print}',
-        flag_download='${row.flag_download}'
-        WHERE menu_role_id='${row.menu_role_id}' `);
       } else {
-        var check = await models.exec_query(
-          `SELECT * FROM sys_role_section WHERE section_id='${row.section_id}' AND menu_child_id='${row.menu_child_id}' LIMIT 1 ;`
-        );
-        if (check.total > 0) {
-          data.error = true;
-          data.message = `Duplicate section_id: ${row.section_id} and menu_child_id: ${row.menu_child_id}, or maybe you forgot to set menu_role_id`;
-          return response.response(data, res);
+        for (const it of roles) {
+          if (!it.menu_id || !it.section_id) {
+            data.error = true;
+            data.message = `Data must include [menu_id,section_id]`;
+            return response.response(data, res);
+          }
         }
-        prepare_query.push(` INSERT INTO sys_role_section 
-        (section_id,menu_child_id,flag_create,flag_read,flag_update,flag_delete,flag_print,flag_download) 
-        VALUES 
-        ('${row.section_id}','${row.menu_child_id}','${row.flag_create}','${row.flag_read}','${row.flag_update}','${row.flag_delete}','${row.flag_print}','${row.flag_download}')`);
       }
     }
-    if (prepare_query.length > 0) {
-      console.log(prepare_query[0]);
-      for (const query of prepare_query) {
-        var _res = await models.exec_query(query);
-      }
-      return response.response(_res, res);
-    }
-    data.error = true;
-    data.message = `No data to change`;
-    return response.response(data, res);
+    let query = await generateQueryMenuRole(roles);
+    query = query.join("");
+    let result = await models.exec_query(query);
+
+    return response.response(result, res);
   } catch (error) {
     data.error = true;
     data.message = `${error}`;

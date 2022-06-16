@@ -122,7 +122,6 @@ exports.delete = async function (req, res) {
       }
     }
     // LINE WAJIB DIBAWA
-    console.log(req.body);
     var _res = await models.delete_query({
       data: req.body,
       table: "user",

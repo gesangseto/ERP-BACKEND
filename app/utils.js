@@ -11,6 +11,31 @@ async function nestedData({ data = [], unique = null }) {
   return reformat_obj;
 }
 
+function treeify(list, idAttr, parentAttr, childrenAttr) {
+  if (!idAttr) idAttr = "id";
+  if (!parentAttr) parentAttr = "parent";
+  if (!childrenAttr) childrenAttr = "children";
+
+  var treeList = [];
+  var lookup = {};
+  list.forEach(function (obj) {
+    lookup[obj[idAttr]] = obj;
+    obj[childrenAttr] = [];
+  });
+  list.forEach(function (obj) {
+    if (obj[parentAttr] != null) {
+      if (lookup[obj[parentAttr]] !== undefined) {
+        lookup[obj[parentAttr]][childrenAttr].push(obj);
+      } else {
+        //console.log('Missing Parent Data: ' + obj[parentAttr]);
+        treeList.push(obj);
+      }
+    } else {
+      treeList.push(obj);
+    }
+  });
+  return treeList;
+}
 async function encrypt({ string = null }) {
   try {
     const crypto = require("crypto");
@@ -96,4 +121,5 @@ module.exports = {
   encrypt,
   super_menu,
   isInt,
+  treeify,
 };

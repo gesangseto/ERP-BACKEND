@@ -6,11 +6,6 @@ const dotenv = require("dotenv");
 dotenv.config(); //- MYSQL Module
 
 async function check_token(req, res) {
-  let request = {
-    path: req.originalUrl,
-    body: req.body,
-  };
-  console.log(`req : ${JSON.stringify(request)}`);
   var data = { data: req.body, error: null, message: null };
   try {
     let time_now = moment().format("YMMDHHmmss");

@@ -7,28 +7,13 @@ module.exports = function (app) {
   var audit_log = require("./controller/audit_log");
   app.route("/api/audit/log").get(audit_log.get);
 
-  var menu = require("./controller/menu");
-  app.route("/api/menu/user").get(menu.user_menu);
-
   var sys_configuration = require("./controller/sys_configuration");
   app.route("/api/configuration").get(sys_configuration.get);
   app.route("/api/configuration").post(sys_configuration.update);
 
-  var sys_menu_parent = require("./controller/sys_menu_parent");
-  app.route("/api/menu/parent").get(sys_menu_parent.get);
-  app.route("/api/menu/parent").put(sys_menu_parent.insert);
-  app.route("/api/menu/parent").post(sys_menu_parent.update);
-  app.route("/api/menu/parent").delete(sys_menu_parent.delete);
-
-  var sys_menu_child = require("./controller/sys_menu_child");
-  app.route("/api/menu/child").get(sys_menu_child.get);
-  app.route("/api/menu/child").put(sys_menu_child.insert);
-  app.route("/api/menu/child").post(sys_menu_child.update);
-  app.route("/api/menu/child").delete(sys_menu_child.delete);
-
   var sys_role_section = require("./controller/sys_role_section");
-  app.route("/api/role/section").get(sys_role_section.get);
-  app.route("/api/role/section").post(sys_role_section.update);
+  app.route("/api/role/section").get(sys_role_section.getRoleMenu);
+  app.route("/api/role/section").post(sys_role_section.insertUpdateRoleMenu);
 
   var user_department = require("./controller/user_department");
   app.route("/api/master/user_department").get(user_department.get);

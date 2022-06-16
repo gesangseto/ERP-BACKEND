@@ -35,7 +35,8 @@ async function get_configuration({ property = null }) {
 }
 
 async function generate_query_insert({ table, values }) {
-  let get_structure = `DESCRIBE ${table};`;
+  let get_structure = `select column_name, data_type, character_maximum_length, column_default, is_nullable
+  from INFORMATION_SCHEMA.COLUMNS where table_name = '${table}';`;
   get_structure = await exec_query(get_structure);
   let column = "";
   let datas = "";
@@ -43,9 +44,9 @@ async function generate_query_insert({ table, values }) {
   if (typeof values === "object" && values !== null) {
     for (const key_v in values) {
       for (const it of get_structure.data) {
-        let key = it.Field;
+        let key = it.column_name;
         if (key_v === key) {
-          if (values[key_v]) {
+          if (values[key_v] || values[key_v] == 0) {
             column += ` ${key_v},`;
             datas += ` '${values[key_v]}',`;
           }
@@ -60,15 +61,16 @@ async function generate_query_insert({ table, values }) {
 }
 
 async function generate_query_update({ table, values, key }) {
-  let get_structure = `DESCRIBE ${table};`;
+  let get_structure = `select column_name, data_type, character_maximum_length, column_default, is_nullable
+  from INFORMATION_SCHEMA.COLUMNS where table_name = '${table}';`;
   get_structure = await exec_query(get_structure);
   let column = "";
   let query = `UPDATE ${table} SET`;
   if (typeof values === "object" && values !== null) {
     for (const key_v in values) {
       for (const itm of get_structure.data) {
-        if (key_v === itm.Field) {
-          if (values[key_v]) {
+        if (key_v === itm.column_name) {
+          if (values[key_v] || values[key_v] == 0) {
             column += ` ${key_v}= '${values[key_v]}',`;
           }
         }
@@ -200,7 +202,6 @@ async function insert_query({ data, key, table }) {
         _data.message = err.message || "Oops, something wrong";
         return resolve(_data);
       }
-      console.log(rows);
       _data.data = rows;
       _data.grand_total = rows.length;
       return resolve(_data);
