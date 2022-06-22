@@ -22,8 +22,8 @@ exports.get = async function (req, res) {
     var $query = `
     SELECT *,a.status AS status
     FROM "user" AS a 
-    LEFT JOIN user_section AS b ON a.section_id = b.section_id
-    Left JOIN user_department AS c ON b.department_id = c.department_id
+    LEFT JOIN user_section AS b ON a.user_section_id = b.user_section_id
+    Left JOIN user_department AS c ON b.user_department_id = c.user_department_id
     WHERE a.flag_delete='0' `;
     $query = await models.filter_query($query, req.query);
     const check = await models.get_query($query);
@@ -47,7 +47,7 @@ exports.insert = async function (req, res) {
       "user_name",
       "user_email",
       "user_password",
-      "section_id",
+      "user_section_id",
     ];
     for (const row of require_data) {
       if (!req.body[`${row}`]) {

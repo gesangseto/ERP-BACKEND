@@ -27,7 +27,7 @@ const generateMenuRole = async (array, section_id, show_all) => {
       let _ch = await generateMenuRole(_data.children, section_id, show_all);
       _data.children = _ch;
     } else {
-      let get_role = `SELECT * FROM sys_role_section WHERE menu_id='${_data.menu_id}' AND section_id='${section_id}' LIMIT 1`;
+      let get_role = `SELECT * FROM sys_role_section WHERE menu_id='${_data.menu_id}' AND user_section_id='${section_id}' LIMIT 1`;
       get_role = await models.exec_query(get_role);
       if (get_role.total == 1 || SA) {
         var role = get_role.data[0];
@@ -94,7 +94,7 @@ exports.getRoleMenu = async function (req, res) {
   try {
     perf.start();
 
-    const require_data = ["section_id"];
+    const require_data = ["user_section_id"];
     for (const row of require_data) {
       if (!req.query[`${row}`]) {
         data.error = true;
@@ -112,7 +112,7 @@ exports.getRoleMenu = async function (req, res) {
     }
 
     let show_all = req.query.show_all;
-    let section_id = req.query.section_id;
+    let section_id = req.query.user_section_id;
 
     var treeObj = utils.treeify(_menu.data, "menu_id", "menu_parent_id");
     let _format = await generateMenuRole(treeObj, section_id, show_all);

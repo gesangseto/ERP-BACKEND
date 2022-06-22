@@ -34,8 +34,12 @@ module.exports = function (app) {
   app.route("/api/master/user").delete(user.delete);
 
   var approval = require("./controller/approval");
-  app.route("/api/master/approval").get(approval.get);
-  app.route("/api/master/approval").put(approval.insert);
-  app.route("/api/master/approval").post(approval.update);
-  app.route("/api/master/approval").delete(approval.delete);
+  app.route("/api/approval/main-approval").get(approval.get);
+  app.route("/api/approval/main-approval").put(approval.insert);
+  app.route("/api/approval/main-approval").post(approval.update);
+  app.route("/api/approval/main-approval").delete(approval.delete);
+
+  var approval_flow = require("./controller/approval_flow");
+  app.route("/api/approval/flow-approval").get(approval_flow.get);
+  app.route("/api/approval/flow-approval").post(approval_flow.update);
 };

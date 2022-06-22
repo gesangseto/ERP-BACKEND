@@ -1,6 +1,6 @@
 const Pool = require("pg").Pool;
 const moment = require("moment");
-const { isInt } = require("./utils");
+const { isInt, getFirstWord } = require("./utils");
 
 var db_config = {
   host: process.env.DB_HOST,
@@ -46,16 +46,22 @@ async function generate_query_insert({ table, values }) {
       for (const it of get_structure.data) {
         let key = it.column_name;
         if (key_v === key) {
-          if (values[key_v] || values[key_v] == 0) {
+          if (
+            (values[key_v] || values[key_v] == 0) &&
+            values[key_v] != "lastval()"
+          ) {
             column += ` ${key_v},`;
             datas += ` '${values[key_v]}',`;
+          } else if (values[key_v] == "lastval()") {
+            column += ` ${key_v},`;
+            datas += ` ${values[key_v]},`;
           }
         }
       }
     }
     column = ` (${column.substring(0, column.length - 1)}) `;
     datas = ` (${datas.substring(0, datas.length - 1)}) `;
-    query += ` ${column} VALUES ${datas} ;`;
+    query += ` ${column} VALUES ${datas} ;\n`;
   }
   return query;
 }
@@ -77,7 +83,7 @@ async function generate_query_update({ table, values, key }) {
       }
     }
     column = ` ${column.substring(0, column.length - 1)}`;
-    query += ` ${column} WHERE ${key} = '${values[key]}'; `;
+    query += ` ${column} WHERE ${key} = '${values[key]}';\n `;
   }
   return query;
 }
@@ -94,7 +100,7 @@ async function exec_query(query_sql) {
           return resolve(_data);
         }
         _data.error = true;
-        _data.message = err.message || "Oops, something wrong";
+        _data.message = `EXEC_QUERY: ${err.message}` || "Oops, something wrong";
         return resolve(_data);
       }
       _data.data = rows.rows;
@@ -105,8 +111,9 @@ async function exec_query(query_sql) {
   );
 }
 
-async function get_query(query_sql) {
+async function get_query(query_sql, generate_approval = true) {
   let _data = JSON.parse(JSON.stringify(data_set));
+  // Generate COUNT
   var _where = query_sql.split("FROM") || query_sql.split("from");
   _where = _where[1].split("LIMIT") || _where[1].split("limit");
   var count = `SELECT COUNT(*) AS total FROM ${_where[0]}`;
@@ -116,8 +123,9 @@ async function get_query(query_sql) {
     _data.message = count.message;
     return _data;
   }
-  _data.grand_total = count.grand_total;
-  return await new Promise((resolve) =>
+  let table = getFirstWord(_where[0]);
+
+  let _data_db = await new Promise((resolve) =>
     pool.query(query_sql, function (err, rows) {
       if (err) {
         if (err.code == 42703) {
@@ -127,7 +135,7 @@ async function get_query(query_sql) {
           return resolve(_data);
         }
         _data.error = true;
-        _data.message = err.message || "Oops, something wrong";
+        _data.message = `GET_QUERY: ${err.message}` || "Oops, something wrong";
         return resolve(_data);
       }
       _data.data = rows.rows;
@@ -135,6 +143,17 @@ async function get_query(query_sql) {
       return resolve(_data);
     })
   );
+  if (!generate_approval) {
+    return _data;
+  }
+  _res = [];
+  for (const it of _data_db.data) {
+    let approval = await getApprovalFlow(table, it[`${table}_id`]);
+    it.approval = approval;
+    _res.push(it);
+  }
+  _data.data = _res;
+  return _data;
 }
 
 async function insert_query({ data, key, table }) {
@@ -194,12 +213,18 @@ async function insert_query({ data, key, table }) {
   key = key.toString();
   val = "'" + val.join("','") + "'";
   dataArr = dataArr.join(",");
-  var query_sql = `INSERT INTO "${table}" (${key}) VALUES (${val})`;
+  var query_sql = `INSERT INTO "${table}" (${key}) VALUES (${val}); \n`;
+
+  let check_approval = await getApproval(table);
+  if (check_approval) {
+    query_sql += await generateInsertApproval(check_approval);
+  }
   return await new Promise((resolve) =>
     pool.query(query_sql, function (err, rows) {
       if (err) {
         _data.error = true;
-        _data.message = err.message || "Oops, something wrong";
+        _data.message =
+          `INSERT_QUERY: ${err.message}` || "Oops, something wrong";
         return resolve(_data);
       }
       _data.data = rows;
@@ -255,6 +280,17 @@ async function update_query({ data, key, table }) {
   }
   dataArr = dataArr.join(",");
   var query_sql = `UPDATE "${table}" SET ${dataArr} WHERE ${key}='${data[key]}'`;
+  let _onApproval = await isOnApproval(table, data[key]);
+  if (_onApproval) {
+    if (_onApproval.approval_status != 11) {
+      let status = _onApproval.approval_status;
+      _data.error = true;
+      _data.message = `Cannot edit data, Approval status is ${
+        status == 9 ? "Rejected" : "Pending"
+      }`;
+      return _data;
+    }
+  }
   return await new Promise((resolve) =>
     pool.query(query_sql, function (err, rows) {
       if (err) {
@@ -298,7 +334,6 @@ async function delete_query({
   } else {
     query_sql = `UPDATE ${table} SET flag_delete='1' WHERE ${key}='${data[key]}'`;
   }
-  console.log(query_sql);
   return await new Promise((resolve) =>
     pool.query(query_sql, function (err, rows) {
       if (err) {
@@ -338,6 +373,70 @@ async function filter_query(query, request = Object, exclude = Array) {
   }
 }
 
+async function checkIsTableExist(tableName) {
+  let query = `SELECT table_name
+  FROM information_schema.tables
+  WHERE table_schema='public'
+  AND table_type='BASE TABLE'
+  AND table_name='${tableName}' LIMIT 1;`;
+  query = await exec_query(query);
+  if (!query.error && query.total == 1) {
+    return "EXIST";
+  }
+  return false;
+}
+
+async function isOnApproval(ref_table, ref_id) {
+  let query = `SELECT * FROM approval_flow WHERE 1+1=2`;
+  if (ref_table && ref_id) {
+    query += ` AND approval_ref_table = '${ref_table}'  AND approval_ref_id = '${ref_id}'`;
+  } else {
+    return false;
+  }
+  query = await exec_query(query);
+  if (query.error || query.data.length == 0) {
+    return false;
+  }
+  return query.data[0];
+}
+
+async function getApproval(ref_table) {
+  let query = `SELECT * FROM approval WHERE approval_ref_table = '${ref_table}' LIMIT 1`;
+  query = await exec_query(query);
+  if (query.error || query.data.length == 0) {
+    return null;
+  } else {
+    return query.data[0];
+  }
+}
+
+async function getApprovalFlow(ref_table, ref_id) {
+  let query = `SELECT a.*, b.user_name as approval_user_name, b.user_email as approval_user_email
+  FROM approval_flow a
+  LEFT JOIN "user" b ON a.approval_current_user_id = b.user_id
+  WHERE approval_ref_table = '${ref_table}' AND  approval_ref_id = '${ref_id}' 
+  --AND (approval_status ='10')
+  LIMIT 1;`;
+  query = await exec_query(query);
+  if (query.error || query.data.length == 0) {
+    return null;
+  } else {
+    return query.data[0];
+  }
+}
+
+async function generateInsertApproval(obj = Object) {
+  delete obj.created_at;
+  delete obj.updated_at;
+  delete obj.updated_by;
+  obj.approval_current_user_id = obj.approval_user_id_1;
+  obj.approval_ref_id = "lastval()";
+  return await generate_query_insert({
+    table: "approval_flow",
+    values: obj,
+  });
+}
+
 module.exports = {
   get_configuration,
   exec_query,
@@ -348,4 +447,5 @@ module.exports = {
   generate_query_update,
   generate_query_insert,
   filter_query,
+  checkIsTableExist,
 };

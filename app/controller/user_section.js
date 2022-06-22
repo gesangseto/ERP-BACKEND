@@ -23,7 +23,7 @@ exports.get = async function (req, res) {
     * ,
     a.status AS status
     FROM user_section AS a 
-    LEFT JOIN user_department AS b ON a.department_id = b.department_id
+    LEFT JOIN user_department AS b ON a.user_department_id = b.user_department_id
     WHERE 1+1=2 `;
     for (const k in req.query) {
       if (k != "page" && k != "limit") {
@@ -53,7 +53,11 @@ exports.insert = async function (req, res) {
     perf.start();
     req.body.created_by = req.headers.user_id;
 
-    const require_data = ["section_name", "section_code", "department_id"];
+    const require_data = [
+      "user_section_name",
+      "user_section_code",
+      "user_department_id",
+    ];
     for (const row of require_data) {
       if (!req.body[`${row}`]) {
         data.error = true;
@@ -78,7 +82,7 @@ exports.update = async function (req, res) {
   try {
     perf.start();
 
-    const require_data = ["section_id"];
+    const require_data = ["user_section_id"];
     for (const row of require_data) {
       if (!req.body[`${row}`]) {
         data.error = true;
@@ -88,7 +92,7 @@ exports.update = async function (req, res) {
     }
     var _res = await models.update_query({
       data: req.body,
-      key: "section_id",
+      key: "user_section_id",
       table: "user_section",
     });
     return response.response(_res, res);
@@ -104,7 +108,7 @@ exports.delete = async function (req, res) {
     perf.start();
 
     var data = { data: req.body };
-    const require_data = ["section_id"];
+    const require_data = ["user_section_id"];
     for (const row of require_data) {
       if (!req.body[`${row}`]) {
         data.error = true;
@@ -115,7 +119,7 @@ exports.delete = async function (req, res) {
     // LINE WAJIB DIBAWA
     var _res = await models.delete_query({
       data: req.body,
-      key: "section_id",
+      key: "user_section_id",
       table: "user_section",
     });
     return response.response(_res, res);

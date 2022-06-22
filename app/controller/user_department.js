@@ -54,7 +54,7 @@ exports.insert = async function (req, res) {
   try {
     perf.start();
 
-    const require_data = ["department_name", "department_code"];
+    const require_data = ["user_department_name", "user_department_code"];
     for (const row of require_data) {
       if (!req.body[`${row}`]) {
         data.error = true;
@@ -84,7 +84,7 @@ exports.update = async function (req, res) {
   try {
     perf.start();
 
-    const require_data = ["department_id"];
+    const require_data = ["user_department_id"];
     for (const row of require_data) {
       if (!req.body[`${row}`]) {
         data.error = true;
@@ -95,7 +95,7 @@ exports.update = async function (req, res) {
 
     var _res = await models.update_query({
       data: req.body,
-      key: "department_id",
+      key: "user_department_id",
       table: "user_department",
     });
     if (_res.error) {
@@ -114,7 +114,7 @@ exports.delete = async function (req, res) {
   try {
     perf.start();
 
-    const require_data = ["department_id"];
+    const require_data = ["user_department_id"];
     for (const row of require_data) {
       if (!req.body[`${row}`]) {
         data.error = true;
@@ -125,7 +125,7 @@ exports.delete = async function (req, res) {
 
     var _res = await models.delete_query({
       data: req.body,
-      key: "department_id",
+      key: "user_department_id",
       table: "user_department",
     });
     return response.response(_res, res);

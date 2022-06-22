@@ -11,6 +11,19 @@ async function nestedData({ data = [], unique = null }) {
   return reformat_obj;
 }
 
+function hasDuplicatesArray(array) {
+  array = array.filter((n) => n);
+  return new Set(array).size !== array.length;
+}
+
+function getFirstWord(string = String) {
+  string = string.replace(/['"]+/g, "");
+  string = string.split(" ");
+  let str = string;
+  str = str.filter((n) => n);
+  return str[0];
+}
+
 function treeify(list, idAttr, parentAttr, childrenAttr) {
   if (!idAttr) idAttr = "id";
   if (!parentAttr) parentAttr = "parent";
@@ -122,4 +135,6 @@ module.exports = {
   super_menu,
   isInt,
   treeify,
+  hasDuplicatesArray,
+  getFirstWord,
 };
