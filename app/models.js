@@ -282,11 +282,11 @@ async function update_query({ data, key, table }) {
   var query_sql = `UPDATE "${table}" SET ${dataArr} WHERE ${key}='${data[key]}'`;
   let _onApproval = await isOnApproval(table, data[key]);
   if (_onApproval) {
-    if (_onApproval.approval_status != 11) {
-      let status = _onApproval.approval_status;
+    if (!_onApproval.is_approve) {
+      let status = _onApproval.is_approve;
       _data.error = true;
       _data.message = `Cannot edit data, Approval status is ${
-        status == 9 ? "Rejected" : "Pending"
+        status == false ? "Rejected" : "Pending"
       }`;
       return _data;
     }
@@ -415,7 +415,7 @@ async function getApprovalFlow(ref_table, ref_id) {
   FROM approval_flow a
   LEFT JOIN "user" b ON a.approval_current_user_id = b.user_id
   WHERE approval_ref_table = '${ref_table}' AND  approval_ref_id = '${ref_id}' 
-  --AND (approval_status ='10')
+  --AND is_approve IS NULL
   LIMIT 1;`;
   query = await exec_query(query);
   if (query.error || query.data.length == 0) {

@@ -5,7 +5,7 @@
 -- Dumped from database version 12.10
 -- Dumped by pg_dump version 13.3
 
--- Started on 2022-06-22 16:33:54
+-- Started on 2022-06-27 09:28:59
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -29,7 +29,7 @@ CREATE SCHEMA public;
 ALTER SCHEMA public OWNER TO postgres;
 
 --
--- TOC entry 2981 (class 0 OID 0)
+-- TOC entry 2982 (class 0 OID 0)
 -- Dependencies: 3
 -- Name: SCHEMA public; Type: COMMENT; Schema: -; Owner: postgres
 --
@@ -38,7 +38,7 @@ COMMENT ON SCHEMA public IS 'standard public schema';
 
 
 --
--- TOC entry 234 (class 1255 OID 28695)
+-- TOC entry 233 (class 1255 OID 28695)
 -- Name: make_serial(text, text, text); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -111,7 +111,7 @@ CREATE SEQUENCE public.approval_approval_id_seq
 ALTER TABLE public.approval_approval_id_seq OWNER TO postgres;
 
 --
--- TOC entry 2982 (class 0 OID 0)
+-- TOC entry 2983 (class 0 OID 0)
 -- Dependencies: 217
 -- Name: approval_approval_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -130,7 +130,6 @@ CREATE TABLE public.approval_flow (
     updated_at timestamp without time zone,
     updated_by integer,
     flag_delete integer DEFAULT 0,
-    approval_status integer DEFAULT 10,
     approval_ref_table character varying NOT NULL,
     approval_desc character varying,
     approval_user_id_1 integer NOT NULL,
@@ -141,14 +140,15 @@ CREATE TABLE public.approval_flow (
     approval_ref_id integer NOT NULL,
     rejected_note text,
     approval_current_user_id integer NOT NULL,
-    approval_flow_id integer NOT NULL
+    approval_flow_id integer NOT NULL,
+    is_approve boolean
 );
 
 
 ALTER TABLE public.approval_flow OWNER TO postgres;
 
 --
--- TOC entry 221 (class 1259 OID 28875)
+-- TOC entry 220 (class 1259 OID 28875)
 -- Name: approval_flow_approval_flow_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -164,8 +164,8 @@ CREATE SEQUENCE public.approval_flow_approval_flow_id_seq
 ALTER TABLE public.approval_flow_approval_flow_id_seq OWNER TO postgres;
 
 --
--- TOC entry 2983 (class 0 OID 0)
--- Dependencies: 221
+-- TOC entry 2984 (class 0 OID 0)
+-- Dependencies: 220
 -- Name: approval_flow_approval_flow_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -315,7 +315,7 @@ CREATE SEQUENCE public.sys_role_section_role_section_id_seq
 ALTER TABLE public.sys_role_section_role_section_id_seq OWNER TO postgres;
 
 --
--- TOC entry 2984 (class 0 OID 0)
+-- TOC entry 2985 (class 0 OID 0)
 -- Dependencies: 216
 -- Name: sys_role_section_role_section_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -422,7 +422,7 @@ CREATE SEQUENCE public.user_department_department_id_seq
 ALTER TABLE public.user_department_department_id_seq OWNER TO postgres;
 
 --
--- TOC entry 2985 (class 0 OID 0)
+-- TOC entry 2986 (class 0 OID 0)
 -- Dependencies: 212
 -- Name: user_department_department_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -467,7 +467,7 @@ CREATE SEQUENCE public.user_section_section_id_seq
 ALTER TABLE public.user_section_section_id_seq OWNER TO postgres;
 
 --
--- TOC entry 2986 (class 0 OID 0)
+-- TOC entry 2987 (class 0 OID 0)
 -- Dependencies: 213
 -- Name: user_section_section_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -491,7 +491,7 @@ CREATE SEQUENCE public.user_user_id_seq
 ALTER TABLE public.user_user_id_seq OWNER TO postgres;
 
 --
--- TOC entry 2987 (class 0 OID 0)
+-- TOC entry 2988 (class 0 OID 0)
 -- Dependencies: 214
 -- Name: user_user_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -500,37 +500,7 @@ ALTER SEQUENCE public.user_user_id_seq OWNED BY public."user".user_id;
 
 
 --
--- TOC entry 220 (class 1259 OID 28869)
--- Name: vw_approval_flow; Type: VIEW; Schema: public; Owner: postgres
---
-
-CREATE VIEW public.vw_approval_flow AS
- SELECT a.created_at,
-    a.created_by,
-    a.updated_at,
-    a.updated_by,
-    a.flag_delete,
-    a.approval_status,
-    a.approval_ref_table,
-    a.approval_desc,
-    a.approval_user_id_1,
-    a.approval_user_id_2,
-    a.approval_user_id_3,
-    a.approval_user_id_4,
-    a.approval_user_id_5,
-    a.approval_ref_id,
-    a.rejected_note,
-    a.approval_current_user_id,
-    b.user_name,
-    b.user_email
-   FROM (public.approval_flow a
-     LEFT JOIN public."user" b ON ((a.approval_current_user_id = b.user_id)));
-
-
-ALTER TABLE public.vw_approval_flow OWNER TO postgres;
-
---
--- TOC entry 2782 (class 2604 OID 28776)
+-- TOC entry 2778 (class 2604 OID 28776)
 -- Name: approval approval_id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -538,7 +508,7 @@ ALTER TABLE ONLY public.approval ALTER COLUMN approval_id SET DEFAULT nextval('p
 
 
 --
--- TOC entry 2785 (class 2604 OID 28877)
+-- TOC entry 2780 (class 2604 OID 28877)
 -- Name: approval_flow approval_flow_id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -546,7 +516,7 @@ ALTER TABLE ONLY public.approval_flow ALTER COLUMN approval_flow_id SET DEFAULT 
 
 
 --
--- TOC entry 2776 (class 2604 OID 28763)
+-- TOC entry 2772 (class 2604 OID 28763)
 -- Name: sys_role_section sys_role_section_id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -554,7 +524,7 @@ ALTER TABLE ONLY public.sys_role_section ALTER COLUMN sys_role_section_id SET DE
 
 
 --
--- TOC entry 2758 (class 2604 OID 28716)
+-- TOC entry 2754 (class 2604 OID 28716)
 -- Name: user user_id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -562,7 +532,7 @@ ALTER TABLE ONLY public."user" ALTER COLUMN user_id SET DEFAULT nextval('public.
 
 
 --
--- TOC entry 2765 (class 2604 OID 28704)
+-- TOC entry 2761 (class 2604 OID 28704)
 -- Name: user_department user_department_id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -570,7 +540,7 @@ ALTER TABLE ONLY public.user_department ALTER COLUMN user_department_id SET DEFA
 
 
 --
--- TOC entry 2768 (class 2604 OID 28707)
+-- TOC entry 2764 (class 2604 OID 28707)
 -- Name: user_section user_section_id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -578,7 +548,7 @@ ALTER TABLE ONLY public.user_section ALTER COLUMN user_section_id SET DEFAULT ne
 
 
 --
--- TOC entry 2973 (class 0 OID 28771)
+-- TOC entry 2974 (class 0 OID 28771)
 -- Dependencies: 218
 -- Data for Name: approval; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -589,20 +559,20 @@ COPY public.approval (created_at, created_by, updated_at, updated_by, flag_delet
 
 
 --
--- TOC entry 2974 (class 0 OID 28858)
+-- TOC entry 2975 (class 0 OID 28858)
 -- Dependencies: 219
 -- Data for Name: approval_flow; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.approval_flow (created_at, created_by, updated_at, updated_by, flag_delete, approval_status, approval_ref_table, approval_desc, approval_user_id_1, approval_user_id_2, approval_user_id_3, approval_user_id_4, approval_user_id_5, approval_ref_id, rejected_note, approval_current_user_id, approval_flow_id) FROM stdin;
-\N	0	\N	\N	0	10	user_department	Department	1	\N	\N	\N	\N	7	\N	1	2
-\N	0	\N	\N	0	10	user_department	Department	1	\N	\N	\N	\N	10	\N	1	3
-\N	0	\N	\N	0	9	user_department	Department	1	\N	\N	\N	\N	9	\N	1	1
+COPY public.approval_flow (created_at, created_by, updated_at, updated_by, flag_delete, approval_ref_table, approval_desc, approval_user_id_1, approval_user_id_2, approval_user_id_3, approval_user_id_4, approval_user_id_5, approval_ref_id, rejected_note, approval_current_user_id, approval_flow_id, is_approve) FROM stdin;
+\N	0	\N	\N	0	user_department	Department	1	\N	\N	\N	\N	10	\N	1	3	\N
+\N	0	\N	\N	0	user_department	Department	1	\N	\N	\N	\N	9	\N	1	1	\N
+\N	0	2022-06-27 09:19:36	0	0	user_department	Department	1	\N	\N	\N	\N	7	Test 1 2 3	1	2	f
 \.
 
 
 --
--- TOC entry 2963 (class 0 OID 28627)
+-- TOC entry 2964 (class 0 OID 28627)
 -- Dependencies: 208
 -- Data for Name: audit_log; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -612,7 +582,7 @@ COPY public.audit_log (created_at, created_by, updated_at, updated_by, flag_dele
 
 
 --
--- TOC entry 2959 (class 0 OID 28585)
+-- TOC entry 2960 (class 0 OID 28585)
 -- Dependencies: 204
 -- Data for Name: base_table; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -622,7 +592,7 @@ COPY public.base_table (created_at, created_by, updated_at, updated_by, flag_del
 
 
 --
--- TOC entry 2964 (class 0 OID 28640)
+-- TOC entry 2965 (class 0 OID 28640)
 -- Dependencies: 209
 -- Data for Name: sys_configuration; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -633,7 +603,7 @@ COPY public.sys_configuration (created_at, created_by, updated_at, updated_by, f
 
 
 --
--- TOC entry 2970 (class 0 OID 28744)
+-- TOC entry 2971 (class 0 OID 28744)
 -- Dependencies: 215
 -- Data for Name: sys_menu; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -648,7 +618,7 @@ COPY public.sys_menu (created_at, created_by, updated_at, updated_by, status, sy
 
 
 --
--- TOC entry 2965 (class 0 OID 28669)
+-- TOC entry 2966 (class 0 OID 28669)
 -- Dependencies: 210
 -- Data for Name: sys_role_section; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -662,7 +632,7 @@ COPY public.sys_role_section (created_at, created_by, updated_at, updated_by, st
 
 
 --
--- TOC entry 2966 (class 0 OID 28679)
+-- TOC entry 2967 (class 0 OID 28679)
 -- Dependencies: 211
 -- Data for Name: sys_status_information; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -677,7 +647,7 @@ COPY public.sys_status_information (created_at, created_by, updated_at, updated_
 
 
 --
--- TOC entry 2958 (class 0 OID 28577)
+-- TOC entry 2959 (class 0 OID 28577)
 -- Dependencies: 203
 -- Data for Name: user; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -688,7 +658,7 @@ COPY public."user" (user_id, user_name, user_email, user_password, user_section_
 
 
 --
--- TOC entry 2960 (class 0 OID 28588)
+-- TOC entry 2961 (class 0 OID 28588)
 -- Dependencies: 205
 -- Data for Name: user_authentication; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -698,7 +668,7 @@ COPY public.user_authentication (created_at, created_by, updated_at, updated_by,
 
 
 --
--- TOC entry 2961 (class 0 OID 28601)
+-- TOC entry 2962 (class 0 OID 28601)
 -- Dependencies: 206
 -- Data for Name: user_department; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -712,7 +682,7 @@ COPY public.user_department (created_at, created_by, updated_at, updated_by, fla
 
 
 --
--- TOC entry 2962 (class 0 OID 28609)
+-- TOC entry 2963 (class 0 OID 28609)
 -- Dependencies: 207
 -- Data for Name: user_section; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -723,17 +693,17 @@ COPY public.user_section (created_at, created_by, updated_at, updated_by, flag_d
 
 
 --
--- TOC entry 2988 (class 0 OID 0)
+-- TOC entry 2989 (class 0 OID 0)
 -- Dependencies: 217
 -- Name: approval_approval_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.approval_approval_id_seq', 19, true);
+SELECT pg_catalog.setval('public.approval_approval_id_seq', 20, true);
 
 
 --
--- TOC entry 2989 (class 0 OID 0)
--- Dependencies: 221
+-- TOC entry 2990 (class 0 OID 0)
+-- Dependencies: 220
 -- Name: approval_flow_approval_flow_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
@@ -741,7 +711,7 @@ SELECT pg_catalog.setval('public.approval_flow_approval_flow_id_seq', 3, true);
 
 
 --
--- TOC entry 2990 (class 0 OID 0)
+-- TOC entry 2991 (class 0 OID 0)
 -- Dependencies: 202
 -- Name: approval_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -750,7 +720,7 @@ SELECT pg_catalog.setval('public.approval_seq', 1, false);
 
 
 --
--- TOC entry 2991 (class 0 OID 0)
+-- TOC entry 2992 (class 0 OID 0)
 -- Dependencies: 216
 -- Name: sys_role_section_role_section_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -759,7 +729,7 @@ SELECT pg_catalog.setval('public.sys_role_section_role_section_id_seq', 6, true)
 
 
 --
--- TOC entry 2992 (class 0 OID 0)
+-- TOC entry 2993 (class 0 OID 0)
 -- Dependencies: 212
 -- Name: user_department_department_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -768,7 +738,7 @@ SELECT pg_catalog.setval('public.user_department_department_id_seq', 10, true);
 
 
 --
--- TOC entry 2993 (class 0 OID 0)
+-- TOC entry 2994 (class 0 OID 0)
 -- Dependencies: 213
 -- Name: user_section_section_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -777,7 +747,7 @@ SELECT pg_catalog.setval('public.user_section_section_id_seq', 5, true);
 
 
 --
--- TOC entry 2994 (class 0 OID 0)
+-- TOC entry 2995 (class 0 OID 0)
 -- Dependencies: 214
 -- Name: user_user_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -786,7 +756,7 @@ SELECT pg_catalog.setval('public.user_user_id_seq', 20, true);
 
 
 --
--- TOC entry 2815 (class 2606 OID 28781)
+-- TOC entry 2810 (class 2606 OID 28781)
 -- Name: approval Approval Primary Key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -795,7 +765,7 @@ ALTER TABLE ONLY public.approval
 
 
 --
--- TOC entry 2819 (class 2606 OID 28867)
+-- TOC entry 2814 (class 2606 OID 28867)
 -- Name: approval_flow Approval Table - ID; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -804,7 +774,7 @@ ALTER TABLE ONLY public.approval_flow
 
 
 --
--- TOC entry 2791 (class 2606 OID 28595)
+-- TOC entry 2786 (class 2606 OID 28595)
 -- Name: user_authentication Authentication Primary Key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -813,7 +783,7 @@ ALTER TABLE ONLY public.user_authentication
 
 
 --
--- TOC entry 2793 (class 2606 OID 28720)
+-- TOC entry 2788 (class 2606 OID 28720)
 -- Name: user_department Department Code; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -822,7 +792,7 @@ ALTER TABLE ONLY public.user_department
 
 
 --
--- TOC entry 2795 (class 2606 OID 28608)
+-- TOC entry 2790 (class 2606 OID 28608)
 -- Name: user_department Department Primary Key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -831,7 +801,7 @@ ALTER TABLE ONLY public.user_department
 
 
 --
--- TOC entry 2805 (class 2606 OID 28765)
+-- TOC entry 2800 (class 2606 OID 28765)
 -- Name: sys_role_section Menu - Section; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -840,7 +810,7 @@ ALTER TABLE ONLY public.sys_role_section
 
 
 --
--- TOC entry 2807 (class 2606 OID 28760)
+-- TOC entry 2802 (class 2606 OID 28760)
 -- Name: sys_role_section Role Section Primary Key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -849,7 +819,7 @@ ALTER TABLE ONLY public.sys_role_section
 
 
 --
--- TOC entry 2797 (class 2606 OID 28722)
+-- TOC entry 2792 (class 2606 OID 28722)
 -- Name: user_section Section Code; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -858,7 +828,7 @@ ALTER TABLE ONLY public.user_section
 
 
 --
--- TOC entry 2799 (class 2606 OID 28616)
+-- TOC entry 2794 (class 2606 OID 28616)
 -- Name: user_section Section Primary Key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -867,7 +837,7 @@ ALTER TABLE ONLY public.user_section
 
 
 --
--- TOC entry 2809 (class 2606 OID 28768)
+-- TOC entry 2804 (class 2606 OID 28768)
 -- Name: sys_status_information Status; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -876,7 +846,7 @@ ALTER TABLE ONLY public.sys_status_information
 
 
 --
--- TOC entry 2817 (class 2606 OID 28856)
+-- TOC entry 2812 (class 2606 OID 28856)
 -- Name: approval Unique Key Table; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -885,7 +855,7 @@ ALTER TABLE ONLY public.approval
 
 
 --
--- TOC entry 2787 (class 2606 OID 28718)
+-- TOC entry 2782 (class 2606 OID 28718)
 -- Name: user User Email; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -894,7 +864,16 @@ ALTER TABLE ONLY public."user"
 
 
 --
--- TOC entry 2789 (class 2606 OID 28584)
+-- TOC entry 2816 (class 2606 OID 28911)
+-- Name: approval_flow User ID Unique; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.approval_flow
+    ADD CONSTRAINT "User ID Unique" UNIQUE (approval_user_id_1, approval_user_id_2, approval_user_id_3, approval_user_id_4, approval_user_id_5);
+
+
+--
+-- TOC entry 2784 (class 2606 OID 28584)
 -- Name: user User Primary Key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -903,7 +882,7 @@ ALTER TABLE ONLY public."user"
 
 
 --
--- TOC entry 2801 (class 2606 OID 28634)
+-- TOC entry 2796 (class 2606 OID 28634)
 -- Name: audit_log audit_log_pk; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -912,7 +891,7 @@ ALTER TABLE ONLY public.audit_log
 
 
 --
--- TOC entry 2803 (class 2606 OID 28647)
+-- TOC entry 2798 (class 2606 OID 28647)
 -- Name: sys_configuration sys_configuration_pk; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -921,7 +900,7 @@ ALTER TABLE ONLY public.sys_configuration
 
 
 --
--- TOC entry 2813 (class 2606 OID 28753)
+-- TOC entry 2808 (class 2606 OID 28753)
 -- Name: sys_menu sys_menu_child_pk_1; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -930,7 +909,7 @@ ALTER TABLE ONLY public.sys_menu
 
 
 --
--- TOC entry 2811 (class 2606 OID 28686)
+-- TOC entry 2806 (class 2606 OID 28686)
 -- Name: sys_status_information sys_status_information_pk; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -939,7 +918,7 @@ ALTER TABLE ONLY public.sys_status_information
 
 
 --
--- TOC entry 2825 (class 2606 OID 28818)
+-- TOC entry 2822 (class 2606 OID 28818)
 -- Name: approval User Approval 1; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -948,7 +927,7 @@ ALTER TABLE ONLY public.approval
 
 
 --
--- TOC entry 2826 (class 2606 OID 28835)
+-- TOC entry 2823 (class 2606 OID 28835)
 -- Name: approval User Approval 2; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -957,7 +936,7 @@ ALTER TABLE ONLY public.approval
 
 
 --
--- TOC entry 2827 (class 2606 OID 28840)
+-- TOC entry 2824 (class 2606 OID 28840)
 -- Name: approval User Approval 3; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -966,7 +945,7 @@ ALTER TABLE ONLY public.approval
 
 
 --
--- TOC entry 2828 (class 2606 OID 28845)
+-- TOC entry 2825 (class 2606 OID 28845)
 -- Name: approval User Approval 4; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -975,7 +954,7 @@ ALTER TABLE ONLY public.approval
 
 
 --
--- TOC entry 2829 (class 2606 OID 28850)
+-- TOC entry 2826 (class 2606 OID 28850)
 -- Name: approval User Approval 5; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -984,7 +963,52 @@ ALTER TABLE ONLY public.approval
 
 
 --
--- TOC entry 2823 (class 2606 OID 28635)
+-- TOC entry 2827 (class 2606 OID 28885)
+-- Name: approval_flow User ID 1; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.approval_flow
+    ADD CONSTRAINT "User ID 1" FOREIGN KEY (approval_user_id_1) REFERENCES public."user"(user_id);
+
+
+--
+-- TOC entry 2828 (class 2606 OID 28890)
+-- Name: approval_flow User ID 2; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.approval_flow
+    ADD CONSTRAINT "User ID 2" FOREIGN KEY (approval_user_id_2) REFERENCES public."user"(user_id);
+
+
+--
+-- TOC entry 2829 (class 2606 OID 28895)
+-- Name: approval_flow User ID 3; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.approval_flow
+    ADD CONSTRAINT "User ID 3" FOREIGN KEY (approval_user_id_3) REFERENCES public."user"(user_id);
+
+
+--
+-- TOC entry 2830 (class 2606 OID 28900)
+-- Name: approval_flow User ID 4; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.approval_flow
+    ADD CONSTRAINT "User ID 4" FOREIGN KEY (approval_user_id_4) REFERENCES public."user"(user_id);
+
+
+--
+-- TOC entry 2831 (class 2606 OID 28905)
+-- Name: approval_flow User ID 5; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.approval_flow
+    ADD CONSTRAINT "User ID 5" FOREIGN KEY (approval_user_id_5) REFERENCES public."user"(user_id);
+
+
+--
+-- TOC entry 2820 (class 2606 OID 28635)
 -- Name: audit_log audit_log_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -993,7 +1017,7 @@ ALTER TABLE ONLY public.audit_log
 
 
 --
--- TOC entry 2824 (class 2606 OID 28754)
+-- TOC entry 2821 (class 2606 OID 28754)
 -- Name: sys_role_section sys_role_section_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1002,7 +1026,7 @@ ALTER TABLE ONLY public.sys_role_section
 
 
 --
--- TOC entry 2821 (class 2606 OID 28596)
+-- TOC entry 2818 (class 2606 OID 28596)
 -- Name: user_authentication user_authentication_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1011,7 +1035,7 @@ ALTER TABLE ONLY public.user_authentication
 
 
 --
--- TOC entry 2820 (class 2606 OID 28622)
+-- TOC entry 2817 (class 2606 OID 28622)
 -- Name: user user_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1020,7 +1044,7 @@ ALTER TABLE ONLY public."user"
 
 
 --
--- TOC entry 2822 (class 2606 OID 28617)
+-- TOC entry 2819 (class 2606 OID 28617)
 -- Name: user_section user_section_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1028,7 +1052,7 @@ ALTER TABLE ONLY public.user_section
     ADD CONSTRAINT user_section_fk FOREIGN KEY (user_department_id) REFERENCES public.user_department(user_department_id);
 
 
--- Completed on 2022-06-22 16:33:56
+-- Completed on 2022-06-27 09:29:00
 
 --
 -- PostgreSQL database dump complete

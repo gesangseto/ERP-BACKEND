@@ -50,6 +50,7 @@ exports.get = async function (req, res) {
     return response.response(data, res);
   }
 };
+
 exports.update = async function (req, res) {
   var data = { data: req.body };
   try {
@@ -72,8 +73,13 @@ exports.update = async function (req, res) {
       data.message = `is_approve must boolean!`;
       return response.response(data, res);
     }
-
-    let data = await models.exec_query(
+    console.log(req.body);
+    if (req.body.is_approve == false && !req.body.rejected_note) {
+      data.error = true;
+      data.message = `rejected_note is required!`;
+      return response.response(data, res);
+    }
+    data = await models.exec_query(
       `SELECT * FROM approval_flow WHERE approval_flow_id='${req.body.approval_flow_id}' LIMIT 1`
     );
     if (data.error) {
@@ -82,29 +88,18 @@ exports.update = async function (req, res) {
       return response.response(data, res);
     }
     data = data.data[0];
-    let is_approve = req.body.is_approve;
-    let status = 10;
     let current_id = null;
     for (var i = 1; i <= 5; i++) {
       if (data.approval_current_user_id == data[`approval_user_id_${i}`]) {
         current_id = data[`approval_user_id_${i + 1}`] ?? null;
       }
     }
-
-    if (current_id == null) {
-      status = is_approve ? 11 : 9;
-    }
-    let body = {
-      approval_flow_id: req.body.approval_flow_id,
-      approval_current_user_id: current_id,
-      approval_status: status,
-    };
+    req.body.approval_current_user_id = current_id;
     let _update = await models.generate_query_update({
       table: "approval_flow",
-      values: body,
+      values: req.body,
       key: "approval_flow_id",
     });
-
     let _res = await models.exec_query(_update);
     return response.response(_res, res);
   } catch (error) {
