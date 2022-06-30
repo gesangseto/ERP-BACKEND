@@ -1,3 +1,4 @@
+const moment = require("moment");
 async function nestedData({ data = [], unique = null }) {
   var reformat_obj = {};
   for (const element of data) {
@@ -129,6 +130,15 @@ function isInt(value) {
     !isNaN(parseInt(value, 20))
   );
 }
+
+function generateId() {
+  return moment().format("x");
+}
+function percentToFloat(percent) {
+  percent = isInt(percent) ? percent : 100;
+  return parseInt(percent) / 100;
+}
+
 module.exports = {
   nestedData,
   encrypt,
@@ -137,4 +147,6 @@ module.exports = {
   treeify,
   hasDuplicatesArray,
   getFirstWord,
+  generateId,
+  percentToFloat,
 };

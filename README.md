@@ -1,14 +1,69 @@
-# Base Administrator
+====================================================================
+Required Module
+====================================================================
 
-Programming Language : Nodejs - Express
+# Authentication
 
-How to install :
-git clone https://github.com/gesangseto/BASE-ADMINISTRATOR-BE
-npm install
+- Login User
 
-How to running :
+# System
 
-1. Using Node
-   node server.js
-2. Using Pm2
-   pm2 start server.js --name "Your App Name"
+- Configuration
+- Audit
+
+# Administrator
+
+- User Department
+- User Section
+- User
+- Menu Role
+
+# Approval
+
+- Main Approval
+- Flow Approval
+
+# Master
+
+- Supplier
+- Customer
+- Packaging
+- Item
+
+====================================================================
+Module
+====================================================================
+
+# POS
+
+- Inbound Batch
+- Stock
+- Sale
+- Return/Recall
+- Destroy
+- Adjust Stock (By Exp date)
+
+====================================================================
+Incoming Module
+====================================================================
+
+# Warehouse
+
+- Inbound Batch
+- Stock
+- Outbound
+- Return/Recall
+
+# Article Blog
+
+- Tag
+- Article
+- Comment
+
+# HR
+
+- Payroll
+- Leave
+- To Do / Board
+- Document or/and Share
+- Absence

@@ -42,4 +42,40 @@ module.exports = function (app) {
   var approval_flow = require("./controller/approval_flow");
   app.route("/api/approval/flow-approval").get(approval_flow.get);
   app.route("/api/approval/flow-approval").post(approval_flow.update);
+
+  var mst_item = require("./controller/mst_item");
+  app.route("/api/master/item").get(mst_item.get);
+  app.route("/api/master/item").put(mst_item.insert);
+  app.route("/api/master/item").post(mst_item.update);
+  app.route("/api/master/item").delete(mst_item.delete);
+
+  var mst_packaging = require("./controller/mst_packaging");
+  app.route("/api/master/packaging").get(mst_packaging.get);
+  app.route("/api/master/packaging").put(mst_packaging.insert);
+  app.route("/api/master/packaging").post(mst_packaging.update);
+  app.route("/api/master/packaging").delete(mst_packaging.delete);
+
+  var mst_supplier = require("./controller/mst_supplier");
+  app.route("/api/master/supplier").get(mst_supplier.get);
+  app.route("/api/master/supplier").put(mst_supplier.insert);
+  app.route("/api/master/supplier").post(mst_supplier.update);
+  app.route("/api/master/supplier").delete(mst_supplier.delete);
+
+  var mst_customer = require("./controller/mst_customer");
+  app.route("/api/master/customer").get(mst_customer.get);
+  app.route("/api/master/customer").put(mst_customer.insert);
+  app.route("/api/master/customer").post(mst_customer.update);
+  app.route("/api/master/customer").delete(mst_customer.delete);
+
+  var _pos_inbound = require("./controller/POS/inbound");
+  app.route("/api/transaction/pos/inbound").get(_pos_inbound.get);
+  app.route("/api/transaction/pos/inbound").put(_pos_inbound.inbound);
+  app.route("/api/transaction/pos/inbound").post(_pos_inbound.approve);
+
+  var _pos_stock = require("./controller/POS/stock");
+  app.route("/api/transaction/pos/stock").get(_pos_stock.get);
+
+  var _pos_sale = require("./controller/POS/sale");
+  app.route("/api/transaction/pos/sale").get(_pos_sale.get);
+  app.route("/api/transaction/pos/sale").put(_pos_sale.newSale);
 };

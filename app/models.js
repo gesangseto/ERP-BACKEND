@@ -46,6 +46,9 @@ async function generate_query_insert({ table, values }) {
       for (const it of get_structure.data) {
         let key = it.column_name;
         if (key_v === key) {
+          if (it.data_type.includes("timestamp")) {
+            values[key_v] = moment(values[key_v]).format("YYYY-MM-DD hh:mm:ss");
+          }
           if (
             (values[key_v] || values[key_v] == 0) &&
             values[key_v] != "lastval()"
@@ -76,6 +79,10 @@ async function generate_query_update({ table, values, key }) {
     for (const key_v in values) {
       for (const itm of get_structure.data) {
         if (key_v === itm.column_name) {
+          if (itm.data_type.includes("timestamp")) {
+            let _dt = moment(values[key_v]).format("YYYY-MM-DD hh:mm:ss");
+            values[key_v] = _dt != "Invalid date" ? _dt : null;
+          }
           if (values[key_v] || values[key_v] == 0) {
             column += ` ${key_v}= '${values[key_v]}',`;
           }
@@ -109,6 +116,33 @@ async function exec_query(query_sql) {
       return resolve(_data);
     })
   );
+}
+
+async function exec_multiple_query(query_sql) {
+  let _data = JSON.parse(JSON.stringify(data_set));
+  const client = await pool.connect();
+  try {
+    await client.query("BEGIN");
+    await client.query(query_sql);
+    await client.query("COMMIT");
+  } catch (err) {
+    await client.query("ROLLBACK");
+    if (err.code == 42703) {
+      _data.data = [];
+      _data.total = 0;
+      _data.grand_total = 0;
+      return resolve(_data);
+    }
+    _data.error = true;
+    _data.message = `EXEC_QUERY: ${err.message}` || "Oops, something wrong";
+    return _data;
+  } finally {
+    client.release();
+    _data.data = rows.rows;
+    _data.total = rows.rowCount;
+    _data.grand_total = rows.rowCount;
+    return _data;
+  }
 }
 
 async function get_query(query_sql, generate_approval = true) {
@@ -156,7 +190,7 @@ async function get_query(query_sql, generate_approval = true) {
   return _data;
 }
 
-async function insert_query({ data, key, table }) {
+async function insert_query({ data, table }) {
   let _data = JSON.parse(JSON.stringify(data_set));
   var column = `SELECT column_name,data_type  FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '${table}'`;
   column = await exec_query(column);
@@ -214,10 +248,9 @@ async function insert_query({ data, key, table }) {
   val = "'" + val.join("','") + "'";
   dataArr = dataArr.join(",");
   var query_sql = `INSERT INTO "${table}" (${key}) VALUES (${val}); \n`;
-
   let check_approval = await getApproval(table);
   if (check_approval) {
-    query_sql += await generateInsertApproval(check_approval);
+    query_sql += await generateInsertApproval(check_approval, data);
   }
   return await new Promise((resolve) =>
     pool.query(query_sql, function (err, rows) {
@@ -309,7 +342,7 @@ async function delete_query({
   data,
   key,
   table,
-  deleted = true,
+  deleted = false,
   force_delete = false,
 }) {
   let _data = JSON.parse(JSON.stringify(data_set));
@@ -425,16 +458,27 @@ async function getApprovalFlow(ref_table, ref_id) {
   }
 }
 
-async function generateInsertApproval(obj = Object) {
+async function generateInsertApproval(obj = Object, data) {
   delete obj.created_at;
   delete obj.updated_at;
   delete obj.updated_by;
   obj.approval_current_user_id = obj.approval_user_id_1;
   obj.approval_ref_id = "lastval()";
+  if (data && data.hasOwnProperty(`${obj.approval_ref_table}_id`)) {
+    obj.approval_ref_id = data[`${obj.approval_ref_table}_id`];
+  }
   return await generate_query_insert({
     table: "approval_flow",
     values: obj,
   });
+}
+async function getDefaultId(relation_code) {
+  let getData = `SELECT * FROM sys_relation WHERE sys_relation_code='${relation_code}' LIMIT 1`;
+  getData = await exec_query(getData);
+  if (getData.data.length == 1) {
+    return getData.data[0].sys_relation_ref_id;
+  }
+  return null;
 }
 
 module.exports = {
@@ -448,4 +492,6 @@ module.exports = {
   generate_query_insert,
   filter_query,
   checkIsTableExist,
+  exec_multiple_query,
+  getDefaultId,
 };

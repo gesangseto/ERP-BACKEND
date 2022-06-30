@@ -1,7 +1,7 @@
 {
 	"info": {
 		"_postman_id": "6d7666a6-28c3-43dd-8444-67d3cfdcb2b1",
-		"name": "ADMINISTRATOR",
+		"name": "ERP Project",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -866,7 +866,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"created_at\": null,\r\n    \"created_by\": null,\r\n    \"updated_at\": null,\r\n    \"updated_by\": null,\r\n    \"flag_delete\": 0,\r\n    \"status\": 1,\r\n    \"approval_ref_table\": \"user_department\",\r\n    \"approval_desc\": \"Department\",\r\n    \"approval_user_id_1\": 1,\r\n    \"approval_user_id_2\": null,\r\n    \"approval_user_id_3\": null,\r\n    \"approval_user_id_4\": null,\r\n    \"approval_user_id_5\": null\r\n}",
+									"raw": "{\r\n    \"created_at\": null,\r\n    \"created_by\": null,\r\n    \"updated_at\": null,\r\n    \"updated_by\": null,\r\n    \"flag_delete\": 0,\r\n    \"status\": 1,\r\n    \"approval_ref_table\": \"pos_batch\",\r\n    \"approval_desc\": \"POS Inbound Batch\",\r\n    \"approval_user_id_1\": 1,\r\n    \"approval_user_id_2\": null,\r\n    \"approval_user_id_3\": null,\r\n    \"approval_user_id_4\": null,\r\n    \"approval_user_id_5\": null\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -1006,7 +1006,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"approval_flow_id\": 2,\r\n    \"is_approve\":false,\r\n    \"rejected_note\":\"Test 1 2 3\"\r\n}",
+									"raw": "{\r\n    \"approval_flow_id\": 4,\r\n    \"is_approve\":true,\r\n    \"rejected_note\":\"Test 1 2 3\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -1023,6 +1023,990 @@
 										"api",
 										"approval",
 										"flow-approval"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "POS",
+			"item": [
+				{
+					"name": "Inbound",
+					"item": [
+						{
+							"name": "Get Inbound Batch",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "token",
+										"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "localhost:5000/api/transaction/pos/inbound",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"transaction",
+										"pos",
+										"inbound"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Inbound",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "token",
+										"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "pos_batch_no",
+											"value": "FG4547",
+											"type": "text"
+										},
+										{
+											"key": "pos_batch_exp_date",
+											"value": "21-12-2022",
+											"type": "text"
+										},
+										{
+											"key": "pos_batch_mfg_date",
+											"value": "21-12-2021",
+											"type": "text"
+										},
+										{
+											"key": "pos_batch_qty",
+											"value": "100",
+											"type": "text"
+										},
+										{
+											"key": "mst_item_id",
+											"value": "1656477974626",
+											"type": "text"
+										},
+										{
+											"key": "mst_supplier_id",
+											"value": "1",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "localhost:5000/api/transaction/pos/inbound",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"transaction",
+										"pos",
+										"inbound"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Approve Inbound",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "token",
+										"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "pos_batch_id",
+											"value": "1656561864781",
+											"type": "text"
+										},
+										{
+											"key": "is_approve",
+											"value": "true",
+											"type": "text"
+										},
+										{
+											"key": "pos_batch_note",
+											"value": "Nothing",
+											"type": "text",
+											"disabled": true
+										}
+									]
+								},
+								"url": {
+									"raw": "localhost:5000/api/transaction/pos/inbound",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"transaction",
+										"pos",
+										"inbound"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Stock Item",
+					"item": [
+						{
+							"name": "Get",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "token",
+										"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "localhost:5000/api/transaction/pos/stock?pos_item_stock_id=3",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"transaction",
+										"pos",
+										"stock"
+									],
+									"query": [
+										{
+											"key": "mst_item_name",
+											"value": "Djarum Super",
+											"disabled": true
+										},
+										{
+											"key": "pos_item_stock_id",
+											"value": "3"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Outbound / Sale",
+					"item": [
+						{
+							"name": "List Sale",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "token",
+										"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "localhost:5000/api/transaction/pos/sale?pos_trx_sale_id=1656580466013",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"transaction",
+										"pos",
+										"sale"
+									],
+									"query": [
+										{
+											"key": "pos_trx_sale_id",
+											"value": "1656580466013"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Sale New",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "token",
+										"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"mst_customer_id\": 1,\r\n    \"sale_item\": [\r\n        {\r\n            \"qty\": \"2\",\r\n            \"mst_item_variant_id\": \"20\"\r\n        }\r\n    ]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:5000/api/transaction/pos/sale",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"transaction",
+										"pos",
+										"sale"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Return / Recall",
+					"item": [
+						{
+							"name": "Get Return",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "token",
+										"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "localhost:5000/api/transaction/pos/inbound",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"transaction",
+										"pos",
+										"inbound"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "New Return",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "token",
+										"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "pos_batch_no",
+											"value": "FG4547",
+											"type": "text"
+										},
+										{
+											"key": "pos_batch_exp_date",
+											"value": "21-12-2022",
+											"type": "text"
+										},
+										{
+											"key": "pos_batch_mfg_date",
+											"value": "21-12-2021",
+											"type": "text"
+										},
+										{
+											"key": "pos_batch_qty",
+											"value": "100",
+											"type": "text"
+										},
+										{
+											"key": "mst_item_id",
+											"value": "1656477974626",
+											"type": "text"
+										},
+										{
+											"key": "mst_supplier_id",
+											"value": "1",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "localhost:5000/api/transaction/pos/inbound",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"transaction",
+										"pos",
+										"inbound"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Approve Return",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "token",
+										"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "pos_batch_id",
+											"value": "1656561864781",
+											"type": "text"
+										},
+										{
+											"key": "is_approve",
+											"value": "true",
+											"type": "text"
+										},
+										{
+											"key": "pos_batch_note",
+											"value": "Nothing",
+											"type": "text",
+											"disabled": true
+										}
+									]
+								},
+								"url": {
+									"raw": "localhost:5000/api/transaction/pos/inbound",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"transaction",
+										"pos",
+										"inbound"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Master",
+			"item": [
+				{
+					"name": "Item",
+					"item": [
+						{
+							"name": "Get",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "token",
+										"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "localhost:5000/api/master/item",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"master",
+										"item"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Insert",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "token",
+										"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"mst_item_no\": \"BCD44\",\r\n    \"mst_item_name\": \"Djarum Super\",\r\n    \"variant\": [\r\n        {\r\n            \"mst_item_variant_name\": \"Isi 12\",\r\n            \"mst_item_variant_price\": \"12000\",\r\n            \"mst_item_variant_qty\": 1,\r\n            \"mst_packaging_id\": 1\r\n        }\r\n    ]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:5000/api/master/item",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"master",
+										"item"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "token",
+										"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"created_at\": \"2022-06-28T21:46:14.000Z\",\r\n    \"created_by\": 0,\r\n    \"updated_at\": \"2022-06-29T04:46:47.000Z\",\r\n    \"updated_by\": 0,\r\n    \"flag_delete\": 0,\r\n    \"status\": 0,\r\n    \"mst_item_id\": \"1656477974626\",\r\n    \"mst_item_no\": \"BCD44\",\r\n    \"mst_item_name\": \"Djarum Super\",\r\n    \"mst_item_desc\": null,\r\n    \"approval\": null,\r\n    \"variant\": [\r\n        {\r\n            \"created_at\": null,\r\n            \"created_by\": null,\r\n            \"updated_at\": null,\r\n            \"updated_by\": null,\r\n            \"flag_delete\": 0,\r\n            \"status\": 1,\r\n            \"mst_item_variant_id\": 20,\r\n            \"mst_item_id\": \"1656477974626\",\r\n            \"mst_item_variant_name\": \"Isi 12\",\r\n            \"mst_item_variant_price\": 12000,\r\n            \"mst_item_variant_qty\": 1,\r\n            \"mst_packaging_id\": 1,\r\n            \"mst_item_variant_barcode\": null\r\n        }\r\n    ]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:5000/api/master/item",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"master",
+										"item"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "token",
+										"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "mst_item_id",
+											"value": "1656312650834",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "127.0.0.1:5000/api/master/item",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"master",
+										"item"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Packaging",
+					"item": [
+						{
+							"name": "Get",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "token",
+										"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "localhost:5000/api/master/packaging",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"master",
+										"packaging"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Insert",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "token",
+										"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "mst_packaging_code",
+											"value": "BKS",
+											"type": "text"
+										},
+										{
+											"key": "mst_packaging_name",
+											"value": "bungkus",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "localhost:5000/api/master/packaging",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"master",
+										"packaging"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "token",
+										"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n            \"created_at\": \"2022-06-27T04:28:53.000Z\",\r\n            \"created_by\": 0,\r\n            \"updated_at\": null,\r\n            \"updated_by\": null,\r\n            \"flag_delete\": 0,\r\n            \"status\": 1,\r\n            \"mst_packaging_id\": 1,\r\n            \"mst_packaging_code\": \"BKSs\",\r\n            \"mst_packaging_name\": \"bungkus\",\r\n            \"mst_packaging_desc\": null,\r\n            \"approval\": null\r\n        }",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:5000/api/master/packaging",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"master",
+										"packaging"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "token",
+										"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "mst_packaging_id",
+											"value": "1",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "localhost:5000/api/master/packaging",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"master",
+										"packaging"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Supplier",
+					"item": [
+						{
+							"name": "Get",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "token",
+										"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "localhost:5000/api/master/supplier",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"master",
+										"supplier"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Insert",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "token",
+										"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "mst_supplier_name",
+											"value": "Agen Erna",
+											"type": "text"
+										},
+										{
+											"key": "mst_supplier_email",
+											"value": "admin@admin.com",
+											"type": "text"
+										},
+										{
+											"key": "mst_supplier_phone",
+											"value": "082122222657",
+											"type": "text"
+										},
+										{
+											"key": "mst_supplier_address",
+											"value": "JL Bambu",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "localhost:5000/api/master/supplier",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"master",
+										"supplier"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "token",
+										"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"created_at\": \"2022-06-30T03:55:18.000Z\",\r\n    \"created_by\": 0,\r\n    \"updated_at\": null,\r\n    \"updated_by\": null,\r\n    \"flag_delete\": 0,\r\n    \"status\": 0,\r\n    \"mst_supplier_id\": 1,\r\n    \"mst_supplier_name\": \"Agen Erna\",\r\n    \"mst_supplier_email\": \"admin@admin.com\",\r\n    \"mst_supplier_address\": \"JL Bambu\",\r\n    \"mst_supplier_phone\": \"082122222657\",\r\n    \"approval\": null\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:5000/api/master/supplier",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"master",
+										"supplier"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "token",
+										"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "mst_supplier_id",
+											"value": "1",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "localhost:5000/api/master/supplier",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"master",
+										"supplier"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Customer",
+					"item": [
+						{
+							"name": "Get",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "token",
+										"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "localhost:5000/api/master/customer",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"master",
+										"customer"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Insert",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "token",
+										"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"mst_customer_name\": \"Agen Erna\",\r\n    \"mst_customer_email\": \"admin@admin.com\",\r\n    \"mst_customer_phone\": \"082122222657\",\r\n    \"mst_customer_address\": \"JL Bambu\",\r\n    \"created_by\": 0,\r\n    \"created_at\": \"2022-06-30 11:02:00\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:5000/api/master/customer",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"master",
+										"customer"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "token",
+										"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"created_at\": \"2022-06-30T04:02:30.000Z\",\r\n    \"created_by\": 0,\r\n    \"updated_at\": null,\r\n    \"updated_by\": null,\r\n    \"flag_delete\": 0,\r\n    \"status\": 0,\r\n    \"mst_customer_id\": 1,\r\n    \"mst_customer_name\": \"Agen Erna\",\r\n    \"mst_customer_email\": \"admin@admin.com\",\r\n    \"mst_customer_phone\": \"082122222657\",\r\n    \"mst_customer_address\": \"JL Bambu\",\r\n    \"mst_customer_pic\": null,\r\n    \"mst_customer_ppn\": null,\r\n    \"price_percentage\": 125,\r\n    \"approval\": null\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:5000/api/master/customer",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"master",
+										"customer"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "token",
+										"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "mst_customer_id",
+											"value": "1",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "localhost:5000/api/master/customer",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"master",
+										"customer"
 									]
 								}
 							},
