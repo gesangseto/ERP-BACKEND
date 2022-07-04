@@ -2,6 +2,7 @@
 const response = require("../../response");
 const models = require("../../models");
 const { percentToFloat, generateId } = require("../../utils");
+const { getStockItem, getTrxDetailItem } = require("./generate_item");
 const perf = require("execution-time")();
 
 exports.get = async function (req, res) {
@@ -20,7 +21,7 @@ exports.get = async function (req, res) {
     }
     // LINE WAJIB DIBAWA
     var $query = `
-    SELECT *
+    SELECT *,a.status AS status
     FROM pos_trx_sale AS a
     LEFT JOIN mst_customer AS b ON a.mst_customer_id = b.mst_customer_id
     WHERE a.flag_delete='0' `;
@@ -28,8 +29,7 @@ exports.get = async function (req, res) {
     const check = await models.get_query($query);
     if (check.data.length == 1 && req.query.pos_trx_sale_id) {
       let it = check.data[0];
-      let _detail = `SELECT * FROM pos_trx_sale_detail WHERE pos_trx_sale_id='${it.pos_trx_sale_id}';`;
-      _detail = await models.exec_query(_detail);
+      let _detail = getTrxDetailItem(it);
       check.data[0].detail = _detail.data;
     }
     return response.response(check, res);
@@ -70,7 +70,7 @@ exports.newSale = async function (req, res) {
       return response.response(data, res);
     }
     for (const it of body.sale_item) {
-      if (!it.qty || !it.mst_item_variant_id) {
+      if (!it.qty || (!it.mst_item_variant_id && !it.barcode)) {
         data.error = true;
         data.message = `Quantity or Item Variant is not valid`;
         return response.response(data, res);
@@ -97,34 +97,34 @@ exports.newSale = async function (req, res) {
     let _saleDetail = "";
     let _updateStock = "";
     for (const it of body.sale_item) {
-      let _item = `SELECT * FROM pos_item_stock AS a
-      LEFT JOIN mst_item AS b ON a.mst_item_id = b.mst_item_id 
-      LEFT JOIN mst_item_variant AS c ON c.mst_item_id = b.mst_item_id 
-      WHERE mst_item_variant_id ='${it.mst_item_variant_id}' LIMIT 1`;
-      _item = await models.exec_query(_item);
+      let _item = await getStockItem(it);
       _item = _item.data[0];
       if (!_item) {
         data.error = true;
-        data.message = `Item Variant ${it.mst_item_variant_id} is not found!`;
+        data.message = `Item Variant is not found!`;
         return response.response(data, res);
-      } else if (_item.qty < it.qty) {
+      }
+
+      it.qty = it.qty * _item.mst_item_variant_qty;
+      if (_item.qty < it.qty) {
         data.error = true;
-        data.message = `Item Variant ${it.mst_item_variant_id} stock is not enough!`;
+        data.message = `Request ${it.qty} Item Variant stock is not enough!`;
         return response.response(data, res);
       }
       let _dt = { ...it, ...body };
-      _dt.mst_item_variant_id = it.mst_item_variant_id;
+      _dt.mst_item_variant_id = _item.mst_item_variant_id;
       _dt.qty = it.qty;
       _dt.capital_price = _item.mst_item_variant_price;
       _dt.price = _dt.capital_price * percentToFloat(_cust.price_percentage);
       _dt.total_capital_price = it.qty * _dt.capital_price;
       _dt.total_price = it.qty * _dt.price;
       _saleDetail += await models.generate_query_insert({
-        table: "pos_trx_sale_detail",
+        table: "pos_trx_detail",
         values: _dt,
       });
 
-      _item.qty = _item.qty - it.qty * _item.mst_item_variant_qty;
+      _item.qty = parseInt(_item.qty) - it.qty;
+      console.log(_dt.qty);
       _updateStock += await models.generate_query_update({
         table: "pos_item_stock",
         values: _item,

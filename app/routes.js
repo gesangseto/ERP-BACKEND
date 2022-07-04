@@ -67,10 +67,17 @@ module.exports = function (app) {
   app.route("/api/master/customer").post(mst_customer.update);
   app.route("/api/master/customer").delete(mst_customer.delete);
 
-  var _pos_inbound = require("./controller/POS/inbound");
-  app.route("/api/transaction/pos/inbound").get(_pos_inbound.get);
-  app.route("/api/transaction/pos/inbound").put(_pos_inbound.inbound);
-  app.route("/api/transaction/pos/inbound").post(_pos_inbound.approve);
+  var _pos_in = require("./controller/POS/inbound");
+  app.route("/api/transaction/pos/inbound").get(_pos_in.getInbound);
+  // Inbound Batch
+  app.route("/api/transaction/pos/inbound-batch").get(_pos_in.getInBatch);
+  app.route("/api/transaction/pos/inbound-batch").put(_pos_in.newInBatch);
+  app.route("/api/transaction/pos/inbound-batch").post(_pos_in.ApproveInBatch);
+  // Return
+  var _pos_ret = require("./controller/POS/return");
+  app.route("/api/transaction/pos/return").get(_pos_ret.getReturn);
+  app.route("/api/transaction/pos/return").put(_pos_ret.newReturn);
+  app.route("/api/transaction/pos/return").post(_pos_ret.ApproveReturn);
 
   var _pos_stock = require("./controller/POS/stock");
   app.route("/api/transaction/pos/stock").get(_pos_stock.get);
