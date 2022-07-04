@@ -28,7 +28,7 @@ exports.getInbound = async function (req, res) {
     SELECT 
     a.*,
     b.mst_supplier_name,
-    b.mst_customer_name
+    c.mst_customer_name
     --b.mst_warehouse_name
     FROM pos_trx_inbound AS a 
     LEFT JOIN mst_supplier AS b ON b.mst_supplier_id = a.mst_supplier_id
@@ -36,6 +36,7 @@ exports.getInbound = async function (req, res) {
     --LEFT JOIN mst_warehouse AS d ON d.mst_warehouse_id = a.mst_warehouse_id
     WHERE a.flag_delete='0' `;
     $query = await models.filter_query($query, req.query);
+    console.log($query);
     const check = await models.get_query($query);
     return response.response(check, res);
   } catch (error) {

@@ -67,6 +67,8 @@ module.exports = function (app) {
   app.route("/api/master/customer").post(mst_customer.update);
   app.route("/api/master/customer").delete(mst_customer.delete);
 
+  var _pos_utils = require("./controller/POS/utils");
+  app.route("/api/transaction/pos/cleanup").post(_pos_utils.cleanup);
   var _pos_in = require("./controller/POS/inbound");
   app.route("/api/transaction/pos/inbound").get(_pos_in.getInbound);
   // Inbound Batch
@@ -82,7 +84,14 @@ module.exports = function (app) {
   var _pos_stock = require("./controller/POS/stock");
   app.route("/api/transaction/pos/stock").get(_pos_stock.get);
 
+  var _pos_cashier = require("./controller/POS/cashier");
+  app.route("/api/transaction/pos/cashier").get(_pos_cashier.get);
+  app.route("/api/transaction/pos/cashier").put(_pos_cashier.openCashier);
+  app.route("/api/transaction/pos/cashier").post(_pos_cashier.closeCashier);
+
   var _pos_sale = require("./controller/POS/sale");
   app.route("/api/transaction/pos/sale").get(_pos_sale.get);
+  app.route("/api/transaction/pos/sale-cashier").get(_pos_sale.getByCashier);
   app.route("/api/transaction/pos/sale").put(_pos_sale.newSale);
+  app.route("/api/transaction/pos/sale/payment").post(_pos_sale.paySale);
 };

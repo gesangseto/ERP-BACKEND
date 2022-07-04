@@ -107,7 +107,9 @@ async function exec_query(query_sql) {
           return resolve(_data);
         }
         _data.error = true;
-        _data.message = `EXEC_QUERY: ${err.message}` || "Oops, something wrong";
+        _data.message =
+          `EXEC_QUERY: ${err.table} -> ${err.message}` ||
+          "Oops, something wrong";
         return resolve(_data);
       }
       _data.data = rows.rows;
