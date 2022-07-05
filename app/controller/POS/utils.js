@@ -11,10 +11,11 @@ exports.cleanup = async function (req, res) {
     perf.start();
     let _query = `
     TRUNCATE pos_item_stock;
-    TRUNCATE pos_trx_detail;
-    TRUNCATE pos_trx_sale;
     TRUNCATE pos_trx_inbound;
-    TRUNCATE pos_batch;
+    TRUNCATE pos_trx_detail;
+    TRUNCATE pos_receive;
+    TRUNCATE pos_receive_detail;
+    TRUNCATE pos_trx_sale;
     TRUNCATE pos_cashier;
     `;
     let _res = await models.exec_query(_query);

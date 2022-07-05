@@ -1,3 +1,4 @@
+const { log } = require("console");
 const moment = require("moment");
 async function nestedData({ data = [], unique = null }) {
   var reformat_obj = {};
@@ -139,6 +140,17 @@ function percentToFloat(percent) {
   return parseInt(percent) / 100;
 }
 
+function sumByKey({ key, sum, array }) {
+  let result = Object.values(
+    array.reduce((map, r) => {
+      if (!map[r[key]]) map[r[key]] = { ...r, _id: r[key], qty: 0 };
+      map[r[key]][sum] += parseInt(r[sum]);
+      return map;
+    }, {})
+  );
+  return result;
+}
+
 module.exports = {
   nestedData,
   encrypt,
@@ -149,4 +161,5 @@ module.exports = {
   getFirstWord,
   generateId,
   percentToFloat,
+  sumByKey,
 };

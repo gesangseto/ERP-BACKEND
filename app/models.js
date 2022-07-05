@@ -192,7 +192,7 @@ async function get_query(query_sql, generate_approval = true) {
   return _data;
 }
 
-async function insert_query({ data, table }) {
+async function insert_query({ data, table, onlyQuery = false }) {
   let _data = JSON.parse(JSON.stringify(data_set));
   var column = `SELECT column_name,data_type  FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '${table}'`;
   column = await exec_query(column);
@@ -254,6 +254,9 @@ async function insert_query({ data, table }) {
   if (check_approval) {
     query_sql += await generateInsertApproval(check_approval, data);
   }
+  if (onlyQuery) {
+    return query_sql;
+  }
   return await new Promise((resolve) =>
     pool.query(query_sql, function (err, rows) {
       if (err) {
@@ -269,7 +272,7 @@ async function insert_query({ data, table }) {
   );
 }
 
-async function update_query({ data, key, table }) {
+async function update_query({ data, key, table, onlyQuery = false }) {
   let _data = JSON.parse(JSON.stringify(data_set));
   var column = `SELECT column_name,data_type  FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '${table}'`;
   column = await exec_query(column);
@@ -325,6 +328,9 @@ async function update_query({ data, key, table }) {
       }`;
       return _data;
     }
+  }
+  if (onlyQuery) {
+    return query_sql;
   }
   return await new Promise((resolve) =>
     pool.query(query_sql, function (err, rows) {

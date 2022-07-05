@@ -79,16 +79,12 @@ exports.newSale = async function (req, res) {
       is_cashier_open: true,
     });
     if (_check.error || _check.data.length == 0) {
-      data.error = true;
-      data.message = `Please open cashier first!`;
-      return response.response(data, res);
+      throw new Error(`Please open cashier first!`);
     }
     var require_data = ["sale_item"];
     for (const row of require_data) {
       if (!body[`${row}`]) {
-        data.error = true;
-        data.message = `${row} is required!`;
-        return response.response(data, res);
+        throw new Error(`${row} is required!`);
       }
     }
     body.pos_trx_sale_id = pos_trx_sale_id;
@@ -96,21 +92,17 @@ exports.newSale = async function (req, res) {
     if (!body.mst_customer_id) {
       mst_customer_id = await models.getDefaultId("mst_customer_default");
       if (!mst_customer_id) {
-        data.error = true;
-        data.message = `Please setting Default Customer first or please input the Customer`;
-        return response.response(data, res);
+        throw new Error(
+          `Please setting Default Customer first or please input the Customer`
+        );
       }
     }
     if (!Array.isArray(body.sale_item) || !body.sale_item.length) {
-      data.error = true;
-      data.message = `Sale Item must be in Array`;
-      return response.response(data, res);
+      throw new Error(`Sale Item must be in Array`);
     }
     for (const it of body.sale_item) {
       if (!it.qty || (!it.mst_item_variant_id && !it.barcode)) {
-        data.error = true;
-        data.message = `Quantity or Item Variant is not valid`;
-        return response.response(data, res);
+        throw new Error(`Quantity or Item Variant is not valid`);
       }
     }
 
@@ -118,9 +110,7 @@ exports.newSale = async function (req, res) {
       `SELECT * FROM mst_customer WHERE mst_customer_id ='${mst_customer_id}' LIMIT 1;`
     );
     if (_cust.error || _cust.data.length == 0) {
-      data.error = true;
-      data.message = `Customer not found`;
-      return response.response(data, res);
+      throw new Error(`Customer not found`);
     }
     _cust = _cust.data[0];
 
@@ -136,16 +126,12 @@ exports.newSale = async function (req, res) {
       let _item = await getStockItem(it);
       _item = _item.data[0];
       if (!_item) {
-        data.error = true;
-        data.message = `Item Variant is not found!`;
-        return response.response(data, res);
+        throw new Error(`Item Variant is not found!`);
       }
 
       it.qty = it.qty * _item.mst_item_variant_qty;
       if (_item.qty < it.qty) {
-        data.error = true;
-        data.message = `Request ${it.qty} Item Variant stock is not enough!`;
-        return response.response(data, res);
+        throw new Error(`Request ${it.qty} Item Variant stock is not enough!`);
       }
       let _dt = { ...it, ...body };
       _dt.mst_item_variant_id = _item.mst_item_variant_id;
@@ -153,8 +139,6 @@ exports.newSale = async function (req, res) {
       _dt.qty = it.qty;
       _dt.capital_price = _item.mst_item_variant_price;
       _dt.price = _dt.capital_price * percentToFloat(_cust.price_percentage);
-      _dt.total_capital_price = it.qty * _dt.capital_price;
-      _dt.total_price = it.qty * _dt.price;
       _dt.pos_trx_ref_id = pos_trx_sale_id;
 
       _saleDetail += await models.generate_query_insert({

@@ -2,7 +2,8 @@
 	"info": {
 		"_postman_id": "6d7666a6-28c3-43dd-8444-67d3cfdcb2b1",
 		"name": "ERP Project",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "7221100"
 	},
 	"item": [
 		{
@@ -35,14 +36,10 @@
 							]
 						},
 						"url": {
-							"raw": "127.0.0.1:5000/api/login/user",
+							"raw": "{{dev}}/api/login/user",
 							"host": [
-								"127",
-								"0",
-								"0",
-								"1"
+								"{{dev}}"
 							],
-							"port": "5000",
 							"path": [
 								"api",
 								"login",
@@ -84,14 +81,10 @@
 									]
 								},
 								"url": {
-									"raw": "127.0.0.1:5000/api/configuration",
+									"raw": "{{dev}}/api/configuration",
 									"host": [
-										"127",
-										"0",
-										"0",
-										"1"
+										"{{dev}}"
 									],
-									"port": "5000",
 									"path": [
 										"api",
 										"configuration"
@@ -128,14 +121,10 @@
 									}
 								},
 								"url": {
-									"raw": "127.0.0.1:5000/api/configuration",
+									"raw": "{{dev}}/api/configuration",
 									"host": [
-										"127",
-										"0",
-										"0",
-										"1"
+										"{{dev}}"
 									],
-									"port": "5000",
 									"path": [
 										"api",
 										"configuration"
@@ -186,14 +175,10 @@
 									]
 								},
 								"url": {
-									"raw": "127.0.0.1:5000/api/audit/log",
+									"raw": "{{dev}}/api/audit/log",
 									"host": [
-										"127",
-										"0",
-										"0",
-										"1"
+										"{{dev}}"
 									],
-									"port": "5000",
 									"path": [
 										"api",
 										"audit",
@@ -232,14 +217,10 @@
 									}
 								],
 								"url": {
-									"raw": "127.0.0.1:5000/api/role/section?section_id=1&show_all=true",
+									"raw": "{{dev}}/api/role/section?section_id=1&show_all=true",
 									"host": [
-										"127",
-										"0",
-										"0",
-										"1"
+										"{{dev}}"
 									],
-									"port": "5000",
 									"path": [
 										"api",
 										"role",
@@ -280,14 +261,10 @@
 									}
 								},
 								"url": {
-									"raw": "127.0.0.1:5000/api/role/section",
+									"raw": "{{dev}}/api/role/section",
 									"host": [
-										"127",
-										"0",
-										"0",
-										"1"
+										"{{dev}}"
 									],
-									"port": "5000",
 									"path": [
 										"api",
 										"role",
@@ -314,14 +291,10 @@
 									}
 								],
 								"url": {
-									"raw": "127.0.0.1:5000/api/master/user_section",
+									"raw": "{{dev}}/api/master/user_section",
 									"host": [
-										"127",
-										"0",
-										"0",
-										"1"
+										"{{dev}}"
 									],
-									"port": "5000",
 									"path": [
 										"api",
 										"master",
@@ -370,14 +343,10 @@
 									]
 								},
 								"url": {
-									"raw": "127.0.0.1:5000/api/master/user_section",
+									"raw": "{{dev}}/api/master/user_section",
 									"host": [
-										"127",
-										"0",
-										"0",
-										"1"
+										"{{dev}}"
 									],
-									"port": "5000",
 									"path": [
 										"api",
 										"master",
@@ -408,14 +377,10 @@
 									}
 								},
 								"url": {
-									"raw": "127.0.0.1:5000/api/master/user_section",
+									"raw": "{{dev}}/api/master/user_section",
 									"host": [
-										"127",
-										"0",
-										"0",
-										"1"
+										"{{dev}}"
 									],
-									"port": "5000",
 									"path": [
 										"api",
 										"master",
@@ -447,14 +412,10 @@
 									]
 								},
 								"url": {
-									"raw": "127.0.0.1:5000/api/master/user_section",
+									"raw": "{{dev}}/api/master/user_section",
 									"host": [
-										"127",
-										"0",
-										"0",
-										"1"
+										"{{dev}}"
 									],
-									"port": "5000",
 									"path": [
 										"api",
 										"master",
@@ -481,11 +442,10 @@
 									}
 								],
 								"url": {
-									"raw": "localhost:5000/api/master/user_department",
+									"raw": "{{dev}}/api/master/user_department",
 									"host": [
-										"localhost"
+										"{{dev}}"
 									],
-									"port": "5000",
 									"path": [
 										"api",
 										"master",
@@ -529,14 +489,10 @@
 									]
 								},
 								"url": {
-									"raw": "127.0.0.1:5000/api/master/user_department",
+									"raw": "{{dev}}/api/master/user_department",
 									"host": [
-										"127",
-										"0",
-										"0",
-										"1"
+										"{{dev}}"
 									],
-									"port": "5000",
 									"path": [
 										"api",
 										"master",
@@ -567,14 +523,10 @@
 									}
 								},
 								"url": {
-									"raw": "127.0.0.1:5000/api/master/user_department",
+									"raw": "{{dev}}/api/master/user_department",
 									"host": [
-										"127",
-										"0",
-										"0",
-										"1"
+										"{{dev}}"
 									],
-									"port": "5000",
 									"path": [
 										"api",
 										"master",
@@ -606,14 +558,10 @@
 									]
 								},
 								"url": {
-									"raw": "127.0.0.1:5000/api/master/user_department",
+									"raw": "{{dev}}/api/master/user_department",
 									"host": [
-										"127",
-										"0",
-										"0",
-										"1"
+										"{{dev}}"
 									],
-									"port": "5000",
 									"path": [
 										"api",
 										"master",
@@ -640,15 +588,10 @@
 									}
 								],
 								"url": {
-									"raw": "http://127.0.0.1:5000/api/master/user?page=1&limit=1",
-									"protocol": "http",
+									"raw": "{{dev}}/api/master/user?page=1&limit=1",
 									"host": [
-										"127",
-										"0",
-										"0",
-										"1"
+										"{{dev}}"
 									],
-									"port": "5000",
 									"path": [
 										"api",
 										"master",
@@ -705,14 +648,10 @@
 									]
 								},
 								"url": {
-									"raw": "127.0.0.1:5000/api/master/user",
+									"raw": "{{dev}}/api/master/user",
 									"host": [
-										"127",
-										"0",
-										"0",
-										"1"
+										"{{dev}}"
 									],
-									"port": "5000",
 									"path": [
 										"api",
 										"master",
@@ -743,14 +682,10 @@
 									}
 								},
 								"url": {
-									"raw": "127.0.0.1:5000/api/master/user",
+									"raw": "{{dev}}/api/master/user",
 									"host": [
-										"127",
-										"0",
-										"0",
-										"1"
+										"{{dev}}"
 									],
-									"port": "5000",
 									"path": [
 										"api",
 										"master",
@@ -800,14 +735,10 @@
 									]
 								},
 								"url": {
-									"raw": "127.0.0.1:5000/api/master/user",
+									"raw": "{{dev}}/api/master/user",
 									"host": [
-										"127",
-										"0",
-										"0",
-										"1"
+										"{{dev}}"
 									],
-									"port": "5000",
 									"path": [
 										"api",
 										"master",
@@ -839,11 +770,10 @@
 									}
 								],
 								"url": {
-									"raw": "localhost:5000/api/approval/main-approval",
+									"raw": "{{dev}}/api/approval/main-approval",
 									"host": [
-										"localhost"
+										"{{dev}}"
 									],
-									"port": "5000",
 									"path": [
 										"api",
 										"approval",
@@ -866,7 +796,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"created_at\": null,\r\n    \"created_by\": null,\r\n    \"updated_at\": null,\r\n    \"updated_by\": null,\r\n    \"flag_delete\": 0,\r\n    \"status\": 1,\r\n    \"approval_ref_table\": \"pos_batch\",\r\n    \"approval_desc\": \"POS Inbound Batch\",\r\n    \"approval_user_id_1\": 1,\r\n    \"approval_user_id_2\": null,\r\n    \"approval_user_id_3\": null,\r\n    \"approval_user_id_4\": null,\r\n    \"approval_user_id_5\": null\r\n}",
+									"raw": "{\r\n    \"flag_delete\": 0,\r\n    \"status\": 1,\r\n    \"approval_ref_table\": \"pos_receive\",\r\n    \"approval_desc\": \"POS Received\",\r\n    \"approval_user_id_1\": 1,\r\n    \"approval_user_id_2\": null,\r\n    \"approval_user_id_3\": null,\r\n    \"approval_user_id_4\": null,\r\n    \"approval_user_id_5\": null\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -874,11 +804,10 @@
 									}
 								},
 								"url": {
-									"raw": "localhost:5000/api/approval/main-approval",
+									"raw": "{{dev}}/api/approval/main-approval",
 									"host": [
-										"localhost"
+										"{{dev}}"
 									],
-									"port": "5000",
 									"path": [
 										"api",
 										"approval",
@@ -909,11 +838,10 @@
 									}
 								},
 								"url": {
-									"raw": "localhost:5000/api/approval/main-approval",
+									"raw": "{{dev}}/api/approval/main-approval",
 									"host": [
-										"localhost"
+										"{{dev}}"
 									],
-									"port": "5000",
 									"path": [
 										"api",
 										"approval",
@@ -945,14 +873,10 @@
 									]
 								},
 								"url": {
-									"raw": "127.0.0.1:5000/api/approval/main-approval",
+									"raw": "{{dev}}/api/approval/main-approval",
 									"host": [
-										"127",
-										"0",
-										"0",
-										"1"
+										"{{dev}}"
 									],
-									"port": "5000",
 									"path": [
 										"api",
 										"approval",
@@ -979,11 +903,10 @@
 									}
 								],
 								"url": {
-									"raw": "localhost:5000/api/approval/flow-approval",
+									"raw": "{{dev}}/api/approval/flow-approval",
 									"host": [
-										"localhost"
+										"{{dev}}"
 									],
-									"port": "5000",
 									"path": [
 										"api",
 										"approval",
@@ -1006,7 +929,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"approval_flow_id\": 4,\r\n    \"is_approve\":true,\r\n    \"rejected_note\":\"Test 1 2 3\"\r\n}",
+									"raw": "{\r\n    \"approval_flow_id\": 20,\r\n    \"is_approve\":true,\r\n    \"rejected_note\":\"Test 1 2 3\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -1014,11 +937,10 @@
 									}
 								},
 								"url": {
-									"raw": "localhost:5000/api/approval/flow-approval",
+									"raw": "{{dev}}/api/approval/flow-approval",
 									"host": [
-										"localhost"
+										"{{dev}}"
 									],
-									"port": "5000",
 									"path": [
 										"api",
 										"approval",
@@ -1036,152 +958,10 @@
 			"name": "POS",
 			"item": [
 				{
-					"name": "Inbound",
-					"item": [
-						{
-							"name": "Get Inbound Batch",
-							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "token",
-										"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
-										"type": "text"
-									}
-								],
-								"url": {
-									"raw": "localhost:5000/api/transaction/pos/inbound",
-									"host": [
-										"localhost"
-									],
-									"port": "5000",
-									"path": [
-										"api",
-										"transaction",
-										"pos",
-										"inbound"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Inbound",
-							"request": {
-								"method": "PUT",
-								"header": [
-									{
-										"key": "token",
-										"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
-										"type": "text"
-									}
-								],
-								"body": {
-									"mode": "urlencoded",
-									"urlencoded": [
-										{
-											"key": "pos_batch_no",
-											"value": "FG4547",
-											"type": "text"
-										},
-										{
-											"key": "pos_batch_exp_date",
-											"value": "21-12-2022",
-											"type": "text"
-										},
-										{
-											"key": "pos_batch_mfg_date",
-											"value": "21-12-2021",
-											"type": "text"
-										},
-										{
-											"key": "pos_batch_qty",
-											"value": "100",
-											"type": "text"
-										},
-										{
-											"key": "mst_item_id",
-											"value": "1656477974626",
-											"type": "text"
-										},
-										{
-											"key": "mst_supplier_id",
-											"value": "1",
-											"type": "text"
-										}
-									]
-								},
-								"url": {
-									"raw": "localhost:5000/api/transaction/pos/inbound",
-									"host": [
-										"localhost"
-									],
-									"port": "5000",
-									"path": [
-										"api",
-										"transaction",
-										"pos",
-										"inbound"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Approve Inbound",
-							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "token",
-										"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
-										"type": "text"
-									}
-								],
-								"body": {
-									"mode": "urlencoded",
-									"urlencoded": [
-										{
-											"key": "pos_batch_id",
-											"value": "1656561864781",
-											"type": "text"
-										},
-										{
-											"key": "is_approve",
-											"value": "true",
-											"type": "text"
-										},
-										{
-											"key": "pos_batch_note",
-											"value": "Nothing",
-											"type": "text",
-											"disabled": true
-										}
-									]
-								},
-								"url": {
-									"raw": "localhost:5000/api/transaction/pos/inbound",
-									"host": [
-										"localhost"
-									],
-									"port": "5000",
-									"path": [
-										"api",
-										"transaction",
-										"pos",
-										"inbound"
-									]
-								}
-							},
-							"response": []
-						}
-					]
-				},
-				{
 					"name": "Stock Item",
 					"item": [
 						{
-							"name": "Get",
+							"name": "Get Stock",
 							"request": {
 								"method": "GET",
 								"header": [
@@ -1192,11 +972,10 @@
 									}
 								],
 								"url": {
-									"raw": "localhost:5000/api/transaction/pos/stock?pos_item_stock_id=3",
+									"raw": "{{dev}}/api/transaction/pos/stock",
 									"host": [
-										"localhost"
+										"{{dev}}"
 									],
-									"port": "5000",
 									"path": [
 										"api",
 										"transaction",
@@ -1211,7 +990,278 @@
 										},
 										{
 											"key": "pos_item_stock_id",
-											"value": "3"
+											"value": "3",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Receive",
+					"item": [
+						{
+							"name": "Get",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "token",
+										"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{dev}}/api/transaction/pos/receive?pos_receive_id=1657010570443",
+									"host": [
+										"{{dev}}"
+									],
+									"path": [
+										"api",
+										"transaction",
+										"pos",
+										"receive"
+									],
+									"query": [
+										{
+											"key": "pos_receive_id",
+											"value": "1657010570443"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "New Receive",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "token",
+										"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"mst_supplier_id\": \"1\",\n    \"item\": [\n        {\n            \"batch_no\": \"F4321\",\n            \"mst_item_variant_id\":\"21\",\n            \"mfg_date\":\"2022-01-30\",\n            \"exp_date\":\"2025-01-30\",\n            \"qty\":\"400\"\n        }\n    ]\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{dev}}/api/transaction/pos/receive",
+									"host": [
+										"{{dev}}"
+									],
+									"path": [
+										"api",
+										"transaction",
+										"pos",
+										"receive"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Approve",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "token",
+										"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "pos_receive_id",
+											"value": "1657008091580",
+											"type": "text"
+										},
+										{
+											"key": "is_approve",
+											"value": "true",
+											"type": "text"
+										},
+										{
+											"key": "pos_receive_note",
+											"value": "Nothing",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{dev}}/api/transaction/pos/receive",
+									"host": [
+										"{{dev}}"
+									],
+									"path": [
+										"api",
+										"transaction",
+										"pos",
+										"receive"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Inbound",
+					"item": [
+						{
+							"name": "Get Inbound",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "token",
+										"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{dev}}/api/transaction/pos/inbound",
+									"host": [
+										"{{dev}}"
+									],
+									"path": [
+										"api",
+										"transaction",
+										"pos",
+										"inbound"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Cashier",
+					"item": [
+						{
+							"name": "get Cashier",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "token",
+										"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{dev}}/api/transaction/pos/cashier",
+									"host": [
+										"{{dev}}"
+									],
+									"path": [
+										"api",
+										"transaction",
+										"pos",
+										"cashier"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Open Cashier",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "token",
+										"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "pos_cashier_capital_cash",
+											"value": "150000",
+											"type": "text"
+										},
+										{
+											"key": "pos_cashier_shift",
+											"value": "1",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{dev}}/api/transaction/pos/cashier",
+									"host": [
+										"{{dev}}"
+									],
+									"path": [
+										"api",
+										"transaction",
+										"pos",
+										"cashier"
+									],
+									"query": [
+										{
+											"key": "mst_item_name",
+											"value": "Djarum Super",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Close Cashier",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "token",
+										"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "pos_cashier_id",
+											"value": "6",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{dev}}/api/transaction/pos/cashier?pos_cashier_id=12345",
+									"host": [
+										"{{dev}}"
+									],
+									"path": [
+										"api",
+										"transaction",
+										"pos",
+										"cashier"
+									],
+									"query": [
+										{
+											"key": "pos_cashier_id",
+											"value": "12345"
 										}
 									]
 								}
@@ -1235,11 +1285,10 @@
 									}
 								],
 								"url": {
-									"raw": "localhost:5000/api/transaction/pos/sale?pos_trx_sale_id=1656580466013",
+									"raw": "{{dev}}/api/transaction/pos/sale?pos_trx_sale_id=1657011031204",
 									"host": [
-										"localhost"
+										"{{dev}}"
 									],
-									"port": "5000",
 									"path": [
 										"api",
 										"transaction",
@@ -1249,7 +1298,44 @@
 									"query": [
 										{
 											"key": "pos_trx_sale_id",
-											"value": "1656580466013"
+											"value": "1657011031204"
+										},
+										{
+											"key": "pos_cashier_id",
+											"value": "2",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "List Sale By Cashier",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "token",
+										"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{dev}}/api/transaction/pos/sale-cashier?pos_cashier_id=6",
+									"host": [
+										"{{dev}}"
+									],
+									"path": [
+										"api",
+										"transaction",
+										"pos",
+										"sale-cashier"
+									],
+									"query": [
+										{
+											"key": "pos_cashier_id",
+											"value": "6"
 										}
 									]
 								}
@@ -1269,7 +1355,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"mst_customer_id\": 1,\r\n    \"sale_item\": [\r\n        {\r\n            \"qty\": \"2\",\r\n            \"mst_item_variant_id\": \"20\"\r\n        }\r\n    ]\r\n}",
+									"raw": "{\r\n    \"mst_customer_id\": 1,\r\n    \"sale_item\": [\r\n        {\r\n            \"qty\": \"2\",\r\n            \"mst_item_variant_id\": \"21\"\r\n        }\r\n    ]\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -1277,16 +1363,57 @@
 									}
 								},
 								"url": {
-									"raw": "localhost:5000/api/transaction/pos/sale",
+									"raw": "{{dev}}/api/transaction/pos/sale",
 									"host": [
-										"localhost"
+										"{{dev}}"
 									],
-									"port": "5000",
 									"path": [
 										"api",
 										"transaction",
 										"pos",
 										"sale"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Payment",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "token",
+										"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "pos_trx_sale_id",
+											"value": "1657011031204",
+											"type": "text"
+										},
+										{
+											"key": "payment_type",
+											"value": "cash",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{dev}}/api/transaction/pos/sale/payment",
+									"host": [
+										"{{dev}}"
+									],
+									"path": [
+										"api",
+										"transaction",
+										"pos",
+										"sale",
+										"payment"
 									]
 								}
 							},
@@ -1309,11 +1436,139 @@
 									}
 								],
 								"url": {
-									"raw": "localhost:5000/api/transaction/pos/inbound",
+									"raw": "{{dev}}/api/transaction/pos/return?pos_trx_return_id=1656925295914",
 									"host": [
-										"localhost"
+										"{{dev}}"
 									],
-									"port": "5000",
+									"path": [
+										"api",
+										"transaction",
+										"pos",
+										"return"
+									],
+									"query": [
+										{
+											"key": "pos_trx_return_id",
+											"value": "1656925295914"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "New Return",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "token",
+										"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"pos_trx_sale_id\": 1656921981521,\n    \"return\": [\n        {\n            \"qty\": 2,\n            \"mst_item_variant_id\": 21\n        }\n    ]\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{dev}}/api/transaction/pos/return",
+									"host": [
+										"{{dev}}"
+									],
+									"path": [
+										"api",
+										"transaction",
+										"pos",
+										"return"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Approve Return",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "token",
+										"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "pos_trx_return_id",
+											"value": "1656925322005",
+											"type": "text"
+										},
+										{
+											"key": "is_approve",
+											"value": "true",
+											"type": "text"
+										},
+										{
+											"key": "pos_batch_note",
+											"value": "Nothing",
+											"type": "text",
+											"disabled": true
+										}
+									]
+								},
+								"url": {
+									"raw": "{{dev}}/api/transaction/pos/return?is_approve=true&pos_trx_return_id=1656925322005",
+									"host": [
+										"{{dev}}"
+									],
+									"path": [
+										"api",
+										"transaction",
+										"pos",
+										"return"
+									],
+									"query": [
+										{
+											"key": "is_approve",
+											"value": "true"
+										},
+										{
+											"key": "pos_trx_return_id",
+											"value": "1656925322005"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Destroy / Reject",
+					"item": [
+						{
+							"name": "Get Return",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "token",
+										"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{dev}}/api/transaction/pos/inbound",
+									"host": [
+										"{{dev}}"
+									],
 									"path": [
 										"api",
 										"transaction",
@@ -1371,11 +1626,10 @@
 									]
 								},
 								"url": {
-									"raw": "localhost:5000/api/transaction/pos/inbound",
+									"raw": "{{dev}}/api/transaction/pos/inbound",
 									"host": [
-										"localhost"
+										"{{dev}}"
 									],
-									"port": "5000",
 									"path": [
 										"api",
 										"transaction",
@@ -1419,11 +1673,10 @@
 									]
 								},
 								"url": {
-									"raw": "localhost:5000/api/transaction/pos/inbound",
+									"raw": "{{dev}}/api/transaction/pos/inbound",
 									"host": [
-										"localhost"
+										"{{dev}}"
 									],
-									"port": "5000",
 									"path": [
 										"api",
 										"transaction",
@@ -1435,6 +1688,32 @@
 							"response": []
 						}
 					]
+				},
+				{
+					"name": "Clean POS Transaction",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "token",
+								"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{dev}}/api/transaction/pos/cleanup",
+							"host": [
+								"{{dev}}"
+							],
+							"path": [
+								"api",
+								"transaction",
+								"pos",
+								"cleanup"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -1456,11 +1735,10 @@
 									}
 								],
 								"url": {
-									"raw": "localhost:5000/api/master/item",
+									"raw": "{{dev}}/api/master/item",
 									"host": [
-										"localhost"
+										"{{dev}}"
 									],
-									"port": "5000",
 									"path": [
 										"api",
 										"master",
@@ -1491,11 +1769,10 @@
 									}
 								},
 								"url": {
-									"raw": "localhost:5000/api/master/item",
+									"raw": "{{dev}}/api/master/item",
 									"host": [
-										"localhost"
+										"{{dev}}"
 									],
-									"port": "5000",
 									"path": [
 										"api",
 										"master",
@@ -1526,11 +1803,10 @@
 									}
 								},
 								"url": {
-									"raw": "localhost:5000/api/master/item",
+									"raw": "{{dev}}/api/master/item",
 									"host": [
-										"localhost"
+										"{{dev}}"
 									],
-									"port": "5000",
 									"path": [
 										"api",
 										"master",
@@ -1562,14 +1838,10 @@
 									]
 								},
 								"url": {
-									"raw": "127.0.0.1:5000/api/master/item",
+									"raw": "{{dev}}/api/master/item",
 									"host": [
-										"127",
-										"0",
-										"0",
-										"1"
+										"{{dev}}"
 									],
-									"port": "5000",
 									"path": [
 										"api",
 										"master",
@@ -1739,11 +2011,11 @@
 									}
 								],
 								"url": {
-									"raw": "localhost:5000/api/master/supplier",
+									"raw": "localhost:4000/api/master/supplier",
 									"host": [
 										"localhost"
 									],
-									"port": "5000",
+									"port": "4000",
 									"path": [
 										"api",
 										"master",
