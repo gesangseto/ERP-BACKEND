@@ -77,6 +77,12 @@ module.exports = function (app) {
   app.route("/api/transaction/pos/inbound").get(_pos_in.getInbound);
   var _pos_stock = require("./controller/POS/stock");
   app.route("/api/transaction/pos/stock").get(_pos_stock.get);
+  // DISCOUNT
+  var _pos_dis = require("./controller/POS/discount");
+  app.route("/api/transaction/pos/discount").get(_pos_dis.get);
+  app.route("/api/transaction/pos/discount").put(_pos_dis.insert);
+  app.route("/api/transaction/pos/discount").post(_pos_dis.update);
+  app.route("/api/transaction/pos/discount").delete(_pos_dis.delete);
   // RECEIVE
   var _pos_rec = require("./controller/POS/receive");
   app.route("/api/transaction/pos/receive").get(_pos_rec.get);
@@ -87,7 +93,8 @@ module.exports = function (app) {
   app.route("/api/transaction/pos/sale").get(_pos_sale.get);
   app.route("/api/transaction/pos/sale-cashier").get(_pos_sale.getByCashier);
   app.route("/api/transaction/pos/sale").put(_pos_sale.newSale);
-  app.route("/api/transaction/pos/sale/payment").post(_pos_sale.paySale);
+  app.route("/api/transaction/pos/sale").post(_pos_sale.updateSale);
+  app.route("/api/transaction/pos/sale/payment").post(_pos_sale.payment);
   // RETURN
   var _pos_ret = require("./controller/POS/return");
   app.route("/api/transaction/pos/return").get(_pos_ret.getReturn);

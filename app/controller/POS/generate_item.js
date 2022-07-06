@@ -69,8 +69,46 @@ async function getSale(data = Object) {
   return _data;
 }
 
+async function getCustomer(data = Object) {
+  let _sql = `SELECT * FROM mst_customer AS a WHERE a.flag_delete = '0' `;
+  if (data.hasOwnProperty("mst_customer_id")) {
+    _sql += ` AND a.mst_customer_id = '${data.mst_customer_id}'`;
+  }
+  let _data = await exec_query(_sql);
+  return _data;
+}
+
+async function getDiscount(data = Object) {
+  let _sql = `SELECT *, a.status AS status, a.flag_delete AS flag_delete
+  FROM pos_discount AS a 
+  LEFT JOIN mst_item_variant AS b ON a.mst_item_variant_id = b.mst_item_variant_id
+  LEFT JOIN mst_item AS c ON b.mst_item_id = c.mst_item_id
+  WHERE a.flag_delete='0' `;
+  if (data.hasOwnProperty("pos_discount_id")) {
+    _sql += ` AND a.pos_discount_id = '${data.pos_discount_id}'`;
+  }
+  if (data.hasOwnProperty("mst_item_variant_id")) {
+    _sql += ` AND b.mst_item_variant_id = '${data.mst_item_variant_id}'`;
+  }
+  if (data.hasOwnProperty("barcode")) {
+    _sql += ` AND b.barcode = '${data.barcode}'`;
+  }
+  if (data.hasOwnProperty("mst_item_id")) {
+    _sql += ` AND a.mst_item_id = '${data.mst_item_id}'`;
+  }
+  if (data.hasOwnProperty("status")) {
+    _sql += ` AND a.status = '${data.status}'`;
+  }
+  let _data = await exec_query(_sql);
+  return _data;
+}
+
 async function getSaleByCashier(data = Object) {
   let _data = await getCashier(data);
+  if (_data.error || _data.data.length == 0) {
+    return _data;
+  }
+  let created_by = _data.data[0].created_by ?? 0;
   let newData = [];
   for (const it of _data.data) {
     let _fr = "YYYY-MM-DD hh:mm:ss";
@@ -79,7 +117,7 @@ async function getSaleByCashier(data = Object) {
     let _get_sale = `SELECT *,a.status AS status
     FROM pos_trx_sale AS a
     LEFT JOIN mst_customer AS b ON a.mst_customer_id = b.mst_customer_id
-    WHERE a.created_at >= '${dt_start}'`;
+    WHERE a.created_by='${created_by}' AND a.created_at >= '${dt_start}'`;
     if (dt_end != "Invalid date") {
       _get_sale += ` AND a.created_at <= '${dt_end}'`;
     }
@@ -89,7 +127,9 @@ async function getSaleByCashier(data = Object) {
     _get_sale = await exec_query(_get_sale);
     let _sale = [];
     for (const ch of _get_sale.data) {
-      let child = await getTrxDetailItem(ch);
+      let child = await getTrxDetailItem({
+        pos_trx_ref_id: ch.pos_trx_sale_id,
+      });
       ch.detail = child.data;
       _sale.push(ch);
     }
@@ -101,11 +141,36 @@ async function getSaleByCashier(data = Object) {
 }
 
 async function getStockItem(data = Object) {
-  let _sql = `SELECT * 
+  let _sql = `SELECT
+        MAX(a.pos_item_stock_id) AS pos_item_stock_id,
+        MAX(a.mst_item_id) AS mst_item_id,
+        MAX(b.mst_item_name) AS mst_item_name,
+        MAX(b.mst_item_desc) AS mst_item_desc,
+        MAX(b.mst_item_no) AS mst_item_no,
+        MAX(a.qty) AS qty,
+        STRING_AGG(coalesce(c.mst_item_variant_id::character varying,''), ';') as mst_item_variant_id,
+        STRING_AGG(coalesce(c.barcode::character varying,''), ';') as barcode,
+        STRING_AGG(coalesce(c.mst_item_variant_name,''),';') AS mst_item_variant_name,
+        STRING_AGG(coalesce(c.mst_item_variant_qty::character varying,''), ';') as mst_item_variant_qty,
+        STRING_AGG(coalesce(d.pos_discount_id ::character varying,''), ';') as pos_discount_id,
+        STRING_AGG(coalesce(d.pos_discount::character varying,''), ';') as pos_discount,
+        STRING_AGG(coalesce(d.pos_discount_starttime ::character varying,''), ';') as pos_discount_starttime,
+        STRING_AGG(coalesce(d.pos_discount_endtime  ::character varying,''), ';') as pos_discount_endtime,
+        STRING_AGG(coalesce(d.pos_discount_min_qty  ::character varying,''), ';') as pos_discount_min_qty,
+        STRING_AGG(coalesce(d.pos_discount_free_qty  ::character varying,''), ';') as pos_discount_free_qty,
+        STRING_AGG(coalesce(c.mst_item_variant_price  ::character varying,''), ';') as mst_item_variant_price,
+        STRING_AGG(coalesce(c.mst_item_variant_price  ::character varying,''), ';') as price,
+        STRING_AGG(coalesce(c.mst_item_variant_price::float * (d.pos_discount::float/100),0)::character varying, ';') as discount_price,
+        STRING_AGG(coalesce(c.mst_item_variant_price::float-c.mst_item_variant_price::float * (d.pos_discount::float/100),c.mst_item_variant_price)::character varying, ';') as after_discount_price
     FROM pos_item_stock AS a  
-    LEFT JOIN mst_item AS b ON a.mst_item_id= b.mst_item_id
+    LEFT JOIN mst_item AS b ON a.mst_item_id= b.mst_item_id 
     LEFT JOIN mst_item_variant AS c ON b.mst_item_id = c.mst_item_id
-    WHERE 1+1=2 `;
+    LEFT JOIN pos_discount AS d 
+      ON c.mst_item_variant_id = d.mst_item_variant_id
+      AND d.status = '1'
+      AND (d.pos_discount_starttime <= now() AND pos_discount_endtime > now())
+      AND d.flag_delete = '0'
+    WHERE 1+1=2  `;
   if (data.hasOwnProperty("mst_item_id")) {
     _sql += ` AND b.mst_item_id = '${data.mst_item_id}'`;
   }
@@ -115,6 +180,7 @@ async function getStockItem(data = Object) {
   if (data.hasOwnProperty("barcode")) {
     _sql += ` AND c.barcode = '${data.barcode}'`;
   }
+  _sql += ` GROUP BY a.pos_item_stock_id`;
   let _data = await exec_query(_sql);
   return _data;
 }
@@ -257,4 +323,6 @@ module.exports = {
   getCashier,
   getSale,
   getSaleByCashier,
+  getDiscount,
+  getCustomer,
 };

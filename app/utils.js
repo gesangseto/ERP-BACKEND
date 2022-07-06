@@ -151,7 +151,32 @@ function sumByKey({ key, sum, array }) {
   return result;
 }
 
+function isDate(date, format = "YYYY-MM-DD") {
+  let dt = moment(date).format("YYYY-MM-DD");
+  if (dt == "Invalid date") {
+    return false;
+  } else {
+    return dt;
+  }
+}
+
+function diffDate(date, date2) {
+  let diff = moment(date2)
+    .startOf("day")
+    .diff(moment(date).startOf("day"), "days");
+  return diff;
+}
+function numberPercent(num, percent) {
+  num = parseFloat(isInt(num) ? num : 0);
+  percent = parseFloat(isInt(percent) ? percent : 0);
+  let result = num + num * (percent / 100);
+  return result;
+}
+
 module.exports = {
+  numberPercent,
+  diffDate,
+  isDate,
   nestedData,
   encrypt,
   super_menu,
