@@ -1,13 +1,8 @@
 "use strict";
 const response = require("../../response");
 const models = require("../../models");
-const {
-  percentToFloat,
-  generateId,
-  numberPercent,
-  sumByKey,
-  isInt,
-} = require("../../utils");
+const { generateId, numberPercent, sumByKey, isInt } = require("../../utils");
+const { calculateSale } = require("./utils");
 const {
   getStockItem,
   getTrxDetailItem,
@@ -232,6 +227,59 @@ exports.updateSale = async function (req, res) {
   }
 };
 
+exports.deleteSale = async function (req, res) {
+  var data = { data: req.body };
+  try {
+    perf.start();
+    let body = req.body;
+
+    const require_data = ["pos_trx_sale_id"];
+    for (const row of require_data) {
+      if (!body[`${row}`]) {
+        throw new Error(`${row} is required!`);
+      }
+    }
+    let _detail = await getTrxDetailItem({
+      pos_trx_ref_id: body.pos_trx_sale_id,
+    });
+    let _header = await getSale({
+      pos_trx_sale_id: body.pos_trx_sale_id,
+    });
+    if (_header.error || _header.data.length == 0) {
+      throw new Error(`Sale not found!`);
+    }
+
+    _detail = _detail.data;
+    _header = _header.data[0];
+    if (_header.is_paid) {
+      throw new Error(`Cannot delete, Sale is already paid!`);
+    }
+
+    let param = {
+      status: 0,
+      flag_delete: 1,
+      pos_trx_sale_id: body.pos_trx_sale_id,
+      pos_trx_ref_id: body.pos_trx_sale_id,
+    };
+    var _delHeader = await models.generate_query_update({
+      values: param,
+      table: "pos_trx_sale",
+      key: "pos_trx_sale_id",
+    });
+    var _delDetail = await models.generate_query_update({
+      values: param,
+      table: "pos_trx_detail",
+      key: "pos_trx_ref_id",
+    });
+    let _res = models.exec_query(`${_delHeader}${_delDetail}`);
+    return response.response(_res, res);
+  } catch (error) {
+    data.error = true;
+    data.message = `${error}`;
+    return response.response(data, res);
+  }
+};
+
 exports.payment = async function (req, res) {
   var data = { data: req.body };
   try {
@@ -289,60 +337,3 @@ exports.payment = async function (req, res) {
     return response.response(data, res);
   }
 };
-
-async function calculateSale({ header, detail }) {
-  let body = { ...header };
-  body.pos_trx_sale_id = header.pos_trx_sale_id ?? 0;
-  body.mst_customer_id = header.mst_customer_id ?? 0;
-  body.price_percentage = header.price_percentage ?? 0;
-  body.ppn = header.mst_customer_ppn;
-  body.is_paid = false;
-  body.total_price = 0;
-  body.total_discount = 0;
-  body.grand_total = 0;
-  let _saleDetail = "";
-  let _sale_item = [];
-  for (const it of detail) {
-    let _item = await getStockItem(it);
-    _item = _item.data[0];
-    if (!_item) {
-      throw new Error(`Item Variant is not found!`);
-    }
-    it.qty = it.qty * _item.mst_item_variant_qty;
-    if (_item.qty < it.qty) {
-      throw new Error(`Request ${it.qty} Item Variant stock is not enough!`);
-    }
-    let _dt = { ...it };
-    _dt.pos_trx_sale_id = body.pos_trx_sale_id;
-    _dt.pos_trx_ref_id = body.pos_trx_sale_id;
-    _dt.mst_item_variant_id = _item.mst_item_variant_id;
-    _dt.mst_item_id = _item.mst_item_id;
-    _dt.qty = it.qty;
-    _dt.capital_price = _item.price;
-    _dt.price = numberPercent(_item.price, body.price_percentage);
-    _dt.discount_price = numberPercent(
-      _item.discount_price,
-      body.price_percentage
-    );
-    _dt.total = _dt.qty * (_dt.price - _dt.discount_price);
-    _saleDetail += await models.generate_query_insert({
-      table: "pos_trx_detail",
-      values: _dt,
-    });
-
-    _item.qty = parseInt(_item.qty) - it.qty;
-
-    body.total_price += it.qty * _dt.price;
-    body.total_discount += it.qty * _dt.discount_price;
-    body.grand_total += body.total_price - body.total_discount;
-    body.grand_total = numberPercent(body.grand_total, body.ppn);
-    _sale_item.push(_dt);
-  }
-  let _sale = await models.generate_query_insert({
-    table: "pos_trx_sale",
-    values: body,
-  });
-  let _item = { ...body };
-  _item.sale_item = _sale_item;
-  return _item;
-}

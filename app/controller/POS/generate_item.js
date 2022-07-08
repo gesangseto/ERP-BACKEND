@@ -6,6 +6,43 @@ const {
 const moment = require("moment");
 const { sumByKey, generateId } = require("../../utils");
 
+async function getUserBranch(data = Object, grouping = false) {
+  let _sql = ` SELECT `;
+  if (grouping) {
+    _sql += `
+          MAX(c.user_id) as user_id,
+          MAX(c.user_name) as user_name,
+          MAX(c.user_email) as user_email,
+          MAX(c.user_section_id) as user_section_id,
+          STRING_AGG(coalesce(a.pos_user_id ::character varying,''), ';') as pos_user_id,
+          STRING_AGG(coalesce(a.is_cashier ::character varying,''), ';') as is_cashier,
+          STRING_AGG(coalesce(b.pos_branch_code::character varying,''), ';') as pos_branch_code,
+          STRING_AGG(coalesce(b.pos_branch_name::character varying,''), ';') as pos_branch_name`;
+  } else {
+    _sql += ` a.*, b.*, c.user_name, c.user_email`;
+  }
+  _sql += `
+    FROM pos_user AS a
+    LEFT JOIN pos_branch AS b ON a.pos_branch_id = b.pos_branch_id
+    LEFT JOIN "user" AS c ON a.user_id = c.user_id
+    WHERE a.flag_delete='0' `;
+  if (data.hasOwnProperty("user_id")) {
+    _sql += ` AND a.user_id = '${data.user_id}'`;
+  }
+  if (data.hasOwnProperty("pos_user_id")) {
+    _sql += ` AND a.pos_user_id = '${data.pos_user_id}'`;
+  }
+  if (data.hasOwnProperty("pos_branch_id")) {
+    _sql += ` AND a.pos_branch_id = '${data.pos_branch_id}'`;
+  }
+  if (data.hasOwnProperty("is_cashier")) {
+    _sql += ` AND a.is_cashier IS ${data.is_cashier}`;
+  }
+  // _sql += ` GROUP BY c.user_id;`;
+  let _data = await exec_query(_sql);
+  return _data;
+}
+
 async function getItem(data = Object) {
   let _sql = `SELECT * 
       FROM mst_item AS a
@@ -52,7 +89,12 @@ async function getCashier(data = Object) {
 }
 
 async function getSale(data = Object) {
-  let _sql = `SELECT *,a.status AS status
+  let _sql = `SELECT 
+  *,
+  a.status AS status,
+  a.flag_delete AS flag_delete,
+  a.created_at AS created_at,
+  a.created_by AS created_by
       FROM pos_trx_sale AS a
       LEFT JOIN mst_customer AS b ON a.mst_customer_id = b.mst_customer_id
       WHERE a.flag_delete='0' `;
@@ -171,13 +213,13 @@ async function getStockItem(data = Object) {
       AND (d.pos_discount_starttime <= now() AND pos_discount_endtime > now())
       AND d.flag_delete = '0'
     WHERE 1+1=2  `;
-  if (data.hasOwnProperty("mst_item_id")) {
+  if (data.hasOwnProperty("mst_item_id") && data.mst_item_id) {
     _sql += ` AND b.mst_item_id = '${data.mst_item_id}'`;
   }
-  if (data.hasOwnProperty("mst_item_variant_id")) {
+  if (data.hasOwnProperty("mst_item_variant_id") && data.mst_item_variant_id) {
     _sql += ` AND c.mst_item_variant_id = '${data.mst_item_variant_id}'`;
   }
-  if (data.hasOwnProperty("barcode")) {
+  if (data.hasOwnProperty("barcode") && data.barcode) {
     _sql += ` AND c.barcode = '${data.barcode}'`;
   }
   _sql += ` GROUP BY a.pos_item_stock_id`;
@@ -245,12 +287,16 @@ async function proccessToStock(data) {
 
 async function getTrxDetailItem(data = Object) {
   let _sql = `SELECT * FROM pos_trx_detail AS a
+    LEFT JOIN mst_item_variant AS b ON a.mst_item_variant_id  = b.mst_item_variant_id 
     WHERE 1+1=2 `;
   if (data.hasOwnProperty("pos_trx_ref_id")) {
     _sql += ` AND a.pos_trx_ref_id = '${data.pos_trx_ref_id}'`;
   }
-  if (data.hasOwnProperty("mst_item_variant_id")) {
+  if (data.hasOwnProperty("mst_item_variant_id") && data.mst_item_variant_id) {
     _sql += ` AND a.mst_item_variant_id = '${data.mst_item_variant_id}'`;
+  }
+  if (data.hasOwnProperty("barcode") && data.barcode) {
+    _sql += ` AND b.barcode = '${data.barcode}'`;
   }
   let _data = await exec_query(_sql);
   return _data;
@@ -279,10 +325,10 @@ async function getReceive(data = Object, onlyQuery = false) {
   if (data.hasOwnProperty("batch_no")) {
     _sql += ` AND b.batch_no = '${data.batch_no}'`;
   }
-  if (data.hasOwnProperty("mst_item_id")) {
+  if (data.hasOwnProperty("mst_item_id") && data.mst_item_id) {
     _sql += ` AND b.mst_item_id = '${data.mst_item_id}'`;
   }
-  if (data.hasOwnProperty("barcode")) {
+  if (data.hasOwnProperty("barcode") && data.barcode) {
     _sql += ` AND c.barcode = '${data.barcode}'`;
   }
   _sql += ` GROUP BY a.pos_receive_id ;`;
@@ -312,6 +358,12 @@ async function getDetailReceive(data = Object) {
   return _data;
 }
 
+async function getPosConfig() {
+  let _sql = `SELECT * FROM pos_config LIMIT 1 `;
+  let _data = await exec_query(_sql);
+  return _data.data[0];
+}
+
 module.exports = {
   getReceive,
   getDetailReceive,
@@ -325,4 +377,6 @@ module.exports = {
   getSaleByCashier,
   getDiscount,
   getCustomer,
+  getPosConfig,
+  getUserBranch,
 };

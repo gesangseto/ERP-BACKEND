@@ -352,6 +352,7 @@ async function delete_query({
   table,
   deleted = false,
   force_delete = false,
+  onlyQuery = false,
 }) {
   let _data = JSON.parse(JSON.stringify(data_set));
 
@@ -374,6 +375,9 @@ async function delete_query({
     query_sql = `DELETE FROM ${table} WHERE ${key}='${data[key]}'`;
   } else {
     query_sql = `UPDATE ${table} SET flag_delete='1' WHERE ${key}='${data[key]}'`;
+  }
+  if (onlyQuery) {
+    return query_sql;
   }
   return await new Promise((resolve) =>
     pool.query(query_sql, function (err, rows) {

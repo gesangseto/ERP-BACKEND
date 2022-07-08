@@ -77,12 +77,32 @@ module.exports = function (app) {
   app.route("/api/transaction/pos/inbound").get(_pos_in.getInbound);
   var _pos_stock = require("./controller/POS/stock");
   app.route("/api/transaction/pos/stock").get(_pos_stock.get);
+
+  /*
+  MASTER
+  */
+  // BRANCH *CABANG
+  var _pos_brc = require("./controller/POS/branch");
+  app.route("/api/master/pos/branch").get(_pos_brc.get);
+  app.route("/api/master/pos/branch").put(_pos_brc.insert);
+  app.route("/api/master/pos/branch").post(_pos_brc.update);
+  app.route("/api/master/pos/branch").delete(_pos_brc.delete);
+  // USER BRANCH
+  var _pos_ub = require("./controller/POS/user_branch");
+  app.route("/api/master/pos/user-branch").get(_pos_ub.get);
+  app.route("/api/master/pos/user-branch").put(_pos_ub.insert);
+  app.route("/api/master/pos/user-branch").post(_pos_ub.update);
+  app.route("/api/master/pos/user-branch").delete(_pos_ub.delete);
   // DISCOUNT
   var _pos_dis = require("./controller/POS/discount");
-  app.route("/api/transaction/pos/discount").get(_pos_dis.get);
-  app.route("/api/transaction/pos/discount").put(_pos_dis.insert);
-  app.route("/api/transaction/pos/discount").post(_pos_dis.update);
-  app.route("/api/transaction/pos/discount").delete(_pos_dis.delete);
+  app.route("/api/master/pos/discount").get(_pos_dis.get);
+  app.route("/api/master/pos/discount").put(_pos_dis.insert);
+  app.route("/api/master/pos/discount").post(_pos_dis.update);
+  app.route("/api/master/pos/discount").delete(_pos_dis.delete);
+
+  /*
+  TRANSACTION
+  */
   // RECEIVE
   var _pos_rec = require("./controller/POS/receive");
   app.route("/api/transaction/pos/receive").get(_pos_rec.get);
@@ -94,12 +114,13 @@ module.exports = function (app) {
   app.route("/api/transaction/pos/sale-cashier").get(_pos_sale.getByCashier);
   app.route("/api/transaction/pos/sale").put(_pos_sale.newSale);
   app.route("/api/transaction/pos/sale").post(_pos_sale.updateSale);
+  app.route("/api/transaction/pos/sale").delete(_pos_sale.deleteSale);
   app.route("/api/transaction/pos/sale/payment").post(_pos_sale.payment);
   // RETURN
   var _pos_ret = require("./controller/POS/return");
   app.route("/api/transaction/pos/return").get(_pos_ret.getReturn);
   app.route("/api/transaction/pos/return").put(_pos_ret.newReturn);
-  app.route("/api/transaction/pos/return").post(_pos_ret.ApproveReturn);
+  app.route("/api/transaction/pos/return").post(_pos_ret.updateReturn);
   // CASHIER
   var _pos_cashier = require("./controller/POS/cashier");
   app.route("/api/transaction/pos/cashier").get(_pos_cashier.get);
