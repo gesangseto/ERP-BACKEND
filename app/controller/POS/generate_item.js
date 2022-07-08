@@ -2,11 +2,16 @@ const {
   exec_query,
   generate_query_insert,
   generate_query_update,
+  get_query,
 } = require("../../models");
 const moment = require("moment");
 const { sumByKey, generateId } = require("../../utils");
 
-async function getUserBranch(data = Object, grouping = false) {
+async function getUserBranch(
+  data = Object,
+  grouping = false,
+  onlyQuery = false
+) {
   let _sql = ` SELECT `;
   if (grouping) {
     _sql += `
@@ -38,8 +43,10 @@ async function getUserBranch(data = Object, grouping = false) {
   if (data.hasOwnProperty("is_cashier")) {
     _sql += ` AND a.is_cashier IS ${data.is_cashier}`;
   }
-  // _sql += ` GROUP BY c.user_id;`;
-  let _data = await exec_query(_sql);
+  if (onlyQuery) {
+    return _sql;
+  }
+  let _data = await get_query(_sql);
   return _data;
 }
 

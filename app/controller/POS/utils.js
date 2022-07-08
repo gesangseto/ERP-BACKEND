@@ -10,7 +10,7 @@ const cleanup = async function (req, res) {
   try {
     perf.start();
     let _query = `
-    TRUNCATE pos_user_branch CASCADE;
+    TRUNCATE pos_user CASCADE;
     TRUNCATE pos_branch CASCADE;
     TRUNCATE pos_item_stock CASCADE;
     TRUNCATE pos_discount CASCADE;
