@@ -7,49 +7,6 @@ const {
 const moment = require("moment");
 const { sumByKey, generateId } = require("../../utils");
 
-async function getUserBranch(
-  data = Object,
-  grouping = false,
-  onlyQuery = false
-) {
-  let _sql = ` SELECT `;
-  if (grouping) {
-    _sql += `
-          MAX(c.user_id) as user_id,
-          MAX(c.user_name) as user_name,
-          MAX(c.user_email) as user_email,
-          MAX(c.user_section_id) as user_section_id,
-          STRING_AGG(coalesce(a.pos_user_id ::character varying,''), ';') as pos_user_id,
-          STRING_AGG(coalesce(a.is_cashier ::character varying,''), ';') as is_cashier,
-          STRING_AGG(coalesce(b.pos_branch_code::character varying,''), ';') as pos_branch_code,
-          STRING_AGG(coalesce(b.pos_branch_name::character varying,''), ';') as pos_branch_name`;
-  } else {
-    _sql += ` a.*, b.*, c.user_name, c.user_email`;
-  }
-  _sql += `
-    FROM pos_user AS a
-    LEFT JOIN pos_branch AS b ON a.pos_branch_id = b.pos_branch_id
-    LEFT JOIN "user" AS c ON a.user_id = c.user_id
-    WHERE a.flag_delete='0' `;
-  if (data.hasOwnProperty("user_id")) {
-    _sql += ` AND a.user_id = '${data.user_id}'`;
-  }
-  if (data.hasOwnProperty("pos_user_id")) {
-    _sql += ` AND a.pos_user_id = '${data.pos_user_id}'`;
-  }
-  if (data.hasOwnProperty("pos_branch_id")) {
-    _sql += ` AND a.pos_branch_id = '${data.pos_branch_id}'`;
-  }
-  if (data.hasOwnProperty("is_cashier")) {
-    _sql += ` AND a.is_cashier IS ${data.is_cashier}`;
-  }
-  if (onlyQuery) {
-    return _sql;
-  }
-  let _data = await get_query(_sql);
-  return _data;
-}
-
 async function getItem(data = Object) {
   let _sql = `SELECT * 
       FROM mst_item AS a
@@ -113,6 +70,31 @@ async function getSale(data = Object) {
   }
   if (data.hasOwnProperty("is_paid")) {
     _sql += ` AND a.is_paid = '${data.is_paid}'`;
+  }
+  let _data = await exec_query(_sql);
+  return _data;
+}
+async function getReturn(data = Object) {
+  let _sql = `SELECT 
+  *,
+  a.status AS status,
+  a.flag_delete AS flag_delete,
+  a.created_at AS created_at,
+  a.created_by AS created_by
+      FROM pos_trx_return AS a
+      LEFT JOIN mst_customer AS b ON a.mst_customer_id = b.mst_customer_id
+      WHERE a.flag_delete='0' `;
+  if (data.hasOwnProperty("pos_trx_return_id")) {
+    _sql += ` AND a.pos_trx_return_id = '${data.pos_trx_return_id}'`;
+  }
+  if (data.hasOwnProperty("pos_trx_sale_id")) {
+    _sql += ` AND a.pos_trx_sale_id = '${data.pos_trx_sale_id}'`;
+  }
+  if (data.hasOwnProperty("mst_customer_id")) {
+    _sql += ` AND b.mst_customer_id = '${data.mst_customer_id}'`;
+  }
+  if (data.hasOwnProperty("is_returned")) {
+    _sql += ` AND a.is_returned = '${data.is_returned}'`;
   }
   let _data = await exec_query(_sql);
   return _data;
@@ -243,13 +225,15 @@ async function proccessToInbound(data) {
     _data.pos_trx_inbound_type = "receive";
     _data.pos_ref_table = "pos_receive";
     _data.pos_ref_id = _data.pos_receive_id;
-  } else if (data.hasOwnProperty("mst_customer_id")) {
+  } else if (data.hasOwnProperty("pos_trx_return_id")) {
     _data.mst_customer_id = data.mst_customer_id;
     _data.pos_trx_inbound_type = "return";
-  } else if (data.hasOwnProperty("mst_warehouse_id")) {
-    _data.mst_warehouse_id = data.mst_warehouse_id;
-    _data.pos_trx_inbound_type = "warehouse";
+    _data.pos_ref_id = _data.pos_trx_return_id;
   }
+  // else if (data.hasOwnProperty("mst_warehouse_id")) {
+  //   _data.mst_warehouse_id = data.mst_warehouse_id;
+  //   _data.pos_trx_inbound_type = "warehouse";
+  // }
 
   let _insert = await generate_query_insert({
     table: "pos_trx_inbound",
@@ -262,6 +246,8 @@ async function proccessToStock(data) {
   let _datas = {};
   if (data.hasOwnProperty("pos_receive_id")) {
     _datas = await getDetailReceive({ pos_receive_id: data.pos_receive_id });
+  } else if (data.hasOwnProperty("pos_trx_return_id")) {
+    _datas = await getTrxDetailItem({ pos_trx_ref_id: data.pos_trx_return_id });
   }
 
   let reduce = sumByKey({
@@ -269,7 +255,6 @@ async function proccessToStock(data) {
     array: _datas.data,
     sum: "qty",
   });
-
   let _sql = "";
   for (const it of reduce) {
     let _item = await getStockItem(it);
@@ -381,9 +366,9 @@ module.exports = {
   getTrxDetailItem,
   getCashier,
   getSale,
+  getReturn,
   getSaleByCashier,
   getDiscount,
   getCustomer,
   getPosConfig,
-  getUserBranch,
 };

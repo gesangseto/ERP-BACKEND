@@ -18,6 +18,9 @@ const {
   getItem,
   getCustomer,
   getPosConfig,
+  getReturn,
+  proccessToInbound,
+  proccessToStock,
 } = require("./generate_item");
 const moment = require("moment");
 const perf = require("execution-time")();
@@ -31,17 +34,14 @@ exports.getReturn = async function (req, res) {
     const require_data = [];
     for (const row of require_data) {
       if (!req.query[`${row}`]) {
-        data.error = true;
-        data.message = `${row} is required!`;
-        return response.response(data, res);
+        throw new Error(`Please open cashier first!`);
       }
     }
     // LINE WAJIB DIBAWA
-    let check = await getSale(req.query);
+    let check = await getReturn(req.query);
     if (check.data.length == 1 && req.query.pos_trx_return_id) {
       let it = check.data[0];
       it.pos_trx_ref_id = req.query.pos_trx_return_id;
-      console.log(it);
       let _detail = await getTrxDetailItem(it);
       check.data[0].detail = _detail.data;
     }
@@ -67,21 +67,21 @@ exports.newReturn = async function (req, res) {
     if (_check.error || _check.data.length == 0) {
       throw new Error(`Please open cashier first!`);
     }
-    var require_data = ["pos_trx_sale_id", "return_item"];
+    var require_data = ["pos_trx_sale_id"];
     for (const row of require_data) {
       if (!body[`${row}`]) {
         throw new Error(`${row} is required!`);
       }
     }
     body.pos_trx_return_id = pos_trx_return_id;
-    if (!Array.isArray(body.return_item) || !body.return_item.length) {
-      throw new Error(`Return Item must be in Array`);
+    let _getRet = await getReturn({
+      pos_trx_sale_id: body.pos_trx_sale_id,
+      is_returned: true,
+    });
+    if (_getRet.data.length > 0) {
+      throw new Error(`Data is already returned!`);
     }
-    for (const it of body.return_item) {
-      if (!it.qty || (!it.mst_item_variant_id && !it.barcode)) {
-        throw new Error(`Quantity or Item Variant is not valid`);
-      }
-    }
+
     let _getSale = await getSale({ pos_trx_sale_id: body.pos_trx_sale_id });
     if (_getSale.error || _getSale.data.length == 0) {
       throw new Error(`Sale not found!`);
@@ -106,85 +106,36 @@ exports.newReturn = async function (req, res) {
       throw new Error(`Sale not found!`);
     }
 
-    let header = { ..._getSale, ...body };
-    let detail = [];
-    for (const it of body.return_item) {
-      let _getDetail = await getTrxDetailItem({
-        pos_trx_ref_id: body.pos_trx_sale_id,
-        mst_item_variant_id: it.mst_item_variant_id,
-        barcode: it.barcode,
-      });
-      if (_getDetail.error || _getDetail.data.length == 0) {
-        throw new Error(`Sale Item not found!`);
-      }
-      _getDetail = _getDetail.data[0];
-      if (_getSale.status == "0" || _getSale.flag_delete == "1") {
-        throw new Error(`Sale item is not active!`);
-      }
-      if (it.qty > _getDetail.qty) {
-        throw new Error(`Qty is not valid!`);
-      }
-      let param = { ..._getDetail, ...it };
-      param.pos_trx_ref_id = pos_trx_return_id;
-      detail.push(param);
-    }
-
-    let _calculate = await calculateSale({
-      header: header,
-      detail: detail,
-      type: "return",
+    let _getSaleDetail = await getTrxDetailItem({
+      pos_trx_ref_id: body.pos_trx_sale_id,
     });
-
+    if (_getSaleDetail.error || _getSaleDetail.data.length == 0) {
+      throw new Error(`Sale Detail not found!`);
+    }
+    _getSale = { ..._getSale, ...body };
+    delete _getSale.updated_by;
+    delete _getSale.updated_at;
+    delete _getSale.pos_trx_detail_id;
     let _insertHeader = await models.insert_query({
-      data: _calculate,
+      data: _getSale,
       table: "pos_trx_return",
       onlyQuery: true,
     });
     let _insertDetail = "";
-    for (const it of _calculate.return_item) {
+    for (const it of _getSaleDetail.data) {
+      delete it.updated_by;
+      delete it.updated_at;
+      delete it.pos_trx_detail_id;
+      it.pos_trx_ref_id = pos_trx_return_id;
       _insertDetail += await models.generate_query_insert({
         values: it,
         table: "pos_trx_detail",
-        onlyQuery: true,
       });
     }
-    console.log(_insertHeader);
-    console.log(_insertDetail);
-    return;
-
-    let _cust = await getCustomer({ mst_customer_id: mst_customer_id });
-    if (_cust.error || _cust.data.length == 0) {
-      throw new Error(`Customer not found`);
-    }
-    _cust = _cust.data[0];
-    let up_price = _cust.price_percentage;
-
-    body.mst_customer_id = mst_customer_id;
-    body.price_percentage = up_price;
-    body.ppn = _cust.mst_customer_ppn;
-    body.is_paid = false;
-    body.total_price = 0;
-    body.total_discount = 0;
-    body.grand_total = 0;
-    // let _calculate = await calculateSale({
-    //   header: body,
-    //   detail: body.return_item,
-    // });
-
-    let _sale = await models.generate_query_insert({
-      table: "pos_trx_return",
-      values: _calculate,
-    });
-    let _saleDetail = "";
-
-    for (const it of _calculate.return_item) {
-      _saleDetail += await models.generate_query_insert({
-        table: "pos_trx_detail",
-        values: it,
-      });
-    }
-    let _res = await models.exec_query(`${_sale}${_saleDetail}`);
-    _res.data = [_calculate];
+    // console.log(`${_insertHeader}${_insertDetail}`);
+    _getSale.detail = _getSaleDetail.data;
+    let _res = await models.exec_query(`${_insertHeader}${_insertDetail}`);
+    _res.data = [_getSale];
     return response.response(_res, res);
   } catch (error) {
     data.error = true;
@@ -193,129 +144,50 @@ exports.newReturn = async function (req, res) {
   }
 };
 
-exports.updateReturn = async function (req, res) {
+exports.approveReturn = async function (req, res) {
   var data = { data: req.body };
   try {
     perf.start();
     let body = req.body;
-
-    let _check = await getCashier({
-      created_by: body.updated_by,
-      is_cashier_open: true,
-    });
-    if (_check.error || _check.data.length == 0) {
-      throw new Error(`Please open cashier first!`);
-    }
-    var require_data = ["qty", "mst_item_variant_id", "pos_trx_return_id"];
-    for (const row of require_data) {
-      if (!body[`${row}`] && !isInt(body[`${row}`])) {
-        throw new Error(`${row} is required!`);
-      }
-    }
-    let _sale = await getSale(body);
-    let _saleDetail = await getTrxDetailItem({
-      pos_trx_ref_id: body.pos_trx_return_id,
-    });
-    let isExist = await getTrxDetailItem({
-      pos_trx_ref_id: body.pos_trx_return_id,
-      mst_item_variant_id: body.mst_item_variant_id,
-    });
-    _sale = _sale.data[0];
-    _saleDetail = _saleDetail.data ?? [];
-    isExist = isExist.data[0];
-
-    if (!isExist) {
-      _saleDetail.push(body);
-    } else {
-      let newData = _saleDetail;
-      _saleDetail = [];
-      for (const it of newData) {
-        if (it.mst_item_variant_id == body.mst_item_variant_id) {
-          it.qty = body.qty;
-          it.flag_delete = it.qty == 0 ? 1 : 0;
-        }
-        _saleDetail.push(it);
-      }
-    }
-    let _calculate = await calculateSale({
-      header: _sale,
-      detail: _saleDetail,
-    });
-    let _updateHeader = await models.generate_query_update({
-      values: _calculate,
-      table: "pos_trx_return",
-      key: "pos_trx_return_id",
-    });
-    let _updateDetail = "";
-    for (const it of _calculate.return_item) {
-      if (it.hasOwnProperty("pos_trx_detail_id")) {
-        _updateDetail += await models.generate_query_update({
-          values: it,
-          table: "pos_trx_detail",
-          key: "pos_trx_detail_id",
-        });
-      } else {
-        _updateDetail += await models.generate_query_insert({
-          values: it,
-          table: "pos_trx_detail",
-        });
-      }
-    }
-    let _res = await models.exec_query(`${_updateHeader}${_updateDetail}`);
-    _res.data = [_calculate];
-    return response.response(_res, res);
-  } catch (error) {
-    data.error = true;
-    data.message = `${error}`;
-    return response.response(data, res);
-  }
-};
-
-exports.deleteReturn = async function (req, res) {
-  var data = { data: req.body };
-  try {
-    perf.start();
-    let body = req.body;
-
-    const require_data = ["pos_trx_return_id"];
+    var require_data = ["pos_trx_return_id", "is_approve"];
     for (const row of require_data) {
       if (!body[`${row}`]) {
         throw new Error(`${row} is required!`);
       }
     }
-    let _detail = await getTrxDetailItem({
-      pos_trx_ref_id: body.pos_trx_return_id,
-    });
-    let _header = await getSale({
-      pos_trx_return_id: body.pos_trx_return_id,
-    });
-    if (_header.error || _header.data.length == 0) {
-      throw new Error(`Sale not found!`);
+    let _returnHeader = await getReturn(body);
+    if (_returnHeader.error || _returnHeader.data.length == 0) {
+      throw new Error(`Return data is not found!`);
     }
-
-    _detail = _detail.data;
-    _header = _header.data[0];
-    if (_header.is_paid) {
-      throw new Error(`Cannot delete, Sale is already paid!`);
+    _returnHeader = _returnHeader.data[0];
+    if (_returnHeader.is_returned != null) {
+      throw new Error(`Return data is already proccess!`);
     }
-
-    let param = {
-      status: 0,
-      flag_delete: 1,
-      pos_trx_return_id: body.pos_trx_return_id,
-      pos_trx_ref_id: body.pos_trx_return_id,
-    };
-    var _delHeader = await models.generate_query_update({
-      values: param,
+    _returnHeader = { ..._returnHeader, ...body };
+    _returnHeader.is_returned = body.is_approve;
+    let _updatetHeader = await models.update_query({
+      data: _returnHeader,
       table: "pos_trx_return",
       key: "pos_trx_return_id",
+      onlyQuery: true,
     });
-    var _delDetail = await models.generate_query_update({
-      values: param,
-      table: "pos_trx_detail",
-      key: "pos_trx_ref_id",
-    });
-    let _res = models.exec_query(`${_delHeader}${_delDetail}`);
+    let _allQuery = _updatetHeader;
+    if (body.is_approve == "true") {
+      _allQuery += await proccessToInbound(_returnHeader);
+      _allQuery += await proccessToStock(body);
+      let param = {
+        pos_trx_sale_id: _returnHeader.pos_trx_sale_id,
+        status: 0,
+        flag_delete: 1,
+      };
+      _allQuery += await models.generate_query_update({
+        values: param,
+        table: "pos_trx_sale",
+        key: "pos_trx_sale_id",
+      });
+    }
+    console.log(_allQuery);
+    let _res = await models.exec_query(`${_allQuery}`);
     return response.response(_res, res);
   } catch (error) {
     data.error = true;

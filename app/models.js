@@ -317,7 +317,7 @@ async function update_query({ data, key, table, onlyQuery = false }) {
     }
   }
   dataArr = dataArr.join(",");
-  var query_sql = `UPDATE "${table}" SET ${dataArr} WHERE ${key}='${data[key]}'`;
+  var query_sql = `UPDATE "${table}" SET ${dataArr} WHERE ${key}='${data[key]}' ;`;
   let _onApproval = await isOnApproval(table, data[key]);
   if (_onApproval) {
     if (!_onApproval.is_approve) {
