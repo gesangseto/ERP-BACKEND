@@ -2,6 +2,7 @@
 const response = require("../response");
 const models = require("../models");
 const utils = require("../utils");
+const { getUser } = require("./get_data");
 const perf = require("execution-time")();
 
 exports.get = async function (req, res) {
@@ -19,14 +20,8 @@ exports.get = async function (req, res) {
       }
     }
     // LINE WAJIB DIBAWA
-    var $query = `
-    SELECT *,a.status AS status
-    FROM "user" AS a 
-    LEFT JOIN user_section AS b ON a.user_section_id = b.user_section_id
-    Left JOIN user_department AS c ON b.user_department_id = c.user_department_id
-    WHERE a.flag_delete='0' `;
-    $query = await models.filter_query($query, req.query);
-    const check = await models.get_query($query);
+    let query = await getUser(req.query, true);
+    const check = await models.get_query(query);
     check.data.forEach(function (v) {
       delete v.user_password;
     });

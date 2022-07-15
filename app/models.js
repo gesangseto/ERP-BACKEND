@@ -159,8 +159,8 @@ async function get_query(query_sql, generate_approval = true) {
     _data.message = count.message;
     return _data;
   }
+  count = count.data[0].total ? count.data[0].total : 0;
   let table = getFirstWord(_where[0]);
-
   let _data_db = await new Promise((resolve) =>
     pool.query(query_sql, function (err, rows) {
       if (err) {
@@ -176,6 +176,7 @@ async function get_query(query_sql, generate_approval = true) {
       }
       _data.data = rows.rows;
       _data.total = rows.rowCount;
+      _data.grand_total = parseInt(count);
       return resolve(_data);
     })
   );
@@ -396,7 +397,7 @@ async function delete_query({
   );
 }
 
-async function filter_query(query, request = Object, exclude = Array) {
+async function filter_query(query, request = Object, allow = Array) {
   let $query = query;
   try {
     for (const k in request) {
@@ -484,6 +485,7 @@ async function generateInsertApproval(obj = Object, data) {
     values: obj,
   });
 }
+
 async function getDefaultId(relation_code) {
   let getData = `SELECT * FROM sys_relation WHERE sys_relation_code='${relation_code}' LIMIT 1`;
   getData = await exec_query(getData);
@@ -493,7 +495,18 @@ async function getDefaultId(relation_code) {
   return null;
 }
 
+function getLimitOffset(page, limit) {
+  let _sql = "";
+  var start = 0;
+  if (page > 1) {
+    start = parseInt((page - 1) * limit);
+  }
+  var end = parseInt(start) + parseInt(limit);
+  _sql += ` LIMIT ${end}  OFFSET ${start} ;`;
+  return _sql;
+}
 module.exports = {
+  getLimitOffset,
   get_configuration,
   exec_query,
   get_query,
