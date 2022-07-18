@@ -373,9 +373,9 @@ async function delete_query({
   }
   let query_sql = ``;
   if (deleted) {
-    query_sql = `DELETE FROM ${table} WHERE ${key}='${data[key]}'`;
+    query_sql = `DELETE FROM "${table}" WHERE ${key}='${data[key]}'`;
   } else {
-    query_sql = `UPDATE ${table} SET flag_delete='1' WHERE ${key}='${data[key]}'`;
+    query_sql = `UPDATE "${table}" SET flag_delete='1' WHERE ${key}='${data[key]}'`;
   }
   if (onlyQuery) {
     return query_sql;

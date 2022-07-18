@@ -172,8 +172,15 @@ function numberPercent(num, percent) {
   let result = num + num * (percent / 100);
   return result;
 }
-
+function isJsonString(str) {
+  try {
+    return JSON.parse(str);
+  } catch (e) {
+    return false;
+  }
+}
 module.exports = {
+  isJsonString,
   numberPercent,
   diffDate,
   isDate,
