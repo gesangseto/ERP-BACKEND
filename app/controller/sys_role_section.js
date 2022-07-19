@@ -2,6 +2,7 @@
 const response = require("../response");
 const models = require("../models");
 const utils = require("../utils");
+const { getSysMenu } = require("./get_data");
 const perf = require("execution-time")();
 
 const _flag = {
@@ -102,10 +103,10 @@ exports.getRoleMenu = async function (req, res) {
         return response.response(data, res);
       }
     }
-
-    var $query = `SELECT  * FROM  sys_menu AS a WHERE a.status='1' `;
+    // var $query = `SELECT  * FROM  sys_menu AS a WHERE a.status='1' `;
     // query
-    var _menu = await models.exec_query($query);
+    // var _menu = await models.exec_query($query);
+    let _menu = await getSysMenu(req.query);
     // query
     if (_menu.error || _menu.total == 0) {
       return response.response(_menu, res);

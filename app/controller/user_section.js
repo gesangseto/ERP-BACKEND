@@ -1,6 +1,7 @@
 "use strict";
 const response = require("../response");
 const models = require("../models");
+const { getSection } = require("./get_data");
 const perf = require("execution-time")();
 
 exports.get = async function (req, res) {
@@ -18,28 +19,8 @@ exports.get = async function (req, res) {
       }
     }
     // LINE WAJIB DIBAWA
-    var $query = `
-    SELECT 
-    * ,
-    a.status AS status
-    FROM user_section AS a 
-    LEFT JOIN user_department AS b ON a.user_department_id = b.user_department_id
-    WHERE 1+1=2 `;
-    for (const k in req.query) {
-      if (k != "page" && k != "limit") {
-        $query += ` AND a.${k}='${req.query[k]}'`;
-      }
-    }
-    if (req.query.page || req.query.limit) {
-      var start = 0;
-      if (req.query.page > 1) {
-        start = parseInt((req.query.page - 1) * req.query.limit);
-      }
-      var end = parseInt(start) + parseInt(req.query.limit);
-      $query += ` LIMIT ${start} OFFSET ${end} `;
-    }
-    const check = await models.get_query($query);
-    return response.response(check, res);
+    let _res = await getSection(req.query);
+    return response.response(_res, res);
   } catch (error) {
     data.error = true;
     data.message = `${error}`;

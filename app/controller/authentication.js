@@ -38,11 +38,6 @@ exports.user_login = async function (req, res) {
     FROM sys_configuration AS a 
     WHERE a.user_name='${req.body.user_name}' AND a.user_password='${req.body.user_password}' LIMIT 1`;
     var check = await models.exec_query($query);
-    if (check.error) {
-      data.error = true;
-      data.message = `${check.message}`;
-      return response.response(data, res);
-    }
     if (check.total > 0) {
       return response.response(check, res, false);
     }
@@ -52,16 +47,17 @@ exports.user_login = async function (req, res) {
     // CHECK IS USER
     $query = `
     SELECT *, '${token}' AS token
-    FROM user AS a 
-    LEFT JOIN user_section AS b ON a.section_id = b.section_id
-    Left JOIN user_department AS c ON b.department_id = c.department_id
-    WHERE user_name='${req.body.user_name}' AND user_password='${req.body.user_password}' LIMIT 1`;
+    FROM "user" AS a
+    LEFT JOIN user_section AS b ON a.user_section_id  = b.user_section_id
+    Left JOIN user_department AS c ON b.user_department_id = c.user_department_id
+    WHERE a.status='1' AND user_name='${req.body.user_name}' AND user_password='${req.body.user_password}' LIMIT 1`;
     var check = await models.exec_query($query);
     if (check.error || check.total == 0) {
       check.error = true;
       check.message = "Wrong Username Or Password !";
       return response.response(check, res);
     }
+    console.log(configuration);
     if (check.data[0]) {
       var _temp = {
         user_id: check.data[0].user_id,

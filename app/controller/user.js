@@ -85,7 +85,7 @@ exports.update = async function (req, res) {
         string: req.body.user_password,
       });
     }
-
+    console.log(req.body.user_password);
     var _res = await models.update_query({
       data: req.body,
       key: "user_id",

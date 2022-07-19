@@ -22,16 +22,8 @@ var data_set = {
 
 async function get_configuration({ property = null }) {
   let _data = JSON.parse(JSON.stringify(data_set));
-  return await new Promise((resolve) =>
-    pool.query("SELECT * FROM sys_configuration LIMIT 1", function (err, rows) {
-      if (err) {
-        _data.error = true;
-        _data.message = err.sqlMessage || "Oops, something wrong";
-        return resolve(_data);
-      }
-      return resolve(rows[0]);
-    })
-  );
+  _data = await exec_query("SELECT * FROM sys_configuration LIMIT 1");
+  return _data.data[0];
 }
 
 async function generate_query_insert({ table, values }) {
@@ -202,6 +194,14 @@ async function insert_query({ data, table, onlyQuery = false }) {
     _data.message = column.message || "Oops, something wrong";
     return _data;
   }
+  // Prepare approval
+  let check_approval = await getApproval(table);
+  let sql_approval = "";
+  if (check_approval) {
+    sql_approval = await generateInsertApproval(check_approval, data);
+    data.status = 0;
+  }
+  // Prepare approval
   column = column.data;
   var dataArr = [];
   var key = [];
@@ -251,10 +251,7 @@ async function insert_query({ data, table, onlyQuery = false }) {
   val = "'" + val.join("','") + "'";
   dataArr = dataArr.join(",");
   var query_sql = `INSERT INTO "${table}" (${key}) VALUES (${val}); \n`;
-  let check_approval = await getApproval(table);
-  if (check_approval) {
-    query_sql += await generateInsertApproval(check_approval, data);
-  }
+  query_sql += sql_approval;
   if (onlyQuery) {
     return query_sql;
   }

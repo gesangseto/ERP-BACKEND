@@ -1,6 +1,7 @@
 "use strict";
 const response = require("../response");
 const models = require("../models");
+const { getDepartment } = require("./get_data");
 const perf = require("execution-time")();
 
 exports.get = async function (req, res) {
@@ -17,30 +18,8 @@ exports.get = async function (req, res) {
       }
     }
     // LINE WAJIB DIBAWA
-    var $query = `
-      SELECT * 
-      FROM user_department AS a 
-      WHERE 1+1=2 `;
-    for (const k in req.query) {
-      if (k != "page" && k != "limit") {
-        $query += ` AND a.${k}='${req.query[k]}'`;
-      }
-    }
-    if (req.query.page || req.query.limit) {
-      var start = 0;
-      if (req.query.page > 1) {
-        start = parseInt((req.query.page - 1) * req.query.limit);
-      }
-      var end = parseInt(start) + parseInt(req.query.limit);
-      $query += ` LIMIT ${start} OFFSET ${end} `;
-    }
-    // query
-    const check = await models.get_query($query);
-    // query
-    if (check.error) {
-      return response.response(check, res);
-    }
-    return response.response(check, res);
+    let getData = await getDepartment(req.query);
+    return response.response(getData, res);
   } catch (error) {
     data.error = true;
     data.message = `${error}`;
