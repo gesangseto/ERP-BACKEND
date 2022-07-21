@@ -15,7 +15,8 @@ const _flag = {
 };
 
 const generateMenuRole = async (array, user_section_id, show_all) => {
-  let SA = user_section_id == `${process.env.DEV_TOKEN}`;
+  let SA =
+    user_section_id == `${process.env.DEV_TOKEN}` || user_section_id == "0";
   let _format_data = [];
   for (const it of array) {
     let _data = {

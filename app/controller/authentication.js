@@ -31,7 +31,7 @@ exports.user_login = async function (req, res) {
     '0' AS user_id,
     'super_admin' AS user_name,
     '${process.env.DEV_TOKEN}' AS token,
-    '${process.env.DEV_TOKEN}' AS section_id, 
+    '${process.env.DEV_TOKEN}' AS user_section_id, 
     'super_admin' AS section_name,
     'super_admin' AS department_id,
     'super_admin' AS department_name
