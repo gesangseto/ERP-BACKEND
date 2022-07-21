@@ -20,6 +20,9 @@ async function getDepartment(data = Object, onlyQuery = false) {
   if (data.hasOwnProperty("user_department_id")) {
     _sql += ` AND a.user_department_id = '${data.user_department_id}'`;
   }
+  if (data.hasOwnProperty("status")) {
+    _sql += ` AND a.status = '${data.status}'`;
+  }
   if (data.hasOwnProperty("search")) {
     if (isJsonString(data.search)) {
       for (const it of JSON.parse(data.search)) {
@@ -58,10 +61,13 @@ async function getSection(data = Object, onlyQuery = false) {
   LEFT JOIN user_department AS b ON a.user_department_id = b.user_department_id
   WHERE a.flag_delete='0' `;
   if (data.hasOwnProperty("user_section_id")) {
-    _sql += ` AND a.section_id = '${data.user_section_id}'`;
+    _sql += ` AND a.user_section_id = '${data.user_section_id}'`;
   }
   if (data.hasOwnProperty("user_department_id")) {
     _sql += ` AND b.user_department_id = '${data.user_department_id}'`;
+  }
+  if (data.hasOwnProperty("status")) {
+    _sql += ` AND a.status = '${data.status}'`;
   }
 
   if (data.hasOwnProperty("search")) {
@@ -76,7 +82,6 @@ async function getSection(data = Object, onlyQuery = false) {
   if (data.hasOwnProperty("page") && data.hasOwnProperty("limit")) {
     _sql += getLimitOffset(data.page, data.limit);
   }
-  console.log(_sql);
   if (onlyQuery) {
     return _sql;
   }
@@ -110,6 +115,10 @@ async function getUser(data = Object, onlyQuery = false) {
   }
   if (data.hasOwnProperty("user_department_id")) {
     _sql += ` AND c.user_department_id = '${data.user_department_id}'`;
+  }
+
+  if (data.hasOwnProperty("status")) {
+    _sql += ` AND a.status = '${data.status}'`;
   }
 
   if (data.hasOwnProperty("search")) {

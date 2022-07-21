@@ -106,6 +106,7 @@ exports.delete = async function (req, res) {
       data: req.body,
       key: "user_department_id",
       table: "user_department",
+      deleted: true,
     });
     return response.response(_res, res);
   } catch (error) {

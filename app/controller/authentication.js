@@ -57,10 +57,11 @@ exports.user_login = async function (req, res) {
       check.message = "Wrong Username Or Password !";
       return response.response(check, res);
     }
-    console.log(configuration);
+    // console.log(configuration);
     if (check.data[0]) {
       var _temp = {
         user_id: check.data[0].user_id,
+        created_at: `${moment().format("YYYY-MM-DD HH:mm:ss")}`,
         expired_at: `${moment()
           .add(configuration.expired_token, "days")
           .format("YYYY-MM-DD HH:mm:ss")}`,
@@ -73,7 +74,10 @@ exports.user_login = async function (req, res) {
           table: "user_authentication",
         });
       }
-      await models.insert_query({ data: _temp, table: "user_authentication" });
+      await models.insert_query({
+        data: _temp,
+        table: "user_authentication",
+      });
     }
     return response.response(check, res, false);
   } catch (error) {

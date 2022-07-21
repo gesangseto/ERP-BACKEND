@@ -30,6 +30,7 @@ async function check_token(req, res) {
       return true;
     }
     let $query = `SELECT * FROM user_authentication WHERE token='${token}'`;
+    console.log($query);
     $query = await models.exec_query($query);
     if ($query.error || $query.total == 0) {
       data.status_code = 401;
