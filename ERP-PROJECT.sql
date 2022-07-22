@@ -5,7 +5,7 @@
 -- Dumped from database version 12.10
 -- Dumped by pg_dump version 13.3
 
--- Started on 2022-07-21 15:24:06
+-- Started on 2022-07-22 16:25:18
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -915,7 +915,7 @@ CREATE TABLE public.sys_menu (
     sys_menu_url character varying,
     sys_menu_icon character varying,
     sys_menu_parent_id integer,
-    sys_menu_order integer,
+    sys_menu_order real,
     sys_menu_module_id integer NOT NULL
 );
 
@@ -1411,6 +1411,7 @@ COPY public.approval_flow (created_at, created_by, updated_at, updated_by, flag_
 \N	0	2022-07-19 03:02:07	0	0	user_department	Department	1	\N	\N	\N	\N	11	Test	1	31	t
 \N	0	2022-07-19 03:58:16	0	0	user_department	Department	1	\N	\N	\N	\N	13	Test	1	32	f
 \N	0	\N	\N	0	user_department	Department	1	\N	\N	\N	\N	14	\N	1	33	\N
+\N	1	2022-07-22 02:05:39	1	0	user_department	Department	1	\N	\N	\N	\N	15		1	34	t
 \.
 
 
@@ -1634,10 +1635,17 @@ COPY public.sys_configuration (created_at, created_by, updated_at, updated_by, f
 COPY public.sys_menu (status, sys_menu_id, sys_menu_name, sys_menu_url, sys_menu_icon, sys_menu_parent_id, sys_menu_order, sys_menu_module_id) FROM stdin;
 1	1	Dashboard	/Dashboard	FundOutlined	\N	1	1
 1	2	Master	/Master	HddOutlined	\N	2	1
-1	4	Department	/Master/Department	\N	2	3	1
-1	5	Section	/Master/Section		2	4	1
-1	6	Role	/Master/Role		2	5	1
-1	3	User	/Master/User	\N	2	6	1
+1	7	Setting	/Setting	SettingOutlined	\N	4	1
+1	5	Department	/Master/Department		2	2.1	1
+1	6	Role	/Master/Role		2	2.4	1
+1	3	User	/Master/User	\N	2	2.3	1
+1	4	Section	/Master/Section		2	2.2	1
+1	8	Workflow Approval	/Setting/Approval	\N	7	4.1	1
+1	10	Customer	/Masterdata/Customer	\N	9	3.1	1
+1	9	Master data	/Masterdata	FolderOpenOutlined	\N	3	1
+1	12	Packaging	/Masterdata/Packaging	\N	9	3.3	1
+1	11	Supplier	/Masterdata/Supplier	\N	9	3.2	1
+1	13	Product / Item	/Masterdata/Item	\N	9	3.4	1
 \.
 
 
@@ -1670,12 +1678,12 @@ mst_customer_default	\N	\N	Customer Default
 --
 
 COPY public.sys_role_section (created_at, created_by, updated_at, updated_by, status, sys_menu_id, user_section_id, flag_read, flag_create, flag_update, flag_delete, flag_print, flag_download, sys_role_section_id) FROM stdin;
-\N	\N	\N	\N	1	2	1	0	0	0	0	0	0	36
-\N	\N	\N	\N	1	4	1	0	1	1	1	0	0	31
-\N	\N	\N	\N	1	5	1	0	1	1	1	0	0	32
-\N	\N	\N	\N	1	6	1	0	1	1	1	0	0	33
-\N	\N	\N	\N	1	3	1	0	1	1	1	0	0	34
 \N	\N	\N	\N	1	1	1	1	1	1	1	0	0	37
+\N	\N	\N	\N	1	2	1	0	0	0	0	0	0	36
+\N	\N	\N	\N	1	4	1	1	1	1	1	0	0	31
+\N	\N	\N	\N	1	5	1	1	1	1	1	0	0	32
+\N	\N	\N	\N	1	6	1	1	1	1	1	0	0	33
+\N	\N	\N	\N	1	3	1	1	1	1	1	0	0	34
 \.
 
 
@@ -1703,8 +1711,8 @@ COPY public.sys_status_information (created_at, created_by, updated_at, updated_
 COPY public."user" (user_id, user_name, user_email, user_password, user_section_id, created_at, created_by, updated_at, updated_by, flag_delete, status) FROM stdin;
 29	Admin Utama	gesang@gmail.com	15e2b0d3c33891ebb0f1ef609ec419420c20e320ce94c65fbc8c3312448eb225	1	2022-07-18 10:59:23	0	2022-07-18 11:38:36	0	1	0
 1	gesang	gesangseto@gmail.com	8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92	1	2022-06-15 09:00:36	0	2022-07-19 11:43:58	0	0	1
-31	Gesang Smith	johnsmith@doctor.co.id	4ba8e374e0a51db8483d6790b69be29b8f17c89f491a88927802fbd0e5e62001	1	2022-07-18 11:01:10	0	2022-07-19 15:03:57	0	0	1
 32	sada	asda@gmail.com	8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92	1	2022-07-19 15:20:23	0	\N	\N	0	1
+31	admin	johnsmith@doctor.co.id	8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92	1	2022-07-18 11:01:10	0	2022-07-22 14:04:30	0	0	1
 \.
 
 
@@ -1720,7 +1728,25 @@ COPY public.user_authentication (created_at, status, user_id, token, expired_at,
 2022-07-21 15:19:54	1	1	fa60904b02dace6a5594957d2e3655824455cb63877a72b97975fe49fc67d389	2022-08-20 15:19:54	\N	3
 2022-07-21 15:20:42	1	1	7dc1a1d464a78caf03fde175b571846052e9cc0434032f1fac36091700292ec5	2022-08-20 15:20:43	\N	4
 2022-07-21 15:21:05	1	1	daaa23768437cfcd0f78a5ab428c925aeb9d27711be955ec9de3c14e6e726af0	2022-08-20 15:21:05	\N	5
+2022-07-21 15:53:56	1	1	a59beb257b05730fd0d71ddef7e42649389f391a69444c3e21ea03b6a341f8b6	2022-08-20 15:54:11	\N	12
+2022-07-21 16:04:17	1	1	085b021647e7ed7962a92b0f6ee0380247b090a73d49b8377f062c33b68e46d2	2022-08-20 16:04:17	\N	13
+2022-07-21 16:07:32	1	1	dc972320910896d78a13a787885339be3c92ab05ae0e38592b8f386102c34adb	2022-08-20 16:07:32	\N	14
+2022-07-22 14:04:37	1	1	ab28560ecb84d34e938f4e479986f2fa30be7349643c69644364743a67c632d9	2022-08-21 14:04:44	\N	22
 2022-07-21 15:21:23	1	1	b2c83945ce5425e7f8b9e101210f6e837966559510fd87a4e413448b4c96dd7b	2022-08-20 15:22:01	\N	6
+2022-07-21 15:40:24	1	1	e9ee813f453afaa00d6dec21469733285f30d6f749e83b34b450bc69aac32c7d	2022-08-20 15:44:25	\N	8
+2022-07-21 15:49:08	1	1	88d1d41c3b042ff7103743974fa02c861398aa5fc8b07ff1c5f1ede37d8790e7	2022-08-20 15:49:08	\N	9
+2022-07-21 16:16:31	1	1	ead35af434d80220d09d04507235561ebf3d0471ce2794441bb8c7d312c0695f	2022-08-20 16:50:36	\N	15
+\N	1	1	c886af98461ef54df6e45521e9a56e1e9b8fcb12697279243e0f5a5062dc1c63	2022-08-21 10:20:24	\N	16
+\N	1	1	186be2529b3ce4f38ca1ebc0dc24d34c14362760644b2e73c62c8ffcb05b7a63	2022-08-21 10:28:39	\N	17
+2022-07-21 15:49:43	1	1	59ac9e10dea670f658e4fc8de63b19421416914094fa20bd17c34a80cd673efe	2022-08-20 15:52:26	\N	10
+2022-07-22 10:54:07	1	1	6fa9f86a31b87b6c0402bb40be615b794ff1b90345515149f4eaf2ea68cc1855	2022-08-21 10:55:36	\N	18
+2022-07-21 15:38:15	1	1	60a530458ebd6d1d88996e244b53ce23a6f8b33ceb76d4d3a3d5c3acc5af11db	2022-08-20 15:40:17	\N	7
+2022-07-22 14:05:30	1	1	23d845cbe01f3fb9d317e3464dbd792dc564fec7e91e9a6a3a5e4bbca1f91523	2022-08-21 14:10:01	\N	24
+2022-07-21 15:53:16	1	1	6fdd4a897c2bc211f3b0ea80ec385338612512222f49a6bebeaa9577868c17bc	2022-08-20 15:53:40	\N	11
+2022-07-22 10:55:58	1	1	2c48e835b4affb53955688c5a20a436656d6546c9a98214b1c99abe29a2916b8	2022-08-21 10:56:18	\N	19
+2022-07-22 14:04:53	1	31	21ba2ea7c51848ec908a75d6855c7dc0fef64e7ba280b32c0b878afa292b51b9	2022-08-21 14:05:23	\N	23
+2022-07-22 11:15:01	1	1	7929b6842e222c95c5ab49345ad0f9759db8504eb789b54bea9abf25fe9fd746	2022-08-21 11:15:09	\N	20
+2022-07-22 14:03:18	1	1	ac0932e9abff936113399da9e9c82bc8c7257967850478c472a15373cd3a0986	2022-08-21 14:03:18	\N	21
 \.
 
 
@@ -1733,6 +1759,7 @@ COPY public.user_authentication (created_at, status, user_id, token, expired_at,
 COPY public.user_department (created_at, created_by, updated_at, updated_by, flag_delete, status, user_department_id, user_department_name, user_department_code) FROM stdin;
 2022-06-15 09:00:36	0	2022-07-21 11:01:20	0	0	0	1	Information Technology	IT
 2022-06-21 10:53:23	0	2022-07-21 11:27:37	0	0	1	7	Administration	ADM
+2022-07-22 14:04:13	0	\N	\N	0	0	15	Approval Test	AppTest
 \.
 
 
@@ -1763,7 +1790,7 @@ SELECT pg_catalog.setval('public.approval_approval_id_seq', 24, true);
 -- Name: approval_flow_approval_flow_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.approval_flow_approval_flow_id_seq', 33, true);
+SELECT pg_catalog.setval('public.approval_flow_approval_flow_id_seq', 34, true);
 
 
 --
@@ -1907,7 +1934,7 @@ SELECT pg_catalog.setval('public.sys_role_section_role_section_id_seq', 38, true
 -- Name: user_authentication_authentication_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.user_authentication_authentication_id_seq', 6, true);
+SELECT pg_catalog.setval('public.user_authentication_authentication_id_seq', 24, true);
 
 
 --
@@ -1916,7 +1943,7 @@ SELECT pg_catalog.setval('public.user_authentication_authentication_id_seq', 6, 
 -- Name: user_department_department_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.user_department_department_id_seq', 14, true);
+SELECT pg_catalog.setval('public.user_department_department_id_seq', 15, true);
 
 
 --
@@ -2612,7 +2639,7 @@ ALTER TABLE ONLY public.user_section
     ADD CONSTRAINT user_section_fk FOREIGN KEY (user_department_id) REFERENCES public.user_department(user_department_id);
 
 
--- Completed on 2022-07-21 15:24:09
+-- Completed on 2022-07-22 16:25:22
 
 --
 -- PostgreSQL database dump complete
