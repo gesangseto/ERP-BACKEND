@@ -25,6 +25,15 @@ function getFirstWord(string = String) {
   str = str.filter((n) => n);
   return str[0];
 }
+function getOnlyParent(array = Array, parentAttr) {
+  let _res = [];
+  for (const it of array) {
+    if (!it[parentAttr]) {
+      _res.push(it);
+    }
+  }
+  return _res;
+}
 
 function treeify(list, idAttr, parentAttr, childrenAttr) {
   if (!idAttr) idAttr = "id";
@@ -179,6 +188,21 @@ function isJsonString(str) {
     return false;
   }
 }
+
+function haveRole(item) {
+  if (
+    item.flag_create == 0 &&
+    item.flag_delete == 0 &&
+    item.flag_download == 0 &&
+    item.flag_print == 0 &&
+    item.flag_read == 0 &&
+    item.flag_update == 0
+  ) {
+    return false;
+  }
+  return true;
+}
+
 module.exports = {
   isJsonString,
   numberPercent,
@@ -194,4 +218,6 @@ module.exports = {
   generateId,
   percentToFloat,
   sumByKey,
+  getOnlyParent,
+  haveRole,
 };

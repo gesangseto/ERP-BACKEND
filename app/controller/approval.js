@@ -2,6 +2,7 @@
 const response = require("../response");
 const models = require("../models");
 const utils = require("../utils");
+const { getApproval } = require("./get_data");
 const perf = require("execution-time")();
 
 const total_approval = 5;
@@ -20,22 +21,8 @@ exports.get = async function (req, res) {
       }
     }
     // LINE WAJIB DIBAWA
-    let $query = `SELECT * FROM approval WHERE 1+1=2;`;
-    for (const k in req.query) {
-      if (k != "page" && k != "limit") {
-        $query += ` AND a.${k}='${req.query[k]}'`;
-      }
-    }
-    if (req.query.page || req.query.limit) {
-      var start = 0;
-      if (req.query.page > 1) {
-        start = parseInt((req.query.page - 1) * req.query.limit);
-      }
-      var end = parseInt(start) + parseInt(req.query.limit);
-      $query += ` LIMIT ${start} OFFSET ${end} `;
-    }
-    const check = await models.get_query($query);
-    return response.response(check, res);
+    let _res = await getApproval(req.query);
+    return response.response(_res, res);
   } catch (error) {
     data.error = true;
     data.message = `${error}`;

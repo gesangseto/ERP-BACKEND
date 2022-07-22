@@ -139,6 +139,56 @@ async function getUser(data = Object, onlyQuery = false) {
   let _data = await exec_query(_sql);
   return _data;
 }
+async function getApproval(data = Object, onlyQuery = false) {
+  const genSearch = (search) => {
+    return ` 
+    AND (LOWER(a.approval_desc) LIKE LOWER('%${search}%')
+    OR  LOWER(b.user_name) LIKE LOWER('%${search}%')
+    OR  LOWER(c.user_name) LIKE LOWER('%${search}%')
+    OR  LOWER(d.user_name) LIKE LOWER('%${search}%')
+    OR  LOWER(e.user_name) LIKE LOWER('%${search}%')
+    OR  LOWER(f.user_name) LIKE LOWER('%${search}%')
+    OR  LOWER(CASE WHEN a.status=1 THEN 'Active' ELSE 'Inactive' end) LIKE LOWER('%${search}%') ) `;
+  };
+  let _sql = `SELECT 
+    *,
+    b.user_name AS approval_user_name_1,
+    c.user_name AS approval_user_name_2,
+    d.user_name AS approval_user_name_3,
+    e.user_name AS approval_user_name_4,
+    f.user_name AS approval_user_name_5,
+    a.flag_delete as flag_delete ,
+    a.status AS status,
+    CASE WHEN a.status=1 THEN 'Active' ELSE 'Inactive' END AS status_desc
+  FROM "approval" AS a 
+  LEFT JOIN "user" AS b ON a.approval_user_id_1 = b.user_id
+  LEFT JOIN "user" AS c ON a.approval_user_id_2 = c.user_id
+  LEFT JOIN "user" AS d ON a.approval_user_id_3 = d.user_id
+  LEFT JOIN "user" AS e ON a.approval_user_id_4 = e.user_id
+  LEFT JOIN "user" AS f ON a.approval_user_id_5 = f.user_id
+  WHERE a.flag_delete='0' `;
+  if (data.hasOwnProperty("approval_id")) {
+    _sql += ` AND a.approval_id = '${data.approval_id}'`;
+  }
+  if (data.hasOwnProperty("search")) {
+    if (isJsonString(data.search)) {
+      for (const it of JSON.parse(data.search)) {
+        _sql += genSearch(it);
+      }
+    } else {
+      _sql += genSearch(data.search);
+    }
+  }
+  if (data.hasOwnProperty("page") && data.hasOwnProperty("limit")) {
+    _sql += getLimitOffset(data.page, data.limit);
+  }
+  console.log(_sql);
+  if (onlyQuery) {
+    return _sql;
+  }
+  let _data = await exec_query(_sql);
+  return _data;
+}
 
 async function getSysMenu(data = Object, onlyQuery = false) {
   let _sql = `SELECT  
@@ -166,4 +216,10 @@ async function getSysMenu(data = Object, onlyQuery = false) {
   return _data;
 }
 
-module.exports = { getDepartment, getUser, getSysMenu, getSection };
+module.exports = {
+  getDepartment,
+  getUser,
+  getSysMenu,
+  getSection,
+  getApproval,
+};

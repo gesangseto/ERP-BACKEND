@@ -15,8 +15,7 @@ const _flag = {
 };
 
 const generateMenuRole = async (array, user_section_id, show_all) => {
-  let SA =
-    user_section_id == `${process.env.DEV_TOKEN}` || user_section_id == "0";
+  let SA = user_section_id == `${process.env.DEV_TOKEN}`;
   let _format_data = [];
   for (const it of array) {
     let _data = {
@@ -46,21 +45,40 @@ const generateMenuRole = async (array, user_section_id, show_all) => {
         _data.flag_download = SA ? 1 : role.flag_download;
       }
     }
-    if (show_all) {
-      _format_data.push(_data);
-    } else {
-      if (
-        _data.flag_create == 1 ||
-        _data.flag_read == 1 ||
-        _data.flag_update == 1 ||
-        _data.flag_delete == 1 ||
-        _data.children.length > 0
-      ) {
-        _format_data.push(_data);
+    // if (show_all) {
+    _format_data.push(_data);
+    // } else {
+    //   if (
+    //     _data.flag_create == 1 ||
+    //     _data.flag_read == 1 ||
+    //     _data.flag_update == 1 ||
+    //     _data.flag_delete == 1 ||
+    //     _data.children.length > 0
+    //   ) {
+    //     _format_data.push(_data);
+    //   }
+    // }
+  }
+  if (show_all) {
+    return _format_data;
+  }
+
+  let parent = utils.getOnlyParent(_format_data, "sys_menu_parent_id");
+  let _res = [];
+  for (const it of parent) {
+    let child = [];
+    for (const chld of _format_data) {
+      if (it.sys_menu_id === chld.sys_menu_parent_id && utils.haveRole(chld)) {
+        child.push(chld);
       }
     }
+    if (child.length > 0) {
+      _res.push(it, ...child);
+    } else if (utils.haveRole(it)) {
+      _res.push(it);
+    }
   }
-  return _format_data;
+  return _res;
 };
 
 const generateQueryMenuRole = async (array) => {
