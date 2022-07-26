@@ -5,7 +5,7 @@
 -- Dumped from database version 12.10
 -- Dumped by pg_dump version 13.3
 
--- Started on 2022-07-22 16:25:18
+-- Started on 2022-07-26 11:15:47
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -1646,6 +1646,7 @@ COPY public.sys_menu (status, sys_menu_id, sys_menu_name, sys_menu_url, sys_menu
 1	12	Packaging	/Masterdata/Packaging	\N	9	3.3	1
 1	11	Supplier	/Masterdata/Supplier	\N	9	3.2	1
 1	13	Product / Item	/Masterdata/Item	\N	9	3.4	1
+1	25	Dashboard	/Dashboard	FundOutlined	\N	1	2
 \.
 
 
@@ -1656,7 +1657,8 @@ COPY public.sys_menu (status, sys_menu_id, sys_menu_name, sys_menu_url, sys_menu
 --
 
 COPY public.sys_menu_module (status, sys_menu_module_id, sys_menu_module_name, sys_menu_module_code, sys_menu_module_icon) FROM stdin;
-1	1	Administrator	ADM	\N
+1	2	Point Of Sales	POS	\N
+1	1	Administrator	ADM	BarChartOutlined
 \.
 
 
@@ -1916,7 +1918,7 @@ SELECT pg_catalog.setval('public.pos_sale_pos_sale_id_seq', 1, false);
 -- Name: sys_menu_module_sys_menu_module_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.sys_menu_module_sys_menu_module_id_seq', 1, true);
+SELECT pg_catalog.setval('public.sys_menu_module_sys_menu_module_id_seq', 2, true);
 
 
 --
@@ -2639,7 +2641,7 @@ ALTER TABLE ONLY public.user_section
     ADD CONSTRAINT user_section_fk FOREIGN KEY (user_department_id) REFERENCES public.user_department(user_department_id);
 
 
--- Completed on 2022-07-22 16:25:22
+-- Completed on 2022-07-26 11:16:16
 
 --
 -- PostgreSQL database dump complete
