@@ -144,6 +144,7 @@ async function get_query(query_sql, generate_approval = true) {
   // Generate COUNT
   var _where = query_sql.split("FROM") || query_sql.split("from");
   _where = _where[1].split("LIMIT") || _where[1].split("limit");
+  _where[0] = _where[0].split("ORDER BY")[0] || _where[0].split("order by")[0];
   var count = `SELECT COUNT(*) AS total FROM ${_where[0]}`;
   count = await exec_query(count);
   if (count.error) {
@@ -444,7 +445,7 @@ async function isOnApproval(ref_table, ref_id) {
 }
 
 async function getApproval(ref_table) {
-  let query = `SELECT * FROM approval WHERE approval_ref_table = '${ref_table}' LIMIT 1`;
+  let query = `SELECT * FROM approval WHERE approval_ref_table = '${ref_table}' AND status='1' LIMIT 1`;
   query = await exec_query(query);
   if (query.error || query.data.length == 0) {
     return null;

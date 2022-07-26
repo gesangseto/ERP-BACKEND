@@ -1,10 +1,4 @@
-const {
-  exec_query,
-  generate_query_insert,
-  generate_query_update,
-  get_query,
-  getLimitOffset,
-} = require("../models");
+const { get_query, getLimitOffset } = require("../models");
 const { isJsonString } = require("../utils");
 
 async function getDepartment(data = Object, onlyQuery = false) {
@@ -39,7 +33,6 @@ async function getDepartment(data = Object, onlyQuery = false) {
     return _sql;
   }
   let _data = await get_query(_sql);
-  // let _data = await exec_query(_sql);
   return _data;
 }
 
@@ -79,13 +72,15 @@ async function getSection(data = Object, onlyQuery = false) {
       _sql += genSearch(data.search);
     }
   }
+
+  _sql += ` ORDER BY user_section_id DESC`;
   if (data.hasOwnProperty("page") && data.hasOwnProperty("limit")) {
     _sql += getLimitOffset(data.page, data.limit);
   }
   if (onlyQuery) {
     return _sql;
   }
-  let _data = await exec_query(_sql);
+  let _data = await get_query(_sql);
   return _data;
 }
 
@@ -136,7 +131,7 @@ async function getUser(data = Object, onlyQuery = false) {
   if (onlyQuery) {
     return _sql;
   }
-  let _data = await exec_query(_sql);
+  let _data = await get_query(_sql);
   return _data;
 }
 async function getApproval(data = Object, onlyQuery = false) {
@@ -186,7 +181,7 @@ async function getApproval(data = Object, onlyQuery = false) {
   if (onlyQuery) {
     return _sql;
   }
-  let _data = await exec_query(_sql);
+  let _data = await get_query(_sql);
   return _data;
 }
 
@@ -212,7 +207,7 @@ async function getSysMenu(data = Object, onlyQuery = false) {
   if (onlyQuery) {
     return _sql;
   }
-  let _data = await exec_query(_sql);
+  let _data = await get_query(_sql);
   return _data;
 }
 
