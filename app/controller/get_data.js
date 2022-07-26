@@ -1,6 +1,44 @@
 const { get_query, getLimitOffset } = require("../models");
 const { isJsonString } = require("../utils");
 
+async function getCustomer(data = Object, onlyQuery = false) {
+  const genSearch = (search) => {
+    return ` 
+    AND (LOWER(a.mst_customer_name) LIKE LOWER('%${search}%')
+    OR  LOWER(a.mst_customer_email) LIKE LOWER('%${search}%')
+    OR  LOWER(a.mst_customer_address) LIKE LOWER('%${search}%')
+    OR  LOWER(a.mst_customer_pic) LIKE LOWER('%${search}%')
+    OR  LOWER(CASE WHEN a.status=1 THEN 'Active' ELSE 'Inactive' end) LIKE LOWER('%${search}%') ) `;
+  };
+  let _sql = `
+  SELECT *
+  FROM mst_customer AS a 
+  WHERE a.flag_delete='0' `;
+  if (data.hasOwnProperty("mst_customer_id")) {
+    _sql += ` AND a.mst_customer_id = '${data.mst_customer_id}'`;
+  }
+  if (data.hasOwnProperty("status")) {
+    _sql += ` AND a.status = '${data.status}'`;
+  }
+  if (data.hasOwnProperty("search")) {
+    if (isJsonString(data.search)) {
+      for (const it of JSON.parse(data.search)) {
+        _sql += genSearch(it);
+      }
+    } else {
+      _sql += genSearch(data.search);
+    }
+  }
+  if (data.hasOwnProperty("page") && data.hasOwnProperty("limit")) {
+    _sql += getLimitOffset(data.page, data.limit);
+  }
+  if (onlyQuery) {
+    return _sql;
+  }
+  let _data = await get_query(_sql);
+  return _data;
+}
+
 async function getDepartment(data = Object, onlyQuery = false) {
   const genSearch = (search) => {
     return ` 
@@ -217,4 +255,5 @@ module.exports = {
   getSysMenu,
   getSection,
   getApproval,
+  getCustomer,
 };
