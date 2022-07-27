@@ -5,7 +5,7 @@
 -- Dumped from database version 12.10
 -- Dumped by pg_dump version 13.3
 
--- Started on 2022-07-27 09:50:50
+-- Started on 2022-07-27 14:26:26
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -293,7 +293,8 @@ CREATE TABLE public.mst_item (
     mst_item_id bigint NOT NULL,
     mst_item_no character varying NOT NULL,
     mst_item_name character varying NOT NULL,
-    mst_item_desc text
+    mst_item_desc text,
+    mst_item_code character varying
 );
 
 
@@ -1434,8 +1435,8 @@ COPY public.mst_customer (created_at, created_by, updated_at, updated_by, flag_d
 -- Data for Name: mst_item; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.mst_item (created_at, created_by, updated_at, updated_by, flag_delete, status, mst_item_id, mst_item_no, mst_item_name, mst_item_desc) FROM stdin;
-2022-06-29 04:46:14	0	2022-07-01 10:33:05	0	0	0	1656477974626	BCD44	Djarum Super	\N
+COPY public.mst_item (created_at, created_by, updated_at, updated_by, flag_delete, status, mst_item_id, mst_item_no, mst_item_name, mst_item_desc, mst_item_code) FROM stdin;
+2022-06-29 04:46:14	0	2022-07-27 02:18:24	0	0	1	1656477974626	BCD44	Djarum Super	12131	BGD5
 \.
 
 
@@ -1446,8 +1447,8 @@ COPY public.mst_item (created_at, created_by, updated_at, updated_by, flag_delet
 --
 
 COPY public.mst_item_variant (created_at, created_by, updated_at, updated_by, flag_delete, status, mst_item_variant_id, mst_item_id, mst_item_variant_name, mst_item_variant_price, mst_item_variant_qty, mst_packaging_id, barcode) FROM stdin;
-\N	\N	\N	\N	0	1	20	1656477974626	Isi 12	12000	1	1	\N
-\N	\N	\N	\N	0	1	21	1656477974626	Dus @24	150000	24	1	123456
+2022-06-27 11:28:53	0	2022-07-27 09:47:33	0	0	1	22	1656477974626	Test	12000	140	1	123457
+2022-06-27 11:28:53	0	2022-07-27 09:47:33	0	0	1	20	1656477974626	Isi 12	120001	1	1	123456
 \.
 
 
@@ -1617,18 +1618,19 @@ COPY public.sys_configuration (created_at, created_by, updated_at, updated_by, f
 COPY public.sys_menu (status, sys_menu_id, sys_menu_name, sys_menu_url, sys_menu_icon, sys_menu_parent_id, sys_menu_order, sys_menu_module_id) FROM stdin;
 1	1	Dashboard	/Dashboard	FundOutlined	\N	1	1
 1	2	Master	/Master	HddOutlined	\N	2	1
-1	7	Setting	/Setting	SettingOutlined	\N	4	1
 1	5	Department	/Master/Department		2	2.1	1
 1	6	Role	/Master/Role		2	2.4	1
 1	3	User	/Master/User	\N	2	2.3	1
 1	4	Section	/Master/Section		2	2.2	1
-1	8	Workflow Approval	/Setting/Approval	\N	7	4.1	1
 1	10	Customer	/Masterdata/Customer	\N	9	3.1	1
 1	9	Master data	/Masterdata	FolderOpenOutlined	\N	3	1
 1	12	Packaging	/Masterdata/Packaging	\N	9	3.3	1
 1	11	Supplier	/Masterdata/Supplier	\N	9	3.2	1
-1	13	Product / Item	/Masterdata/Item	\N	9	3.4	1
 1	25	Dashboard	/Dashboard	FundOutlined	\N	1	2
+1	13	Product / Item	/Masterdata/item	\N	9	3.4	1
+1	8	Workflow Approval	/System/Approval	\N	7	4.1	1
+1	7	System	/System	SettingOutlined	\N	4	1
+1	14	Audit	/System/Audit	\N	7	4.2	1
 \.
 
 
@@ -1817,7 +1819,7 @@ SELECT pg_catalog.setval('public.mst_item_mst_item_id_seq', 11, true);
 -- Name: mst_item_variant_mst_item_variant_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.mst_item_variant_mst_item_variant_id_seq', 21, true);
+SELECT pg_catalog.setval('public.mst_item_variant_mst_item_variant_id_seq', 22, true);
 
 
 --
@@ -2630,7 +2632,7 @@ ALTER TABLE ONLY public.user_section
     ADD CONSTRAINT user_section_fk FOREIGN KEY (user_department_id) REFERENCES public.user_department(user_department_id);
 
 
--- Completed on 2022-07-27 09:50:53
+-- Completed on 2022-07-27 14:26:29
 
 --
 -- PostgreSQL database dump complete
