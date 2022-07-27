@@ -2,6 +2,7 @@
 const response = require("../response");
 const models = require("../models");
 const utils = require("../utils");
+const { getItem } = require("./get_data");
 const perf = require("execution-time")();
 
 exports.get = async function (req, res) {
@@ -19,15 +20,13 @@ exports.get = async function (req, res) {
       }
     }
     // LINE WAJIB DIBAWA
-    var $query = `
-    SELECT *
-    FROM mst_item AS a 
-    WHERE a.flag_delete='0' `;
-    $query = await models.filter_query($query, req.query);
-    const check = await models.get_query($query);
     let _data = [];
+    let check = await getItem(req.query);
     for (const it of check.data) {
-      let _variant = `SELECT * FROM mst_item_variant WHERE mst_item_id='${it.mst_item_id}';`;
+      let _variant = `SELECT *,a.status AS status
+      FROM mst_item_variant AS a 
+      LEFT JOIN mst_packaging AS b ON a.mst_packaging_id = b.mst_packaging_id
+      WHERE a.mst_item_id='${it.mst_item_id}';`;
       _variant = await models.exec_query(_variant);
       it.variant = _variant.data;
       _data.push(it);
@@ -194,6 +193,7 @@ exports.delete = async function (req, res) {
       data: body,
       table: body.mst_item_id ? "mst_item" : "mst_item_variant",
       key: body.mst_item_id ? "mst_item_id" : "mst_item_variant_id",
+      deleted: true,
     });
     return response.response(_res, res);
   } catch (error) {

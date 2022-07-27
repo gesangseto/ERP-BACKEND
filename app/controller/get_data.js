@@ -1,6 +1,61 @@
 const { get_query, getLimitOffset } = require("../models");
 const { isJsonString } = require("../utils");
 
+async function getItem(data = Object, onlyQuery = false) {
+  const genSearch = (search) => {
+    return ` 
+    AND (LOWER(mst_item_name) LIKE LOWER('%${search}%')
+    OR  LOWER(mst_item_no) LIKE LOWER('%${search}%')
+    OR  LOWER(mst_item_code) LIKE LOWER('%${search}%')
+    OR  LOWER(mst_item_desc) LIKE LOWER('%${search}%')
+    OR  LOWER(barcode) LIKE LOWER('%${search}%')
+    OR  LOWER(mst_item_variant_name) LIKE LOWER('%${search}%')
+    OR  CAST(mst_item_variant_qty AS TEXT) LIKE LOWER('%${search}%')
+    OR  CAST(mst_item_variant_price AS TEXT) LIKE LOWER('%${search}%')
+    OR  LOWER(CASE WHEN a.status=1 THEN 'Active' ELSE 'Inactive' end) LIKE LOWER('%${search}%') ) `;
+  };
+  let _sql = `
+  SELECT
+        MAX(a.status) AS status,
+        MAX(a.mst_item_id) AS mst_item_id,
+        MAX(a.mst_item_no) AS mst_item_no,
+        MAX(a.mst_item_name) AS mst_item_name,
+        MAX(a.mst_item_code) AS mst_item_code,
+        MAX(a.mst_item_desc) AS mst_item_desc,
+        STRING_AGG(coalesce(b.mst_item_variant_id::character varying,''), ';') as mst_item_variant_id,
+        STRING_AGG(coalesce(b.barcode::character varying,''), ';') as barcode,
+        STRING_AGG(coalesce(b.mst_item_variant_name,''),';') AS mst_item_variant_name,
+        STRING_AGG(coalesce(b.mst_item_variant_qty::character varying,''), ';') as mst_item_variant_qty,
+        STRING_AGG(coalesce(b.mst_item_variant_price  ::character varying,''), ';') as mst_item_variant_price
+  FROM mst_item AS a
+  LEFT JOIN mst_item_variant AS b ON a.mst_item_id = b.mst_item_id 
+  WHERE a.flag_delete='0' `;
+  if (data.hasOwnProperty("mst_item_id")) {
+    _sql += ` AND a.mst_item_id = '${data.mst_item_id}'`;
+  }
+  if (data.hasOwnProperty("status")) {
+    _sql += ` AND a.status = '${data.status}'`;
+  }
+  if (data.hasOwnProperty("search")) {
+    if (isJsonString(data.search)) {
+      for (const it of JSON.parse(data.search)) {
+        _sql += genSearch(it);
+      }
+    } else {
+      _sql += genSearch(data.search);
+    }
+  }
+  _sql += ` GROUP BY a.mst_item_id `;
+  if (data.hasOwnProperty("page") && data.hasOwnProperty("limit")) {
+    _sql += getLimitOffset(data.page, data.limit);
+  }
+  if (onlyQuery) {
+    return _sql;
+  }
+  let _data = await get_query(_sql);
+  return _data;
+}
+
 async function getPackaging(data = Object, onlyQuery = false) {
   const genSearch = (search) => {
     return ` 
@@ -334,4 +389,5 @@ module.exports = {
   getCustomer,
   getSupplier,
   getPackaging,
+  getItem,
 };
