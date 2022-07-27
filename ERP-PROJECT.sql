@@ -5,7 +5,7 @@
 -- Dumped from database version 12.10
 -- Dumped by pg_dump version 13.3
 
--- Started on 2022-07-26 11:15:47
+-- Started on 2022-07-27 09:50:50
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -435,7 +435,8 @@ CREATE TABLE public.mst_supplier (
     mst_supplier_name character varying,
     mst_supplier_email character varying,
     mst_supplier_address character varying,
-    mst_supplier_phone character varying
+    mst_supplier_phone character varying,
+    mst_supplier_pic character varying
 );
 
 
@@ -1375,11 +1376,9 @@ ALTER TABLE ONLY public.user_section ALTER COLUMN user_section_id SET DEFAULT ne
 --
 
 COPY public.approval (created_at, created_by, updated_at, updated_by, flag_delete, status, approval_id, approval_ref_table, approval_desc, approval_user_id_1, approval_user_id_2, approval_user_id_3, approval_user_id_4, approval_user_id_5) FROM stdin;
-2022-06-21 09:45:15	0	\N	\N	0	1	17	user_department	Department	1	\N	\N	\N	\N
-2022-06-30 11:19:33	0	\N	\N	0	1	21	pos_batch	POS Inbound Batch	1	\N	\N	\N	\N
-2022-07-05 10:53:52	0	\N	\N	0	1	22	pos_receive	POS Received	1	\N	\N	\N	\N
-2022-07-05 10:53:52	0	\N	\N	0	1	23	pos_return	POS Return	1	\N	\N	\N	\N
-2022-07-08 02:48:33	0	\N	\N	0	1	24	pos_user	POS User	1	\N	\N	\N	\N
+2022-07-26 03:13:07	0	\N	\N	0	1	25	user	User Approval	1	\N	\N	\N	\N
+2022-07-26 03:15:23	0	2022-07-26 03:33:54	0	0	1	26	user_section	User Section	1	\N	\N	\N	\N
+2022-07-26 04:14:20	0	\N	\N	0	1	27	mst_customer	Customer	1	\N	\N	\N	\N
 \.
 
 
@@ -1390,28 +1389,9 @@ COPY public.approval (created_at, created_by, updated_at, updated_by, flag_delet
 --
 
 COPY public.approval_flow (created_at, created_by, updated_at, updated_by, flag_delete, approval_ref_table, approval_desc, approval_user_id_1, approval_user_id_2, approval_user_id_3, approval_user_id_4, approval_user_id_5, approval_ref_id, rejected_note, approval_current_user_id, approval_flow_id, is_approve) FROM stdin;
-\N	0	2022-06-30 11:34:51	0	0	pos_batch	POS Inbound Batch	1	\N	\N	\N	\N	1656563637664	Test 1 2 3	1	4	\N
-\N	0	\N	\N	0	pos_batch	POS Inbound Batch	1	\N	\N	\N	\N	1656647570149	\N	1	5	\N
-\N	0	2022-07-01 04:19:39	0	0	pos_batch	POS Inbound Batch	1	\N	\N	\N	\N	1656667001354	Test 1 2 3	1	6	t
-\N	0	2022-07-04 08:55:20	0	0	pos_batch	POS Inbound Batch	1	\N	\N	\N	\N	1656667727427	Test 1 2 3	1	7	t
-\N	0	2022-07-04 02:16:16	0	0	pos_batch	POS Inbound Batch	1	\N	\N	\N	\N	1656918944536	Test 1 2 3	1	8	t
-\N	0	2022-07-05 11:50:01	0	0	pos_receive	POS Received	1	\N	\N	\N	\N	1656993410867	Test 1 2 3	1	10	t
-\N	0	\N	\N	0	pos_receive	POS Received	1	\N	\N	\N	\N	1657007704402	\N	1	15	\N
-\N	0	\N	\N	0	pos_receive	POS Received	1	\N	\N	\N	\N	1657007989358	\N	1	19	\N
-\N	0	2022-07-05 03:43:15	0	0	pos_receive	POS Received	1	\N	\N	\N	\N	1657008091580	Test 1 2 3	1	20	t
-\N	0	2022-07-05 03:43:31	0	0	pos_receive	POS Received	1	\N	\N	\N	\N	1657010570443	Test 1 2 3	1	23	t
-\N	0	\N	\N	0	pos_receive	POS Received	1	\N	\N	\N	\N	1657083461721	\N	1	26	\N
-\N	0	\N	\N	0	pos_user	POS User	1	\N	\N	\N	\N	11	\N	1	28	\N
-\N	0	\N	\N	0	pos_user	POS User	1	\N	\N	\N	\N	12	\N	1	29	\N
-\N	0	2022-07-11 10:11:42	0	0	pos_receive	POS Received	1	\N	\N	\N	\N	1657080370911	Test 1 2 3	1	24	t
-\N	0	2022-07-11 10:11:58	0	0	pos_receive	POS Received	1	\N	\N	\N	\N	1657509083408	Test 1 2 3	1	30	t
-\N	0	2022-07-19 02:48:25	0	0	user_department	Department	1	\N	\N	\N	\N	9		1	1	t
-\N	0	2022-07-19 02:53:41	0	0	user_department	Department	1	\N	\N	\N	\N	10		1	3	t
-\N	0	2022-07-19 02:57:47	0	0	user_department	Department	1	\N	\N	\N	\N	7		1	2	t
-\N	0	2022-07-19 03:02:07	0	0	user_department	Department	1	\N	\N	\N	\N	11	Test	1	31	t
-\N	0	2022-07-19 03:58:16	0	0	user_department	Department	1	\N	\N	\N	\N	13	Test	1	32	f
-\N	0	\N	\N	0	user_department	Department	1	\N	\N	\N	\N	14	\N	1	33	\N
-\N	1	2022-07-22 02:05:39	1	0	user_department	Department	1	\N	\N	\N	\N	15		1	34	t
+\N	0	2022-07-26 03:20:59	0	0	user_section	User Section	1	\N	\N	\N	\N	7	Yes	1	36	t
+\N	0	\N	\N	0	user_section	User Section	1	\N	\N	\N	\N	10	\N	1	37	\N
+\N	0	\N	\N	0	mst_customer	Customer	1	\N	\N	\N	\N	3	\N	1	38	\N
 \.
 
 
@@ -1442,7 +1422,9 @@ COPY public.base_table (created_at, created_by, updated_at, updated_by, flag_del
 --
 
 COPY public.mst_customer (created_at, created_by, updated_at, updated_by, flag_delete, status, mst_customer_id, mst_customer_name, mst_customer_email, mst_customer_phone, mst_customer_address, mst_customer_pic, mst_customer_ppn, price_percentage) FROM stdin;
-2022-06-30 11:02:30	0	2022-06-30 15:43:35	0	0	0	1	Agen Erna	admin@admin.com	082122222657	JL Bambu	null	null	125
+2022-07-26 16:13:32	0	2022-07-26 16:13:40	0	1	0	2	ewq	wqeq@sda	123131	1231dsaed	sda	12	1234
+2022-07-26 16:14:37	0	\N	\N	0	0	3	Test	gesang@gmail.com	08215415412sa	da	Test	12	12
+2022-06-30 11:02:30	0	2022-07-27 09:06:53	0	0	1	1	Agen Erna	admin@admin.com	082122222657	JL Bambu	Gesang	10	12
 \.
 
 
@@ -1476,7 +1458,7 @@ COPY public.mst_item_variant (created_at, created_by, updated_at, updated_by, fl
 --
 
 COPY public.mst_packaging (created_at, created_by, updated_at, updated_by, flag_delete, status, mst_packaging_id, mst_packaging_code, mst_packaging_name, mst_packaging_desc) FROM stdin;
-2022-06-27 11:28:53	0	2022-06-27 11:33:13	0	0	1	1	BKSs	bungkus	null
+2022-06-27 11:28:53	0	2022-07-27 09:47:33	0	0	1	1	pcs	bungkus	Nothing
 \.
 
 
@@ -1486,8 +1468,8 @@ COPY public.mst_packaging (created_at, created_by, updated_at, updated_by, flag_
 -- Data for Name: mst_supplier; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.mst_supplier (created_at, created_by, updated_at, updated_by, flag_delete, status, mst_supplier_id, mst_supplier_name, mst_supplier_email, mst_supplier_address, mst_supplier_phone) FROM stdin;
-2022-06-30 10:55:18	0	2022-06-30 10:59:02	0	0	0	1	Agen Erna	admin@admin.com	JL Bambu	082122222657
+COPY public.mst_supplier (created_at, created_by, updated_at, updated_by, flag_delete, status, mst_supplier_id, mst_supplier_name, mst_supplier_email, mst_supplier_address, mst_supplier_phone, mst_supplier_pic) FROM stdin;
+2022-06-30 10:55:18	0	2022-07-27 09:38:26	0	0	1	1	Agen Erna	admin@admin.com	JL Bambu	082122222657	Gesang
 \.
 
 
@@ -1733,7 +1715,9 @@ COPY public.user_authentication (created_at, status, user_id, token, expired_at,
 2022-07-21 15:53:56	1	1	a59beb257b05730fd0d71ddef7e42649389f391a69444c3e21ea03b6a341f8b6	2022-08-20 15:54:11	\N	12
 2022-07-21 16:04:17	1	1	085b021647e7ed7962a92b0f6ee0380247b090a73d49b8377f062c33b68e46d2	2022-08-20 16:04:17	\N	13
 2022-07-21 16:07:32	1	1	dc972320910896d78a13a787885339be3c92ab05ae0e38592b8f386102c34adb	2022-08-20 16:07:32	\N	14
+2022-07-26 14:46:06	1	1	68ec031d5e922822099e868f25955d0b2d0f988725914f99e90b0aa3db2b553c	2022-08-25 14:58:42	\N	27
 2022-07-22 14:04:37	1	1	ab28560ecb84d34e938f4e479986f2fa30be7349643c69644364743a67c632d9	2022-08-21 14:04:44	\N	22
+2022-07-26 14:44:43	1	1	06b759a82c91e708417c63742a13644be033b70ae1dc91f52524a347cd52050b	2022-08-25 14:45:34	\N	26
 2022-07-21 15:21:23	1	1	b2c83945ce5425e7f8b9e101210f6e837966559510fd87a4e413448b4c96dd7b	2022-08-20 15:22:01	\N	6
 2022-07-21 15:40:24	1	1	e9ee813f453afaa00d6dec21469733285f30d6f749e83b34b450bc69aac32c7d	2022-08-20 15:44:25	\N	8
 2022-07-21 15:49:08	1	1	88d1d41c3b042ff7103743974fa02c861398aa5fc8b07ff1c5f1ede37d8790e7	2022-08-20 15:49:08	\N	9
@@ -1749,6 +1733,7 @@ COPY public.user_authentication (created_at, status, user_id, token, expired_at,
 2022-07-22 14:04:53	1	31	21ba2ea7c51848ec908a75d6855c7dc0fef64e7ba280b32c0b878afa292b51b9	2022-08-21 14:05:23	\N	23
 2022-07-22 11:15:01	1	1	7929b6842e222c95c5ab49345ad0f9759db8504eb789b54bea9abf25fe9fd746	2022-08-21 11:15:09	\N	20
 2022-07-22 14:03:18	1	1	ac0932e9abff936113399da9e9c82bc8c7257967850478c472a15373cd3a0986	2022-08-21 14:03:18	\N	21
+2022-07-26 14:44:23	1	31	48f832ad361abe28fa732f95f58e9a599c6678b99e846dfc2fe0aa4b6001e981	2022-08-25 14:44:33	\N	25
 \.
 
 
@@ -1762,6 +1747,7 @@ COPY public.user_department (created_at, created_by, updated_at, updated_by, fla
 2022-06-15 09:00:36	0	2022-07-21 11:01:20	0	0	0	1	Information Technology	IT
 2022-06-21 10:53:23	0	2022-07-21 11:27:37	0	0	1	7	Administration	ADM
 2022-07-22 14:04:13	0	\N	\N	0	0	15	Approval Test	AppTest
+2022-07-26 14:43:36	0	2022-07-26 15:14:49	0	0	1	16	hgsdahjgdjas	TESTIGN
 \.
 
 
@@ -1773,7 +1759,10 @@ COPY public.user_department (created_at, created_by, updated_at, updated_by, fla
 
 COPY public.user_section (created_at, created_by, updated_at, updated_by, flag_delete, status, user_section_id, user_department_id, user_section_code, user_section_name) FROM stdin;
 2022-06-15 09:00:36	0	2022-07-21 11:27:19	0	0	1	1	1	MG	Manager IT
-2022-07-21 11:28:03	0	\N	\N	0	1	6	7	Finance	Finance
+2022-07-26 15:15:38	0	2022-07-26 15:32:26	0	0	1	7	7	STE	Assas
+2022-07-21 11:28:03	0	2022-07-26 15:32:29	0	0	1	6	7	Finance	Finance
+2022-07-26 15:33:43	0	\N	\N	0	1	8	7	Warehouse	Warehoiuse
+2022-07-26 15:34:21	0	\N	\N	0	0	10	7	Finances	Pion
 \.
 
 
@@ -1783,7 +1772,7 @@ COPY public.user_section (created_at, created_by, updated_at, updated_by, flag_d
 -- Name: approval_approval_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.approval_approval_id_seq', 24, true);
+SELECT pg_catalog.setval('public.approval_approval_id_seq', 27, true);
 
 
 --
@@ -1792,7 +1781,7 @@ SELECT pg_catalog.setval('public.approval_approval_id_seq', 24, true);
 -- Name: approval_flow_approval_flow_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.approval_flow_approval_flow_id_seq', 34, true);
+SELECT pg_catalog.setval('public.approval_flow_approval_flow_id_seq', 38, true);
 
 
 --
@@ -1810,7 +1799,7 @@ SELECT pg_catalog.setval('public.approval_seq', 1, false);
 -- Name: mst_customer_mst_customer_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.mst_customer_mst_customer_id_seq', 1, true);
+SELECT pg_catalog.setval('public.mst_customer_mst_customer_id_seq', 3, true);
 
 
 --
@@ -1936,7 +1925,7 @@ SELECT pg_catalog.setval('public.sys_role_section_role_section_id_seq', 38, true
 -- Name: user_authentication_authentication_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.user_authentication_authentication_id_seq', 24, true);
+SELECT pg_catalog.setval('public.user_authentication_authentication_id_seq', 27, true);
 
 
 --
@@ -1945,7 +1934,7 @@ SELECT pg_catalog.setval('public.user_authentication_authentication_id_seq', 24,
 -- Name: user_department_department_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.user_department_department_id_seq', 15, true);
+SELECT pg_catalog.setval('public.user_department_department_id_seq', 16, true);
 
 
 --
@@ -1954,7 +1943,7 @@ SELECT pg_catalog.setval('public.user_department_department_id_seq', 15, true);
 -- Name: user_section_section_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.user_section_section_id_seq', 6, true);
+SELECT pg_catalog.setval('public.user_section_section_id_seq', 10, true);
 
 
 --
@@ -2641,7 +2630,7 @@ ALTER TABLE ONLY public.user_section
     ADD CONSTRAINT user_section_fk FOREIGN KEY (user_department_id) REFERENCES public.user_department(user_department_id);
 
 
--- Completed on 2022-07-26 11:16:16
+-- Completed on 2022-07-27 09:50:53
 
 --
 -- PostgreSQL database dump complete
