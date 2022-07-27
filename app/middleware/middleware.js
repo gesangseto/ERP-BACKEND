@@ -87,9 +87,20 @@ async function create_log(req, res) {
       user_agent: req.get("User-Agent"),
       created_at: moment().format("YYYY-MM-DD HH:mm:ss"),
     };
-    if (process.env.DEV_TOKEN != req.headers.token) {
-      await models.insert_query({ data: params, table: "audit_log" });
+    if (process.env.DEV_TOKEN == req.headers.token) {
+      return true;
     }
+    let _token = `SELECT * FROM user_authentication WHERE token ='${req.headers.token}' LIMIT 1`;
+    _token = await models.exec_query(_token);
+    if (_token.error || _token.data.length == 0) {
+      throw new Error(`Token is not valid!`);
+    }
+    _token = _token.data[0];
+    params.user_id = _token.user_id;
+    await models.insert_query({
+      data: params,
+      table: "audit_log",
+    });
     return true;
   } catch (error) {
     data.error = true;

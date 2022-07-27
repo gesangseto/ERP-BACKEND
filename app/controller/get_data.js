@@ -56,6 +56,47 @@ async function getItem(data = Object, onlyQuery = false) {
   return _data;
 }
 
+async function getAudit(data = Object, onlyQuery = false) {
+  const genSearch = (search) => {
+    return ` 
+    AND (LOWER(a.path) LIKE LOWER('%${search}%')
+    OR  LOWER(a.type) LIKE LOWER('%${search}%')
+    OR  LOWER(a.data) LIKE LOWER('%${search}%')
+    OR  LOWER(a.user_agent) LIKE LOWER('%${search}%')
+    OR  LOWER(a.ip_address) LIKE LOWER('%${search}%')
+    OR  LOWER(b.user_name) LIKE LOWER('%${search}%')
+    OR  LOWER(b.user_email) LIKE LOWER('%${search}%') ) `;
+  };
+  let _sql = `
+  SELECT *
+  FROM audit_log AS a 
+  LEFT JOIN "user" AS b ON a.user_id = b.user_id
+  WHERE 1+1=2 `;
+  if (data.hasOwnProperty("id")) {
+    _sql += ` AND a.id = '${data.id}'`;
+  }
+  if (data.hasOwnProperty("user_id")) {
+    _sql += ` AND a.user_id = '${data.user_id}'`;
+  }
+  if (data.hasOwnProperty("search")) {
+    if (isJsonString(data.search)) {
+      for (const it of JSON.parse(data.search)) {
+        _sql += genSearch(it);
+      }
+    } else {
+      _sql += genSearch(data.search);
+    }
+  }
+  if (data.hasOwnProperty("page") && data.hasOwnProperty("limit")) {
+    _sql += getLimitOffset(data.page, data.limit);
+  }
+  if (onlyQuery) {
+    return _sql;
+  }
+  let _data = await get_query(_sql);
+  return _data;
+}
+
 async function getPackaging(data = Object, onlyQuery = false) {
   const genSearch = (search) => {
     return ` 
@@ -390,4 +431,5 @@ module.exports = {
   getSupplier,
   getPackaging,
   getItem,
+  getAudit,
 };
