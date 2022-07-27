@@ -2,6 +2,7 @@
 const response = require("../response");
 const models = require("../models");
 const utils = require("../utils");
+const { getPackaging } = require("./get_data");
 const perf = require("execution-time")();
 
 exports.get = async function (req, res) {
@@ -18,17 +19,8 @@ exports.get = async function (req, res) {
         return response.response(data, res);
       }
     }
-    // LINE WAJIB DIBAWA
-    var $query = `
-    SELECT *
-    FROM mst_packaging AS a 
-    WHERE a.flag_delete='0' `;
-    $query = await models.filter_query($query, req.query);
-    const check = await models.get_query($query);
-    check.data.forEach(function (v) {
-      delete v.user_password;
-    });
-    return response.response(check, res);
+    let _res = await getPackaging(req.query);
+    return response.response(_res, res);
   } catch (error) {
     data.error = true;
     data.message = `${error}`;
