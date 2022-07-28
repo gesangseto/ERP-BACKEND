@@ -17,7 +17,7 @@ exports.get = async function (req, res) {
     conf.data.forEach(function (v) {
       delete v.user_password;
     });
-    return response.response(conf, res);
+    return response.response(conf, res, false);
   } catch (error) {
     data.error = true;
     data.message = `${error}`;
@@ -34,13 +34,15 @@ exports.update = async function (req, res) {
       req.body.user_password = await utils.encrypt({
         string: req.body.user_password,
       });
+    } else {
+      delete req.body.user_password;
     }
     var _res = await models.update_query({
       data: req.body,
       key: "id",
       table: "sys_configuration",
     });
-    return response.response(_res, res);
+    return response.response(_res, res, false);
   } catch (error) {
     data.error = true;
     data.message = `${error}`;
