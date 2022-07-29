@@ -3,9 +3,10 @@ const {
   generate_query_insert,
   generate_query_update,
   get_query,
+  getLimitOffset,
 } = require("../../models");
 const moment = require("moment");
-const { sumByKey, generateId } = require("../../utils");
+const { sumByKey, generateId, isJsonString } = require("../../utils");
 
 async function getItem(data = Object) {
   let _sql = `SELECT * 
@@ -295,10 +296,22 @@ async function getTrxDetailItem(data = Object) {
 }
 
 async function getReceive(data = Object, onlyQuery = false) {
+  const genSearch = (search) => {
+    return ` 
+  AND (CAST(a.pos_receive_id AS TEXT) LIKE LOWER('%${search}%')
+  OR  CAST(a.created_at AS TEXT) LIKE LOWER('%${search}%')
+  OR  LOWER(e.user_name) LIKE LOWER('%${search}%')
+  OR  LOWER(c.mst_item_name) LIKE LOWER('%${search}%')
+  OR  LOWER(d.mst_supplier_name) LIKE LOWER('%${search}%')
+  OR  LOWER(b.batch_no) LIKE LOWER('%${search}%')
+  OR  CAST(b.qty AS TEXT) LIKE LOWER('%${search}%')
+  OR  LOWER(CASE WHEN a.status=1 THEN 'Active' ELSE 'Inactive' end) LIKE LOWER('%${search}%') ) `;
+  };
   let _sql = `SELECT 
   MAX(a.pos_receive_id) as pos_receive_id,
   MAX(a.created_at) as created_at,
   MAX(a.created_by) as created_by,
+  MAX(e.user_name) as user_name,
   MAX(c.mst_item_id) as mst_item_id,
   MAX(c.mst_item_name) as mst_item_name,
   MAX(d.mst_supplier_id) as mst_supplier_id,
@@ -310,6 +323,7 @@ async function getReceive(data = Object, onlyQuery = false) {
   LEFT JOIN pos_receive_detail as b on a.pos_receive_id = b.pos_receive_id
   LEFT JOIN mst_item AS c ON b.mst_item_id = c.mst_item_id
   LEFT JOIN mst_supplier AS d ON a.mst_supplier_id = d.mst_supplier_id
+  LEFT JOIN "user" AS e ON a.created_by = e.user_id
   WHERE 1+1=2 `;
   if (data.hasOwnProperty("pos_receive_id")) {
     _sql += ` AND a.pos_receive_id = '${data.pos_receive_id}'`;
@@ -323,11 +337,23 @@ async function getReceive(data = Object, onlyQuery = false) {
   if (data.hasOwnProperty("barcode") && data.barcode) {
     _sql += ` AND c.barcode = '${data.barcode}'`;
   }
-  _sql += ` GROUP BY a.pos_receive_id ;`;
+  if (data.hasOwnProperty("search")) {
+    if (isJsonString(data.search)) {
+      for (const it of JSON.parse(data.search)) {
+        _sql += genSearch(it);
+      }
+    } else {
+      _sql += genSearch(data.search);
+    }
+  }
+  _sql += ` GROUP BY a.pos_receive_id `;
+  if (data.hasOwnProperty("page") && data.hasOwnProperty("limit")) {
+    _sql += getLimitOffset(data.page, data.limit);
+  }
   if (onlyQuery) {
     return _sql;
   }
-  let _data = await exec_query(_sql);
+  let _data = await get_query(_sql);
   return _data;
 }
 

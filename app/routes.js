@@ -45,6 +45,7 @@ module.exports = function (app) {
 
   var mst_item = require("./controller/mst_item");
   app.route("/api/master/item").get(mst_item.get);
+  app.route("/api/master/item-variant").get(mst_item.getVariant);
   app.route("/api/master/item").put(mst_item.insert);
   app.route("/api/master/item").post(mst_item.update);
   app.route("/api/master/item").delete(mst_item.delete);

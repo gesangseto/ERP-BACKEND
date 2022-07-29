@@ -11,7 +11,7 @@ const {
   getSaleByCashier,
   getItem,
   getCustomer,
-} = require("./generate_item");
+} = require("./get_data");
 const e = require("cors");
 const perf = require("execution-time")();
 

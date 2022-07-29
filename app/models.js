@@ -151,6 +151,10 @@ async function get_query(query_sql, generate_approval = true) {
     _data.error = true;
     _data.message = count.message;
     return _data;
+  } else if (count.total === 0) {
+    _data.error = false;
+    _data.message = count.message;
+    return _data;
   }
   count = count.data[0].total ? count.data[0].total : 0;
   let table = getFirstWord(_where[0]);

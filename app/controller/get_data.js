@@ -1,6 +1,52 @@
 const { get_query, getLimitOffset } = require("../models");
 const { isJsonString } = require("../utils");
 
+async function getVariantItem(data = Object, onlyQuery = false) {
+  const genSearch = (search) => {
+    return ` 
+    AND (LOWER(b.mst_item_name) LIKE LOWER('%${search}%')
+    OR  LOWER(b.mst_item_no) LIKE LOWER('%${search}%')
+    OR  LOWER(b.mst_item_code) LIKE LOWER('%${search}%')
+    OR  LOWER(a.barcode) LIKE LOWER('%${search}%')
+    OR  LOWER(a.mst_item_variant_name) LIKE LOWER('%${search}%')
+    OR  CAST(a.mst_item_variant_qty AS TEXT) LIKE LOWER('%${search}%')
+    OR  CAST(a.mst_item_variant_price AS TEXT) LIKE LOWER('%${search}%')
+    OR  LOWER(CASE WHEN a.status=1 THEN 'Active' ELSE 'Inactive' end) LIKE LOWER('%${search}%') ) `;
+  };
+  let _sql = `
+  SELECT *
+  FROM mst_item_variant AS a
+  LEFT JOIN mst_item AS b ON a.mst_item_id = b.mst_item_id 
+  LEFT JOIN mst_packaging AS c ON a.mst_packaging_id = c.mst_packaging_id 
+  WHERE a.flag_delete='0' `;
+  if (data.hasOwnProperty("mst_item_id")) {
+    _sql += ` AND a.mst_item_id = '${data.mst_item_id}'`;
+  }
+  if (data.hasOwnProperty("barcode")) {
+    _sql += ` AND a.barcode = '${data.barcode}'`;
+  }
+  if (data.hasOwnProperty("status")) {
+    _sql += ` AND b.status = '${data.status}'`;
+  }
+  if (data.hasOwnProperty("search")) {
+    if (isJsonString(data.search)) {
+      for (const it of JSON.parse(data.search)) {
+        _sql += genSearch(it);
+      }
+    } else {
+      _sql += genSearch(data.search);
+    }
+  }
+  if (data.hasOwnProperty("page") && data.hasOwnProperty("limit")) {
+    _sql += getLimitOffset(data.page, data.limit);
+  }
+  if (onlyQuery) {
+    return _sql;
+  }
+  let _data = await get_query(_sql);
+  return _data;
+}
+
 async function getItem(data = Object, onlyQuery = false) {
   const genSearch = (search) => {
     return ` 
@@ -32,6 +78,9 @@ async function getItem(data = Object, onlyQuery = false) {
   WHERE a.flag_delete='0' `;
   if (data.hasOwnProperty("mst_item_id")) {
     _sql += ` AND a.mst_item_id = '${data.mst_item_id}'`;
+  }
+  if (data.hasOwnProperty("barcode")) {
+    _sql += ` AND b.barcode = '${data.barcode}'`;
   }
   if (data.hasOwnProperty("status")) {
     _sql += ` AND a.status = '${data.status}'`;
@@ -432,4 +481,5 @@ module.exports = {
   getPackaging,
   getItem,
   getAudit,
+  getVariantItem,
 };

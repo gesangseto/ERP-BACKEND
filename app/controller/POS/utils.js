@@ -1,7 +1,7 @@
 "use strict";
 const response = require("../../response");
 const models = require("../../models");
-const { getStockItem } = require("./generate_item");
+const { getStockItem } = require("./get_data");
 const { numberPercent } = require("../../utils");
 const perf = require("execution-time")();
 

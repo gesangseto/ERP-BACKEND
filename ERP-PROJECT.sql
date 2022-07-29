@@ -5,7 +5,7 @@
 -- Dumped from database version 12.10
 -- Dumped by pg_dump version 13.3
 
--- Started on 2022-07-28 10:29:34
+-- Started on 2022-07-29 16:46:59
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -1553,7 +1553,15 @@ COPY public.pos_item_stock (created_at, created_by, updated_at, updated_by, flag
 --
 
 COPY public.pos_receive (created_at, created_by, updated_at, updated_by, flag_delete, status, pos_receive_id, mst_supplier_id, mst_warehous_id, pos_receive_note) FROM stdin;
-2022-07-11 10:11:23+07	0	2022-07-11 10:12:07+07	0	0	1	1657509083408	1	\N	\N
+2022-07-11 10:11:23+07	1	2022-07-28 13:42:01+07	0	0	-1	1657509083408	1	\N	das
+2022-07-29 11:21:53+07	0	\N	\N	0	0	1659068513871	1	\N	\N
+2022-07-29 11:31:33+07	0	\N	\N	0	0	1659069093915	1	\N	\N
+2022-07-29 13:40:01+07	0	\N	\N	0	0	1659076801294	1	\N	\N
+2022-07-29 14:15:20+07	0	\N	\N	0	0	1659078920265	1	\N	\N
+2022-07-29 15:08:28+07	0	\N	\N	0	0	1659082108304	1	\N	\N
+2022-07-29 16:28:34+07	0	\N	\N	0	0	1659086914218	1	\N	\N
+2022-07-29 16:29:03+07	0	\N	\N	0	0	1659086943731	1	\N	\N
+2022-07-29 16:44:49+07	0	\N	\N	0	0	1659087889775	1	\N	\N
 \.
 
 
@@ -1565,6 +1573,13 @@ COPY public.pos_receive (created_at, created_by, updated_at, updated_by, flag_de
 
 COPY public.pos_receive_detail (flag_delete, status, pos_receive_detail_id, pos_receive_id, mst_item_id, batch_no, mfg_date, exp_date, qty, qty_stock) FROM stdin;
 0	1	21	1657509083408	1656477974626	F4321	2022-01-30	2025-01-30	9600	\N
+0	1	22	1659068513871	1656477974626	BCG123456	2022-07-29	2025-07-29	2	\N
+0	1	23	1659082108304	1656477974626	b123	2022-07-29	2025-07-29	12	\N
+0	1	24	1659086914218	1656477974626	BCFG	2022-07-29	2025-07-29	12	\N
+0	1	25	1659086914218	1656477974626	BCFH	2022-07-29	2025-07-29	1400	\N
+0	1	27	1659086943731	1656477974626	BFTSDG	2022-07-29	2025-07-29	12	\N
+0	1	28	1659086943731	1656477974626	BFTSDK	2022-07-29	2025-07-29	1400	\N
+0	1	29	1659087889775	1656477974626	NJNJNJ	2022-07-29	2025-07-29	12	\N
 \.
 
 
@@ -1652,11 +1667,13 @@ COPY public.sys_menu (status, sys_menu_id, sys_menu_name, sys_menu_url, sys_menu
 1	9	Master data	/Masterdata	FolderOpenOutlined	\N	3	1
 1	12	Packaging	/Masterdata/Packaging	\N	9	3.3	1
 1	11	Supplier	/Masterdata/Supplier	\N	9	3.2	1
-1	25	Dashboard	/Dashboard	FundOutlined	\N	1	2
 1	13	Product / Item	/Masterdata/item	\N	9	3.4	1
 1	8	Workflow Approval	/System/Approval	\N	7	4.1	1
 1	7	System	/System	SettingOutlined	\N	4	1
 1	14	Audit	/System/Audit	\N	7	4.2	1
+1	100	Transaction	/pos/transaction	FundOutlined	\N	100	2
+1	101	Receive	/pos/transaction/receive		100	100.1	2
+1	102	Inbound	/pos/transaction/inbound		100	100.2	2
 \.
 
 
@@ -1921,7 +1938,7 @@ SELECT pg_catalog.setval('public.pos_item_stock_pos_item_stock_id_seq', 23, true
 -- Name: pos_receive_detail_pos_receive_detail_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.pos_receive_detail_pos_receive_detail_id_seq', 21, true);
+SELECT pg_catalog.setval('public.pos_receive_detail_pos_receive_detail_id_seq', 29, true);
 
 
 --
@@ -2671,7 +2688,7 @@ ALTER TABLE ONLY public.user_section
     ADD CONSTRAINT user_section_fk FOREIGN KEY (user_department_id) REFERENCES public.user_department(user_department_id);
 
 
--- Completed on 2022-07-28 10:29:37
+-- Completed on 2022-07-29 16:47:02
 
 --
 -- PostgreSQL database dump complete

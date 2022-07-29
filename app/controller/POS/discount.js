@@ -3,7 +3,7 @@ const response = require("../../response");
 const models = require("../../models");
 const { isDate, diffDate } = require("../../utils");
 const moment = require("moment");
-const { getDiscount } = require("./generate_item");
+const { getDiscount } = require("./get_data");
 const perf = require("execution-time")();
 
 exports.get = async function (req, res) {

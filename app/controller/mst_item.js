@@ -2,26 +2,15 @@
 const response = require("../response");
 const models = require("../models");
 const utils = require("../utils");
-const { getItem } = require("./get_data");
+const { getItem, getVariantItem } = require("./get_data");
 const perf = require("execution-time")();
 
 exports.get = async function (req, res) {
   var data = { data: req.query };
   try {
-    // LINE WAJIB DIBAWA
-    perf.start();
-
-    const require_data = [];
-    for (const row of require_data) {
-      if (!req.query[`${row}`]) {
-        data.error = true;
-        data.message = `${row} is required!`;
-        return response.response(data, res);
-      }
-    }
-    // LINE WAJIB DIBAWA
     let _data = [];
     let check = await getItem(req.query);
+    console.log("DISINI===============", req.query);
     for (const it of check.data) {
       let _variant = `SELECT *,a.status AS status
       FROM mst_item_variant AS a 
@@ -32,6 +21,17 @@ exports.get = async function (req, res) {
       _data.push(it);
     }
     check.data = _data;
+    return response.response(check, res);
+  } catch (error) {
+    data.error = true;
+    data.message = `${error}`;
+    return response.response(data, res);
+  }
+};
+exports.getVariant = async function (req, res) {
+  var data = { data: req.query };
+  try {
+    let check = await getVariantItem(req.query);
     return response.response(check, res);
   } catch (error) {
     data.error = true;

@@ -7,7 +7,7 @@ const {
   getTrxDetailItem,
   getCashier,
   getSaleByCashier,
-} = require("./generate_item");
+} = require("./get_data");
 const perf = require("execution-time")();
 
 exports.get = async function (req, res) {

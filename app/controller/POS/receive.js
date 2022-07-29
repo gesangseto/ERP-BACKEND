@@ -8,7 +8,7 @@ const {
   proccessToStock,
   getReceive,
   getDetailReceive,
-} = require("./generate_item");
+} = require("./get_data");
 const perf = require("execution-time")();
 
 exports.get = async function (req, res) {
@@ -24,8 +24,7 @@ exports.get = async function (req, res) {
       }
     }
     // LINE WAJIB DIBAWA
-    const _sqlReceive = await getReceive(req.query, true);
-    const check = await models.get_query(_sqlReceive);
+    const check = await getReceive(req.query);
     if (check.data.length > 0 && req.query.hasOwnProperty("pos_receive_id")) {
       let child = await getDetailReceive(req.query.pos_receive_id);
       check.data[0].detail = child.data;

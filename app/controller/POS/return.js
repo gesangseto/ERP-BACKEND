@@ -21,7 +21,7 @@ const {
   getReturn,
   proccessToInbound,
   proccessToStock,
-} = require("./generate_item");
+} = require("./get_data");
 const moment = require("moment");
 const perf = require("execution-time")();
 

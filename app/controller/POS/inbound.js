@@ -2,11 +2,7 @@
 const response = require("../../response");
 const models = require("../../models");
 const utils = require("../../utils");
-const {
-  getItem,
-  proccessToInbound,
-  proccessToStock,
-} = require("./generate_item");
+const { getItem, proccessToInbound, proccessToStock } = require("./get_data");
 const perf = require("execution-time")();
 
 exports.getInbound = async function (req, res) {
