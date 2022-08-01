@@ -26,7 +26,9 @@ exports.get = async function (req, res) {
     // LINE WAJIB DIBAWA
     const check = await getReceive(req.query);
     if (check.data.length > 0 && req.query.hasOwnProperty("pos_receive_id")) {
-      let child = await getDetailReceive(req.query.pos_receive_id);
+      let child = await getDetailReceive({
+        pos_receive_id: req.query.pos_receive_id,
+      });
       check.data[0].detail = child.data;
     }
     return response.response(check, res);

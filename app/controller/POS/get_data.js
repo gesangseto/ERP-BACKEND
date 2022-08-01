@@ -8,6 +8,127 @@ const {
 const moment = require("moment");
 const { sumByKey, generateId, isJsonString } = require("../../utils");
 
+async function getReceive(data = Object, onlyQuery = false) {
+  const genSearch = (search) => {
+    return ` 
+  AND (CAST(a.pos_receive_id AS TEXT) LIKE LOWER('%${search}%')
+  OR  CAST(a.created_at AS TEXT) LIKE LOWER('%${search}%')
+  OR  LOWER(e.user_name) LIKE LOWER('%${search}%')
+  OR  LOWER(c.mst_item_name) LIKE LOWER('%${search}%')
+  OR  LOWER(d.mst_supplier_name) LIKE LOWER('%${search}%')
+  OR  LOWER(b.batch_no) LIKE LOWER('%${search}%')
+  OR  CAST(b.qty AS TEXT) LIKE LOWER('%${search}%')
+  OR  LOWER(CASE WHEN a.status=1 THEN 'Active' ELSE 'Inactive' end) LIKE LOWER('%${search}%') ) `;
+  };
+  let _sql = `SELECT 
+  MAX(a.pos_receive_id) as pos_receive_id,
+  MAX(a.pos_receive_note) as pos_receive_note,
+  MAX(a.created_at) as created_at,
+  MAX(a.created_by) as created_by,
+  MAX(e.user_name) as user_name,
+  MAX(c.mst_item_id) as mst_item_id,
+  STRING_AGG(c.mst_item_name,',') AS mst_item_name,
+  MAX(d.mst_supplier_id) as mst_supplier_id,
+  MAX(d.mst_supplier_name) as mst_supplier_name,
+  SUM(b.qty) as qty,
+  MAX(a.status) as status,
+  STRING_AGG(b.batch_no,',') AS batch
+  FROM pos_receive AS a
+  LEFT JOIN pos_receive_detail as b on a.pos_receive_id = b.pos_receive_id
+  LEFT JOIN mst_item AS c ON b.mst_item_id = c.mst_item_id
+  LEFT JOIN mst_supplier AS d ON a.mst_supplier_id = d.mst_supplier_id
+  LEFT JOIN "user" AS e ON a.created_by = e.user_id
+  WHERE 1+1=2 `;
+  if (data.hasOwnProperty("pos_receive_id")) {
+    _sql += ` AND a.pos_receive_id = '${data.pos_receive_id}'`;
+  }
+  if (data.hasOwnProperty("batch_no")) {
+    _sql += ` AND b.batch_no = '${data.batch_no}'`;
+  }
+  if (data.hasOwnProperty("mst_item_id") && data.mst_item_id) {
+    _sql += ` AND b.mst_item_id = '${data.mst_item_id}'`;
+  }
+  if (data.hasOwnProperty("barcode") && data.barcode) {
+    _sql += ` AND c.barcode = '${data.barcode}'`;
+  }
+  if (data.hasOwnProperty("search")) {
+    if (isJsonString(data.search)) {
+      for (const it of JSON.parse(data.search)) {
+        _sql += genSearch(it);
+      }
+    } else {
+      _sql += genSearch(data.search);
+    }
+  }
+  _sql += ` GROUP BY a.pos_receive_id `;
+  if (data.hasOwnProperty("page") && data.hasOwnProperty("limit")) {
+    _sql += getLimitOffset(data.page, data.limit);
+  }
+  if (onlyQuery) {
+    return _sql;
+  }
+  let _data = await get_query(_sql);
+  return _data;
+}
+
+async function getDetailReceive(data = Object) {
+  let _sql = `SELECT * 
+  FROM pos_receive_detail AS a 
+  LEFT JOIN mst_item AS b ON a.mst_item_id = b.mst_item_id
+  WHERE 1+1=2 `;
+  if (data.hasOwnProperty("pos_receive_id")) {
+    _sql += ` AND a.pos_receive_id = '${data.pos_receive_id}'`;
+  }
+  if (data.hasOwnProperty("batch_no")) {
+    _sql += ` AND a.batch_no = '${data.batch_no}'`;
+  }
+  if (data.hasOwnProperty("mst_item_id")) {
+    _sql += ` AND b.mst_item_id = '${data.mst_item_id}'`;
+  }
+  _sql += ` ORDER BY a.mst_item_id ASC`;
+  let _data = await exec_query(_sql);
+  return _data;
+}
+
+async function getInbound(data = Object, onlyQuery = false) {
+  const genSearch = (search) => {
+    return ` 
+  AND (CAST(a.pos_trx_inbound_id AS TEXT) LIKE LOWER('%${search}%')
+  OR  CAST(a.created_at AS TEXT) LIKE LOWER('%${search}%')
+  OR  LOWER(c.mst_customer_name) LIKE LOWER('%${search}%')
+  OR  LOWER(b.mst_supplier_name) LIKE LOWER('%${search}%')
+  OR  LOWER(CASE WHEN a.status=1 THEN 'Active' ELSE 'Inactive' end) LIKE LOWER('%${search}%') ) `;
+  };
+  let _sql = ` 
+  SELECT 
+    *, a.created_at AS created_at, a.status AS status
+  FROM pos_trx_inbound AS a 
+  LEFT JOIN mst_supplier AS b ON b.mst_supplier_id = a.mst_supplier_id
+  LEFT JOIN mst_customer AS c ON c.mst_customer_id = a.mst_customer_id
+  --LEFT JOIN mst_warehouse AS d ON d.mst_warehouse_id = a.mst_warehouse_id
+  WHERE a.flag_delete='0' `;
+  if (data.hasOwnProperty("pos_trx_inbound_id")) {
+    _sql += ` AND a.pos_trx_inbound_id = '${data.pos_trx_inbound_id}'`;
+  }
+  if (data.hasOwnProperty("search")) {
+    if (isJsonString(data.search)) {
+      for (const it of JSON.parse(data.search)) {
+        _sql += genSearch(it);
+      }
+    } else {
+      _sql += genSearch(data.search);
+    }
+  }
+  if (data.hasOwnProperty("page") && data.hasOwnProperty("limit")) {
+    _sql += getLimitOffset(data.page, data.limit);
+  }
+  if (onlyQuery) {
+    return _sql;
+  }
+  let _data = await get_query(_sql);
+  return _data;
+}
+
 async function getItem(data = Object) {
   let _sql = `SELECT * 
       FROM mst_item AS a
@@ -173,6 +294,18 @@ async function getSaleByCashier(data = Object) {
 }
 
 async function getStockItem(data = Object) {
+  const genSearch = (search) => {
+    return ` 
+          AND (CAST(a.pos_item_stock_id AS TEXT) LIKE LOWER('%${search}%')
+          OR  CAST(a.created_at AS TEXT) LIKE LOWER('%${search}%')
+          OR  LOWER(b.mst_item_name) LIKE LOWER('%${search}%')
+          OR  LOWER(b.mst_item_desc) LIKE LOWER('%${search}%')
+          OR  LOWER(b.mst_item_no) LIKE LOWER('%${search}%')
+          OR  LOWER(c.barcode) LIKE LOWER('%${search}%')
+          OR  LOWER(c.mst_item_variant_name) LIKE LOWER('%${search}%')
+          OR  CAST(a.qty AS TEXT) LIKE LOWER('%${search}%')
+          OR  LOWER(CASE WHEN a.status=1 THEN 'Active' ELSE 'Inactive' end) LIKE LOWER('%${search}%') ) `;
+  };
   let _sql = `SELECT
         MAX(a.pos_item_stock_id) AS pos_item_stock_id,
         MAX(a.mst_item_id) AS mst_item_id,
@@ -203,6 +336,9 @@ async function getStockItem(data = Object) {
       AND (d.pos_discount_starttime <= now() AND pos_discount_endtime > now())
       AND d.flag_delete = '0'
     WHERE 1+1=2  `;
+  if (data.hasOwnProperty("pos_item_stock_id") && data.pos_item_stock_id) {
+    _sql += ` AND a.pos_item_stock_id = '${data.pos_item_stock_id}'`;
+  }
   if (data.hasOwnProperty("mst_item_id") && data.mst_item_id) {
     _sql += ` AND b.mst_item_id = '${data.mst_item_id}'`;
   }
@@ -212,8 +348,17 @@ async function getStockItem(data = Object) {
   if (data.hasOwnProperty("barcode") && data.barcode) {
     _sql += ` AND c.barcode = '${data.barcode}'`;
   }
+  if (data.hasOwnProperty("search")) {
+    if (isJsonString(data.search)) {
+      for (const it of JSON.parse(data.search)) {
+        _sql += genSearch(it);
+      }
+    } else {
+      _sql += genSearch(data.search);
+    }
+  }
   _sql += ` GROUP BY a.pos_item_stock_id`;
-  let _data = await exec_query(_sql);
+  let _data = await get_query(_sql);
   return _data;
 }
 
@@ -294,88 +439,6 @@ async function getTrxDetailItem(data = Object) {
   let _data = await exec_query(_sql);
   return _data;
 }
-
-async function getReceive(data = Object, onlyQuery = false) {
-  const genSearch = (search) => {
-    return ` 
-  AND (CAST(a.pos_receive_id AS TEXT) LIKE LOWER('%${search}%')
-  OR  CAST(a.created_at AS TEXT) LIKE LOWER('%${search}%')
-  OR  LOWER(e.user_name) LIKE LOWER('%${search}%')
-  OR  LOWER(c.mst_item_name) LIKE LOWER('%${search}%')
-  OR  LOWER(d.mst_supplier_name) LIKE LOWER('%${search}%')
-  OR  LOWER(b.batch_no) LIKE LOWER('%${search}%')
-  OR  CAST(b.qty AS TEXT) LIKE LOWER('%${search}%')
-  OR  LOWER(CASE WHEN a.status=1 THEN 'Active' ELSE 'Inactive' end) LIKE LOWER('%${search}%') ) `;
-  };
-  let _sql = `SELECT 
-  MAX(a.pos_receive_id) as pos_receive_id,
-  MAX(a.created_at) as created_at,
-  MAX(a.created_by) as created_by,
-  MAX(e.user_name) as user_name,
-  MAX(c.mst_item_id) as mst_item_id,
-  MAX(c.mst_item_name) as mst_item_name,
-  MAX(d.mst_supplier_id) as mst_supplier_id,
-  MAX(d.mst_supplier_name) as mst_supplier_name,
-  SUM(b.qty) as qty,
-  MAX(a.status) as status,
-  STRING_AGG(b.batch_no,',') AS batch
-  FROM pos_receive AS a
-  LEFT JOIN pos_receive_detail as b on a.pos_receive_id = b.pos_receive_id
-  LEFT JOIN mst_item AS c ON b.mst_item_id = c.mst_item_id
-  LEFT JOIN mst_supplier AS d ON a.mst_supplier_id = d.mst_supplier_id
-  LEFT JOIN "user" AS e ON a.created_by = e.user_id
-  WHERE 1+1=2 `;
-  if (data.hasOwnProperty("pos_receive_id")) {
-    _sql += ` AND a.pos_receive_id = '${data.pos_receive_id}'`;
-  }
-  if (data.hasOwnProperty("batch_no")) {
-    _sql += ` AND b.batch_no = '${data.batch_no}'`;
-  }
-  if (data.hasOwnProperty("mst_item_id") && data.mst_item_id) {
-    _sql += ` AND b.mst_item_id = '${data.mst_item_id}'`;
-  }
-  if (data.hasOwnProperty("barcode") && data.barcode) {
-    _sql += ` AND c.barcode = '${data.barcode}'`;
-  }
-  if (data.hasOwnProperty("search")) {
-    if (isJsonString(data.search)) {
-      for (const it of JSON.parse(data.search)) {
-        _sql += genSearch(it);
-      }
-    } else {
-      _sql += genSearch(data.search);
-    }
-  }
-  _sql += ` GROUP BY a.pos_receive_id `;
-  if (data.hasOwnProperty("page") && data.hasOwnProperty("limit")) {
-    _sql += getLimitOffset(data.page, data.limit);
-  }
-  if (onlyQuery) {
-    return _sql;
-  }
-  let _data = await get_query(_sql);
-  return _data;
-}
-
-async function getDetailReceive(data = Object) {
-  let _sql = `SELECT * 
-  FROM pos_receive_detail AS a 
-  LEFT JOIN mst_item AS b ON a.mst_item_id = b.mst_item_id
-  WHERE 1+1=2 `;
-  if (data.hasOwnProperty("pos_receive_id")) {
-    _sql += ` AND a.pos_receive_id = '${data.pos_receive_id}'`;
-  }
-  if (data.hasOwnProperty("batch_no")) {
-    _sql += ` AND a.batch_no = '${data.batch_no}'`;
-  }
-  if (data.hasOwnProperty("mst_item_id")) {
-    _sql += ` AND b.mst_item_id = '${data.mst_item_id}'`;
-  }
-  _sql += ` ORDER BY a.mst_item_id ASC`;
-  let _data = await exec_query(_sql);
-  return _data;
-}
-
 async function getPosConfig() {
   let _sql = `SELECT * FROM pos_config LIMIT 1 `;
   let _data = await exec_query(_sql);
@@ -385,6 +448,7 @@ async function getPosConfig() {
 module.exports = {
   getReceive,
   getDetailReceive,
+  getInbound,
   getItem,
   getStockItem,
   proccessToInbound,

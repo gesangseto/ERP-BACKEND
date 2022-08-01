@@ -3,6 +3,7 @@ const response = require("../../response");
 const models = require("../../models");
 const utils = require("../../utils");
 const { getStockItem } = require("./get_data");
+const { getVariantItem } = require("../get_data");
 const perf = require("execution-time")();
 
 exports.get = async function (req, res) {
@@ -22,10 +23,12 @@ exports.get = async function (req, res) {
     // LINE WAJIB DIBAWA
 
     let check = await getStockItem(req.query);
+
     if (check.data.length == 1 && req.query.pos_item_stock_id) {
       let it = check.data[0];
-      let _variant = `SELECT * FROM mst_item_variant WHERE mst_item_id='${it.mst_item_id}';`;
-      _variant = await models.exec_query(_variant);
+      let _variant = await getVariantItem({ mst_item_id: it.mst_item_id });
+      console.log(_variant);
+      // _variant = await models.exec_query(_variant);
       check.data[0].variant = _variant.data;
     }
     return response.response(check, res);

@@ -145,7 +145,7 @@ async function get_query(query_sql, generate_approval = true) {
   var _where = query_sql.split("FROM") || query_sql.split("from");
   _where = _where[1].split("LIMIT") || _where[1].split("limit");
   _where[0] = _where[0].split("ORDER BY")[0] || _where[0].split("order by")[0];
-  var count = `SELECT COUNT(*) AS total FROM ${_where[0]}`;
+  var count = `SELECT COUNT(1) OVER() AS total FROM ${_where[0]}`;
   count = await exec_query(count);
   if (count.error) {
     _data.error = true;

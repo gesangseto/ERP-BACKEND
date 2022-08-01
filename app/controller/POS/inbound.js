@@ -2,38 +2,27 @@
 const response = require("../../response");
 const models = require("../../models");
 const utils = require("../../utils");
-const { getItem, proccessToInbound, proccessToStock } = require("./get_data");
-const perf = require("execution-time")();
+const { getInbound, getDetailReceive, getReceive } = require("./get_data");
 
 exports.getInbound = async function (req, res) {
   var data = { data: req.query };
   try {
-    // LINE WAJIB DIBAWA
-    perf.start();
-
-    const require_data = [];
-    for (const row of require_data) {
-      if (!req.query[`${row}`]) {
-        data.error = true;
-        data.message = `${row} is required!`;
-        return response.response(data, res);
+    const check = await getInbound(req.query);
+    const newData = [];
+    for (const it of check.data) {
+      let child = {};
+      let _data = {};
+      if (it.pos_ref_table === "pos_receive") {
+        child = await getReceive({ pos_receive_id: it.pos_ref_id });
+        _data = { ...child.data[0], ...it };
+        if (req.query.hasOwnProperty("pos_trx_inbound_id")) {
+          child = await getDetailReceive({ pos_receive_id: it.pos_ref_id });
+          _data = { ..._data, detail: child.data };
+        }
       }
+      newData.push(_data);
     }
-    // LINE WAJIB DIBAWA
-    var $query = `
-    SELECT 
-    a.*,
-    b.mst_supplier_name,
-    c.mst_customer_name
-    --b.mst_warehouse_name
-    FROM pos_trx_inbound AS a 
-    LEFT JOIN mst_supplier AS b ON b.mst_supplier_id = a.mst_supplier_id
-    LEFT JOIN mst_customer AS c ON c.mst_customer_id = a.mst_customer_id
-    --LEFT JOIN mst_warehouse AS d ON d.mst_warehouse_id = a.mst_warehouse_id
-    WHERE a.flag_delete='0' `;
-    $query = await models.filter_query($query, req.query);
-    console.log($query);
-    const check = await models.get_query($query);
+    check.data = newData;
     return response.response(check, res);
   } catch (error) {
     data.error = true;
