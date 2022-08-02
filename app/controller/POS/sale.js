@@ -34,11 +34,10 @@ exports.get = async function (req, res) {
     if (check.data.length == 1 && req.query.pos_trx_sale_id) {
       let it = check.data[0];
       it.pos_trx_ref_id = req.query.pos_trx_sale_id;
-      console.log(it);
       let _detail = await getTrxDetailItem(it);
       check.data[0].detail = _detail.data;
     }
-    return response.response(check, res);
+    return response.response(check, res, false);
   } catch (error) {
     data.error = true;
     data.message = `${error}`;

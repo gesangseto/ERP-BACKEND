@@ -175,6 +175,13 @@ async function getCashier(data = Object) {
 }
 
 async function getSale(data = Object) {
+  const genSearch = (search) => {
+    return ` 
+  AND (CAST(a.pos_trx_sale_id AS TEXT) LIKE LOWER('%${search}%')
+  OR  LOWER(b.mst_customer_name) LIKE LOWER('%${search}%')
+  OR  LOWER(a.mst_customer_phone) LIKE LOWER('%${search}%') 
+  OR  LOWER(a.mst_customer_email) LIKE LOWER('%${search}%') ) `;
+  };
   let _sql = `SELECT 
   *,
   a.status AS status,
@@ -193,7 +200,20 @@ async function getSale(data = Object) {
   if (data.hasOwnProperty("is_paid")) {
     _sql += ` AND a.is_paid = '${data.is_paid}'`;
   }
-  let _data = await exec_query(_sql);
+  if (data.hasOwnProperty("search")) {
+    if (isJsonString(data.search)) {
+      for (const it of JSON.parse(data.search)) {
+        _sql += genSearch(it);
+      }
+    } else {
+      _sql += genSearch(data.search);
+    }
+  }
+  if (data.hasOwnProperty("page") && data.hasOwnProperty("limit")) {
+    _sql += getLimitOffset(data.page, data.limit);
+  }
+  console.log(_sql);
+  let _data = await get_query(_sql);
   return _data;
 }
 async function getReturn(data = Object) {
@@ -422,10 +442,10 @@ async function proccessToStock(data) {
   }
   return _sql;
 }
-
 async function getTrxDetailItem(data = Object) {
   let _sql = `SELECT * FROM pos_trx_detail AS a
-    LEFT JOIN mst_item_variant AS b ON a.mst_item_variant_id  = b.mst_item_variant_id 
+  LEFT JOIN mst_item_variant AS b ON a.mst_item_variant_id  = b.mst_item_variant_id 
+  LEFT JOIN mst_item AS c ON c.mst_item_id  = b.mst_item_id 
     WHERE 1+1=2 `;
   if (data.hasOwnProperty("pos_trx_ref_id")) {
     _sql += ` AND a.pos_trx_ref_id = '${data.pos_trx_ref_id}'`;
