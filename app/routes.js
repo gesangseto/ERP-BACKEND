@@ -11,6 +11,11 @@ module.exports = function (app) {
   app.route("/api/configuration").get(sys_configuration.get);
   app.route("/api/configuration").post(sys_configuration.update);
 
+  var sys_relation = require("./controller/sys_relation");
+  app.route("/api/config-relation").get(sys_relation.get);
+  app.route("/api/config-relation-list").get(sys_relation.getRelationList);
+  app.route("/api/config-relation").post(sys_relation.update);
+
   var sys_role_section = require("./controller/sys_role_section");
   app.route("/api/role/section").get(sys_role_section.getRoleMenu);
   app.route("/api/role/section").post(sys_role_section.insertUpdateRoleMenu);

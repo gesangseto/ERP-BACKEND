@@ -470,6 +470,42 @@ async function getSysMenu(data = Object, onlyQuery = false) {
   return _data;
 }
 
+async function getSysRelation(data = Object, onlyQuery = false) {
+  const genSearch = (search) => {
+    return ` 
+    AND (LOWER(a.sys_relation_name) LIKE LOWER('%${search}%')
+    OR  LOWER(a.sys_relation_desc) LIKE LOWER('%${search}%')
+    OR  LOWER(a.sys_relation_code) LIKE LOWER('%${search}%') ) `;
+  };
+  let _sql = `
+  SELECT *
+  FROM sys_relation AS a 
+  WHERE 1+1=2 `;
+  if (data.hasOwnProperty("sys_relation_id")) {
+    _sql += ` AND a.sys_relation_id = '${data.sys_relation_id}'`;
+  }
+  if (data.hasOwnProperty("sys_relation_code")) {
+    _sql += ` AND a.sys_relation_code = '${data.sys_relation_code}'`;
+  }
+  if (data.hasOwnProperty("search")) {
+    if (isJsonString(data.search)) {
+      for (const it of JSON.parse(data.search)) {
+        _sql += genSearch(it);
+      }
+    } else {
+      _sql += genSearch(data.search);
+    }
+  }
+  if (data.hasOwnProperty("page") && data.hasOwnProperty("limit")) {
+    _sql += getLimitOffset(data.page, data.limit);
+  }
+  if (onlyQuery) {
+    return _sql;
+  }
+  let _data = await get_query(_sql);
+  return _data;
+}
+
 module.exports = {
   getDepartment,
   getUser,
@@ -482,4 +518,5 @@ module.exports = {
   getItem,
   getAudit,
   getVariantItem,
+  getSysRelation,
 };
