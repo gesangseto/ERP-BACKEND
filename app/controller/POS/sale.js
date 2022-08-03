@@ -112,14 +112,12 @@ exports.newSale = async function (req, res) {
       throw new Error(`Customer not found`);
     }
     _cust = _cust.data[0];
-    let up_price = _cust.price_percentage;
-
     body.mst_customer_id = mst_customer_id;
-    body.price_percentage = up_price;
+    body.price_percentage = _cust.price_percentage;
     body.ppn = _cust.mst_customer_ppn;
+    body.mst_customer_ppn = _cust.mst_customer_ppn;
     body.is_paid = false;
     body.total_price = 0;
-    body.total_discount = 0;
     body.grand_total = 0;
     let _calculate = await calculateSale({
       header: body,
@@ -138,6 +136,7 @@ exports.newSale = async function (req, res) {
         values: it,
       });
     }
+    console.log(`${_sale}${_saleDetail}`);
     let _res = await models.exec_query(`${_sale}${_saleDetail}`);
     _res.data = [_calculate];
     return response.response(_res, res);

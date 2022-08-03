@@ -1,7 +1,7 @@
 {
 	"info": {
-		"_postman_id": "6f14b297-dc72-40a5-a497-e432f460a20f",
-		"name": "ERP Project Single",
+		"_postman_id": "33cc8b9d-bd21-4207-890c-e2b32840e029",
+		"name": "ERP Project",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -24,12 +24,12 @@
 							"formdata": [
 								{
 									"key": "user_name",
-									"value": "super_admin",
+									"value": "gesang",
 									"type": "text"
 								},
 								{
 									"key": "user_password",
-									"value": "p@ssw0rd",
+									"value": "123456",
 									"type": "text"
 								}
 							]
@@ -195,6 +195,121 @@
 							"response": []
 						}
 					]
+				},
+				{
+					"name": "Relation",
+					"item": [
+						{
+							"name": "Get Config",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "token",
+										"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{dev}}/api/config-relation?sys_relation_code=mst_customer_default",
+									"host": [
+										"{{dev}}"
+									],
+									"path": [
+										"api",
+										"config-relation"
+									],
+									"query": [
+										{
+											"key": "search",
+											"value": "Customer",
+											"disabled": true
+										},
+										{
+											"key": "sys_relation_code",
+											"value": "mst_customer_default"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update Config",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "token",
+										"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n            \"sys_relation_code\": \"mst_customer_default\",\r\n            \"sys_relation_ref_id\": 1,\r\n            \"sys_relation_desc\": null,\r\n            \"sys_relation_name\": \"Customer Default\",\r\n            \"sys_relation_id\": 1,\r\n            \"approval\": null\r\n        }",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{dev}}/api/config-relation",
+									"host": [
+										"{{dev}}"
+									],
+									"path": [
+										"api",
+										"config-relation"
+									],
+									"query": [
+										{
+											"key": "status",
+											"value": "1",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Ref List",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "token",
+										"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{dev}}/api/config-relation-list?sys_relation_id=1",
+									"host": [
+										"{{dev}}"
+									],
+									"path": [
+										"api",
+										"config-relation-list"
+									],
+									"query": [
+										{
+											"key": "search",
+											"value": "Customer",
+											"disabled": true
+										},
+										{
+											"key": "sys_relation_id",
+											"value": "1"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
 				}
 			]
 		},
@@ -216,7 +331,7 @@
 									}
 								],
 								"url": {
-									"raw": "{{dev}}/api/role/section?section_id=1&show_all=true",
+									"raw": "{{dev}}/api/role/section?user_section_id=OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
 									"host": [
 										"{{dev}}"
 									],
@@ -227,12 +342,13 @@
 									],
 									"query": [
 										{
-											"key": "section_id",
-											"value": "1"
+											"key": "user_section_id",
+											"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP"
 										},
 										{
 											"key": "show_all",
-											"value": "true"
+											"value": "true",
+											"disabled": true
 										}
 									]
 								}
@@ -290,7 +406,7 @@
 									}
 								],
 								"url": {
-									"raw": "{{dev}}/api/master/user_section",
+									"raw": "{{dev}}/api/master/user_section?user_section_id=10",
 									"host": [
 										"{{dev}}"
 									],
@@ -301,9 +417,18 @@
 									],
 									"query": [
 										{
-											"key": "dksajkda",
-											"value": "0-900",
+											"key": "user_department_id",
+											"value": "1",
 											"disabled": true
+										},
+										{
+											"key": "status",
+											"value": "1",
+											"disabled": true
+										},
+										{
+											"key": "user_section_id",
+											"value": "10"
 										}
 									]
 								}
@@ -587,7 +712,7 @@
 									}
 								],
 								"url": {
-									"raw": "{{dev}}/api/master/user?page=1&limit=1&search=ges",
+									"raw": "{{dev}}/api/master/user?page=1&limit=1",
 									"host": [
 										"{{dev}}"
 									],
@@ -604,10 +729,6 @@
 										{
 											"key": "limit",
 											"value": "1"
-										},
-										{
-											"key": "search",
-											"value": "ges"
 										}
 									]
 								}
@@ -799,7 +920,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"flag_delete\": 0,\r\n    \"status\": 1,\r\n    \"approval_ref_table\": \"pos_receive\",\r\n    \"approval_desc\": \"POS Received\",\r\n    \"approval_user_id_1\": 1,\r\n    \"approval_user_id_2\": null,\r\n    \"approval_user_id_3\": null,\r\n    \"approval_user_id_4\": null,\r\n    \"approval_user_id_5\": null\r\n}",
+									"raw": "{\r\n    \"flag_delete\": 0,\r\n    \"status\": 1,\r\n    \"approval_ref_table\": \"pos_user\",\r\n    \"approval_desc\": \"POS User\",\r\n    \"approval_user_id_1\": 1,\r\n    \"approval_user_id_2\": null,\r\n    \"approval_user_id_3\": null,\r\n    \"approval_user_id_4\": null,\r\n    \"approval_user_id_5\": null\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -932,7 +1053,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"approval_flow_id\": 30,\r\n    \"is_approve\":true,\r\n    \"rejected_note\":\"Test 1 2 3\"\r\n}",
+									"raw": "{\r\n    \"approval_flow_id\": 24,\r\n    \"is_approve\":true,\r\n    \"rejected_note\":\"Test 1 2 3\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -961,189 +1082,1257 @@
 			"name": "POS",
 			"item": [
 				{
-					"name": "Discount",
+					"name": "Master",
 					"item": [
 						{
-							"name": "get",
-							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "token",
-										"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
-										"type": "text"
-									}
-								],
-								"url": {
-									"raw": "{{dev}}/api/transaction/pos/discount",
-									"host": [
-										"{{dev}}"
-									],
-									"path": [
-										"api",
-										"transaction",
-										"pos",
-										"discount"
-									],
-									"query": [
-										{
-											"key": "barcode",
-											"value": "123456",
-											"disabled": true
-										},
-										{
-											"key": "mst_item_variant_id",
-											"value": "20",
-											"disabled": true
+							"name": "Branch",
+							"item": [
+								{
+									"name": "get",
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "token",
+												"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
+												"type": "text"
+											}
+										],
+										"url": {
+											"raw": "{{dev}}/api/master/pos/branch",
+											"host": [
+												"{{dev}}"
+											],
+											"path": [
+												"api",
+												"master",
+												"pos",
+												"branch"
+											],
+											"query": [
+												{
+													"key": "barcode",
+													"value": "123456",
+													"disabled": true
+												}
+											]
 										}
-									]
+									},
+									"response": []
+								},
+								{
+									"name": "Insert",
+									"request": {
+										"method": "PUT",
+										"header": [
+											{
+												"key": "token",
+												"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "urlencoded",
+											"urlencoded": [
+												{
+													"key": "mst_item_variant_id",
+													"value": "20",
+													"type": "text"
+												},
+												{
+													"key": "pos_branch_name",
+													"value": "2022-01-02",
+													"type": "text"
+												},
+												{
+													"key": "pos_branch_code",
+													"value": "2022-10-3",
+													"type": "text"
+												},
+												{
+													"key": "pos_branch_address",
+													"value": "12",
+													"type": "text"
+												}
+											]
+										},
+										"url": {
+											"raw": "{{dev}}/api/master/pos/branch",
+											"host": [
+												"{{dev}}"
+											],
+											"path": [
+												"api",
+												"master",
+												"pos",
+												"branch"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Update",
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "token",
+												"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"status\": 0,\r\n    \"pos_branch_id\": 3,\r\n    \"pos_branch_name\": \"Cabang Utama\",\r\n    \"pos_branch_code\": \"C-Us\",\r\n    \"pos_branch_address\": \"JL.Bareng Mantan\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{dev}}/api/master/pos/branch",
+											"host": [
+												"{{dev}}"
+											],
+											"path": [
+												"api",
+												"master",
+												"pos",
+												"branch"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Delete",
+									"request": {
+										"method": "DELETE",
+										"header": [
+											{
+												"key": "token",
+												"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "urlencoded",
+											"urlencoded": [
+												{
+													"key": "pos_branch_id",
+													"value": "3",
+													"type": "text"
+												}
+											]
+										},
+										"url": {
+											"raw": "{{dev}}/api/master/pos/branch",
+											"host": [
+												"{{dev}}"
+											],
+											"path": [
+												"api",
+												"master",
+												"pos",
+												"branch"
+											]
+										}
+									},
+									"response": []
 								}
-							},
-							"response": []
+							]
 						},
 						{
-							"name": "New Discount",
-							"request": {
-								"method": "PUT",
-								"header": [
-									{
-										"key": "token",
-										"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
-										"type": "text"
-									}
-								],
-								"body": {
-									"mode": "urlencoded",
-									"urlencoded": [
-										{
-											"key": "mst_item_variant_id",
-											"value": "20",
-											"type": "text"
-										},
-										{
-											"key": "pos_discount_starttime",
-											"value": "2022-01-02",
-											"type": "text"
-										},
-										{
-											"key": "pos_discount_endtime",
-											"value": "2022-10-3",
-											"type": "text"
-										},
-										{
-											"key": "pos_discount",
-											"value": "12",
-											"type": "text"
+							"name": "User Branch",
+							"item": [
+								{
+									"name": "get",
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "token",
+												"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
+												"type": "text"
+											}
+										],
+										"url": {
+											"raw": "{{dev}}/api/master/pos/user-branch",
+											"host": [
+												"{{dev}}"
+											],
+											"path": [
+												"api",
+												"master",
+												"pos",
+												"user-branch"
+											],
+											"query": [
+												{
+													"key": "pos_user_id",
+													"value": "1",
+													"disabled": true
+												}
+											]
 										}
-									]
+									},
+									"response": []
 								},
-								"url": {
-									"raw": "{{dev}}/api/transaction/pos/discount?mst_item_variant_id=Djarum Super",
-									"host": [
-										"{{dev}}"
-									],
-									"path": [
-										"api",
-										"transaction",
-										"pos",
-										"discount"
-									],
-									"query": [
-										{
-											"key": "mst_item_variant_id",
-											"value": "Djarum Super"
+								{
+									"name": "Insert",
+									"request": {
+										"method": "PUT",
+										"header": [
+											{
+												"key": "token",
+												"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "urlencoded",
+											"urlencoded": [
+												{
+													"key": "user_id",
+													"value": "1",
+													"type": "text"
+												},
+												{
+													"key": "pos_branch_id",
+													"value": "3",
+													"type": "text"
+												},
+												{
+													"key": "is_cashier",
+													"value": "false",
+													"type": "text"
+												}
+											]
+										},
+										"url": {
+											"raw": "{{dev}}/api/master/pos/user-branch",
+											"host": [
+												"{{dev}}"
+											],
+											"path": [
+												"api",
+												"master",
+												"pos",
+												"user-branch"
+											]
 										}
-									]
+									},
+									"response": []
+								},
+								{
+									"name": "Update",
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "token",
+												"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"pos_user_id\": 11,\r\n    \"is_cashier\": false\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{dev}}/api/master/pos/user-branch",
+											"host": [
+												"{{dev}}"
+											],
+											"path": [
+												"api",
+												"master",
+												"pos",
+												"user-branch"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Delete",
+									"request": {
+										"method": "DELETE",
+										"header": [
+											{
+												"key": "token",
+												"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "urlencoded",
+											"urlencoded": [
+												{
+													"key": "pos_user_id",
+													"value": "12",
+													"type": "text"
+												}
+											]
+										},
+										"url": {
+											"raw": "{{dev}}/api/master/pos/user-branch",
+											"host": [
+												"{{dev}}"
+											],
+											"path": [
+												"api",
+												"master",
+												"pos",
+												"user-branch"
+											]
+										}
+									},
+									"response": []
 								}
-							},
-							"response": []
+							]
 						},
 						{
-							"name": "Update Discount",
-							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "token",
-										"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
-										"type": "text"
-									}
-								],
-								"body": {
-									"mode": "urlencoded",
-									"urlencoded": [
-										{
-											"key": "pos_discount_id",
-											"value": "24",
-											"type": "text"
-										},
-										{
-											"key": "status",
-											"value": "0",
-											"type": "text"
+							"name": "Discount",
+							"item": [
+								{
+									"name": "get",
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "token",
+												"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
+												"type": "text"
+											}
+										],
+										"url": {
+											"raw": "{{dev}}/api/master/pos/discount?mst_item_variant_id=20",
+											"host": [
+												"{{dev}}"
+											],
+											"path": [
+												"api",
+												"master",
+												"pos",
+												"discount"
+											],
+											"query": [
+												{
+													"key": "barcode",
+													"value": "123456",
+													"disabled": true
+												},
+												{
+													"key": "mst_item_variant_id",
+													"value": "20"
+												}
+											]
 										}
-									]
+									},
+									"response": []
 								},
-								"url": {
-									"raw": "{{dev}}/api/transaction/pos/discount?status=&pos_discount_id=23",
-									"host": [
-										"{{dev}}"
-									],
-									"path": [
-										"api",
-										"transaction",
-										"pos",
-										"discount"
-									],
-									"query": [
-										{
-											"key": "status",
-											"value": ""
+								{
+									"name": "New Discount",
+									"request": {
+										"method": "PUT",
+										"header": [
+											{
+												"key": "token",
+												"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "urlencoded",
+											"urlencoded": [
+												{
+													"key": "mst_item_variant_id",
+													"value": "20",
+													"type": "text"
+												},
+												{
+													"key": "pos_discount_starttime",
+													"value": "2022-01-02",
+													"type": "text"
+												},
+												{
+													"key": "pos_discount_endtime",
+													"value": "2022-10-3",
+													"type": "text"
+												},
+												{
+													"key": "pos_discount",
+													"value": "12",
+													"type": "text"
+												}
+											]
 										},
-										{
-											"key": "pos_discount_id",
-											"value": "23"
+										"url": {
+											"raw": "{{dev}}/api/master/pos/discount",
+											"host": [
+												"{{dev}}"
+											],
+											"path": [
+												"api",
+												"master",
+												"pos",
+												"discount"
+											]
 										}
-									]
+									},
+									"response": []
+								},
+								{
+									"name": "Update Discount",
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "token",
+												"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "urlencoded",
+											"urlencoded": [
+												{
+													"key": "pos_discount_id",
+													"value": "24",
+													"type": "text"
+												},
+												{
+													"key": "status",
+													"value": "0",
+													"type": "text"
+												}
+											]
+										},
+										"url": {
+											"raw": "{{dev}}/api/master/pos/discount",
+											"host": [
+												"{{dev}}"
+											],
+											"path": [
+												"api",
+												"master",
+												"pos",
+												"discount"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Delete discount",
+									"request": {
+										"method": "DELETE",
+										"header": [
+											{
+												"key": "token",
+												"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "urlencoded",
+											"urlencoded": [
+												{
+													"key": "pos_discount_id",
+													"value": "23",
+													"type": "text"
+												}
+											]
+										},
+										"url": {
+											"raw": "{{dev}}/api/master/pos/discount",
+											"host": [
+												"{{dev}}"
+											],
+											"path": [
+												"api",
+												"master",
+												"pos",
+												"discount"
+											]
+										}
+									},
+									"response": []
 								}
-							},
-							"response": []
+							]
+						}
+					]
+				},
+				{
+					"name": "Transaction",
+					"item": [
+						{
+							"name": "Receive",
+							"item": [
+								{
+									"name": "Get",
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "token",
+												"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
+												"type": "text"
+											}
+										],
+										"url": {
+											"raw": "{{dev}}/api/transaction/pos/receive?pos_receive_id=1657080370911",
+											"host": [
+												"{{dev}}"
+											],
+											"path": [
+												"api",
+												"transaction",
+												"pos",
+												"receive"
+											],
+											"query": [
+												{
+													"key": "pos_receive_id",
+													"value": "1657080370911"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "New Receive",
+									"request": {
+										"method": "PUT",
+										"header": [
+											{
+												"key": "token",
+												"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"mst_supplier_id\": \"1\",\n    \"item\": [\n        {\n            \"batch_no\": \"F4321\",\n            \"mst_item_variant_id\":\"21\",\n            \"mfg_date\":\"2022-01-30\",\n            \"exp_date\":\"2025-01-30\",\n            \"qty\":\"400\"\n        }\n    ]\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{dev}}/api/transaction/pos/receive",
+											"host": [
+												"{{dev}}"
+											],
+											"path": [
+												"api",
+												"transaction",
+												"pos",
+												"receive"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Approve",
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "token",
+												"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "urlencoded",
+											"urlencoded": [
+												{
+													"key": "pos_receive_id",
+													"value": "1657080370911",
+													"type": "text"
+												},
+												{
+													"key": "is_approve",
+													"value": "true",
+													"type": "text"
+												},
+												{
+													"key": "pos_receive_note",
+													"value": "Nothing",
+													"type": "text"
+												}
+											]
+										},
+										"url": {
+											"raw": "{{dev}}/api/transaction/pos/receive",
+											"host": [
+												"{{dev}}"
+											],
+											"path": [
+												"api",
+												"transaction",
+												"pos",
+												"receive"
+											]
+										}
+									},
+									"response": []
+								}
+							]
 						},
 						{
-							"name": "Delete discount",
-							"request": {
-								"method": "DELETE",
-								"header": [
-									{
-										"key": "token",
-										"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
-										"type": "text"
-									}
-								],
-								"body": {
-									"mode": "urlencoded",
-									"urlencoded": [
-										{
-											"key": "pos_discount_id",
-											"value": "23",
-											"type": "text"
+							"name": "Inbound",
+							"item": [
+								{
+									"name": "Get Inbound",
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "token",
+												"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
+												"type": "text"
+											}
+										],
+										"url": {
+											"raw": "{{dev}}/api/transaction/pos/inbound",
+											"host": [
+												"{{dev}}"
+											],
+											"path": [
+												"api",
+												"transaction",
+												"pos",
+												"inbound"
+											]
 										}
-									]
-								},
-								"url": {
-									"raw": "{{dev}}/api/transaction/pos/discount",
-									"host": [
-										"{{dev}}"
-									],
-									"path": [
-										"api",
-										"transaction",
-										"pos",
-										"discount"
-									]
+									},
+									"response": []
 								}
-							},
-							"response": []
+							]
+						},
+						{
+							"name": "Cashier",
+							"item": [
+								{
+									"name": "get Cashier",
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "token",
+												"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
+												"type": "text"
+											}
+										],
+										"url": {
+											"raw": "{{dev}}/api/transaction/pos/cashier",
+											"host": [
+												"{{dev}}"
+											],
+											"path": [
+												"api",
+												"transaction",
+												"pos",
+												"cashier"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Open Cashier",
+									"request": {
+										"method": "PUT",
+										"header": [
+											{
+												"key": "token",
+												"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "urlencoded",
+											"urlencoded": [
+												{
+													"key": "pos_cashier_capital_cash",
+													"value": "150000",
+													"type": "text"
+												},
+												{
+													"key": "pos_cashier_shift",
+													"value": "1",
+													"type": "text"
+												}
+											]
+										},
+										"url": {
+											"raw": "{{dev}}/api/transaction/pos/cashier",
+											"host": [
+												"{{dev}}"
+											],
+											"path": [
+												"api",
+												"transaction",
+												"pos",
+												"cashier"
+											],
+											"query": [
+												{
+													"key": "mst_item_name",
+													"value": "Djarum Super",
+													"disabled": true
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Close Cashier",
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "token",
+												"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "urlencoded",
+											"urlencoded": [
+												{
+													"key": "pos_cashier_id",
+													"value": "9",
+													"type": "text"
+												}
+											]
+										},
+										"url": {
+											"raw": "{{dev}}/api/transaction/pos/cashier?pos_cashier_id=12345",
+											"host": [
+												"{{dev}}"
+											],
+											"path": [
+												"api",
+												"transaction",
+												"pos",
+												"cashier"
+											],
+											"query": [
+												{
+													"key": "pos_cashier_id",
+													"value": "12345"
+												}
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Outbound / Sale",
+							"item": [
+								{
+									"name": "List Sale",
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "token",
+												"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
+												"type": "text"
+											}
+										],
+										"url": {
+											"raw": "{{dev}}/api/transaction/pos/sale?pos_trx_sale_id=1657098259709",
+											"host": [
+												"{{dev}}"
+											],
+											"path": [
+												"api",
+												"transaction",
+												"pos",
+												"sale"
+											],
+											"query": [
+												{
+													"key": "pos_trx_sale_id",
+													"value": "1657098259709"
+												},
+												{
+													"key": "pos_cashier_id",
+													"value": "2",
+													"disabled": true
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "List Sale By Cashier",
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "token",
+												"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
+												"type": "text"
+											}
+										],
+										"url": {
+											"raw": "{{dev}}/api/transaction/pos/sale-cashier?pos_cashier_id=9",
+											"host": [
+												"{{dev}}"
+											],
+											"path": [
+												"api",
+												"transaction",
+												"pos",
+												"sale-cashier"
+											],
+											"query": [
+												{
+													"key": "pos_cashier_id",
+													"value": "9"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Sale New",
+									"request": {
+										"method": "PUT",
+										"header": [
+											{
+												"key": "token",
+												"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"mst_customer_id\": 1,\r\n    \"sale_item\": [\r\n        {\r\n            \"qty\": \"2\",\r\n            \"mst_item_variant_id\": \"20\"\r\n        }\r\n    ]\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{dev}}/api/transaction/pos/sale",
+											"host": [
+												"{{dev}}"
+											],
+											"path": [
+												"api",
+												"transaction",
+												"pos",
+												"sale"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Update/Insert to Sale",
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "token",
+												"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"qty\": 1,\n    \"mst_item_variant_id\": \"20\",\n    \"pos_trx_sale_id\": \"1657098259709\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{dev}}/api/transaction/pos/sale",
+											"host": [
+												"{{dev}}"
+											],
+											"path": [
+												"api",
+												"transaction",
+												"pos",
+												"sale"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Delete Sale",
+									"request": {
+										"method": "DELETE",
+										"header": [
+											{
+												"key": "token",
+												"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "urlencoded",
+											"urlencoded": [
+												{
+													"key": "pos_trx_sale_id",
+													"value": "1657097864006",
+													"type": "text"
+												}
+											]
+										},
+										"url": {
+											"raw": "{{dev}}/api/transaction/pos/sale",
+											"host": [
+												"{{dev}}"
+											],
+											"path": [
+												"api",
+												"transaction",
+												"pos",
+												"sale"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Payment",
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "token",
+												"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "urlencoded",
+											"urlencoded": [
+												{
+													"key": "pos_trx_sale_id",
+													"value": "1657097864006",
+													"type": "text"
+												},
+												{
+													"key": "payment_type",
+													"value": "cash",
+													"type": "text"
+												}
+											]
+										},
+										"url": {
+											"raw": "{{dev}}/api/transaction/pos/sale/payment",
+											"host": [
+												"{{dev}}"
+											],
+											"path": [
+												"api",
+												"transaction",
+												"pos",
+												"sale",
+												"payment"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Return / Recall",
+							"item": [
+								{
+									"name": "Get Return",
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "token",
+												"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
+												"type": "text"
+											}
+										],
+										"url": {
+											"raw": "{{dev}}/api/transaction/pos/return?pos_trx_return_id=1656925295914",
+											"host": [
+												"{{dev}}"
+											],
+											"path": [
+												"api",
+												"transaction",
+												"pos",
+												"return"
+											],
+											"query": [
+												{
+													"key": "pos_trx_return_id",
+													"value": "1656925295914"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "New Return",
+									"request": {
+										"method": "PUT",
+										"header": [
+											{
+												"key": "token",
+												"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"pos_trx_sale_id\": 1657095580899,\n    \"return_item\": [\n        {\n            \"qty\": 1,\n            \"mst_item_variant_id\": 20\n        }\n    ]\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{dev}}/api/transaction/pos/return",
+											"host": [
+												"{{dev}}"
+											],
+											"path": [
+												"api",
+												"transaction",
+												"pos",
+												"return"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Approve Return",
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "token",
+												"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "urlencoded",
+											"urlencoded": [
+												{
+													"key": "pos_trx_return_id",
+													"value": "1656925322005",
+													"type": "text"
+												},
+												{
+													"key": "is_approve",
+													"value": "true",
+													"type": "text"
+												},
+												{
+													"key": "pos_batch_note",
+													"value": "Nothing",
+													"type": "text",
+													"disabled": true
+												}
+											]
+										},
+										"url": {
+											"raw": "{{dev}}/api/transaction/pos/return?is_approve=true&pos_trx_return_id=1656925322005",
+											"host": [
+												"{{dev}}"
+											],
+											"path": [
+												"api",
+												"transaction",
+												"pos",
+												"return"
+											],
+											"query": [
+												{
+													"key": "is_approve",
+													"value": "true"
+												},
+												{
+													"key": "pos_trx_return_id",
+													"value": "1656925322005"
+												}
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Destroy / Reject",
+							"item": [
+								{
+									"name": "Get Return",
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "token",
+												"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
+												"type": "text"
+											}
+										],
+										"url": {
+											"raw": "{{dev}}/api/transaction/pos/inbound",
+											"host": [
+												"{{dev}}"
+											],
+											"path": [
+												"api",
+												"transaction",
+												"pos",
+												"inbound"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "New Return",
+									"request": {
+										"method": "PUT",
+										"header": [
+											{
+												"key": "token",
+												"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "urlencoded",
+											"urlencoded": [
+												{
+													"key": "pos_batch_no",
+													"value": "FG4547",
+													"type": "text"
+												},
+												{
+													"key": "pos_batch_exp_date",
+													"value": "21-12-2022",
+													"type": "text"
+												},
+												{
+													"key": "pos_batch_mfg_date",
+													"value": "21-12-2021",
+													"type": "text"
+												},
+												{
+													"key": "pos_batch_qty",
+													"value": "100",
+													"type": "text"
+												},
+												{
+													"key": "mst_item_id",
+													"value": "1656477974626",
+													"type": "text"
+												},
+												{
+													"key": "mst_supplier_id",
+													"value": "1",
+													"type": "text"
+												}
+											]
+										},
+										"url": {
+											"raw": "{{dev}}/api/transaction/pos/inbound",
+											"host": [
+												"{{dev}}"
+											],
+											"path": [
+												"api",
+												"transaction",
+												"pos",
+												"inbound"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Approve Return",
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "token",
+												"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "urlencoded",
+											"urlencoded": [
+												{
+													"key": "pos_batch_id",
+													"value": "1656561864781",
+													"type": "text"
+												},
+												{
+													"key": "is_approve",
+													"value": "true",
+													"type": "text"
+												},
+												{
+													"key": "pos_batch_note",
+													"value": "Nothing",
+													"type": "text",
+													"disabled": true
+												}
+											]
+										},
+										"url": {
+											"raw": "{{dev}}/api/transaction/pos/inbound",
+											"host": [
+												"{{dev}}"
+											],
+											"path": [
+												"api",
+												"transaction",
+												"pos",
+												"inbound"
+											]
+										}
+									},
+									"response": []
+								}
+							]
 						}
 					]
 				},
@@ -1188,721 +2377,6 @@
 											"value": "21",
 											"disabled": true
 										}
-									]
-								}
-							},
-							"response": []
-						}
-					]
-				},
-				{
-					"name": "Receive",
-					"item": [
-						{
-							"name": "Get",
-							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "token",
-										"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
-										"type": "text"
-									}
-								],
-								"url": {
-									"raw": "{{dev}}/api/transaction/pos/receive?pos_receive_id=1657509083408",
-									"host": [
-										"{{dev}}"
-									],
-									"path": [
-										"api",
-										"transaction",
-										"pos",
-										"receive"
-									],
-									"query": [
-										{
-											"key": "pos_receive_id",
-											"value": "1657509083408"
-										}
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "New Receive",
-							"request": {
-								"method": "PUT",
-								"header": [
-									{
-										"key": "token",
-										"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
-										"type": "text"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"mst_supplier_id\": \"1\",\n    \"item\": [\n        {\n            \"batch_no\": \"F4321\",\n            \"mst_item_variant_id\":\"21\",\n            \"mfg_date\":\"2022-01-30\",\n            \"exp_date\":\"2025-01-30\",\n            \"qty\":\"400\"\n        }\n    ]\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "{{dev}}/api/transaction/pos/receive",
-									"host": [
-										"{{dev}}"
-									],
-									"path": [
-										"api",
-										"transaction",
-										"pos",
-										"receive"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Approve",
-							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "token",
-										"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
-										"type": "text"
-									}
-								],
-								"body": {
-									"mode": "urlencoded",
-									"urlencoded": [
-										{
-											"key": "pos_receive_id",
-											"value": "1657509083408",
-											"type": "text"
-										},
-										{
-											"key": "is_approve",
-											"value": "true",
-											"type": "text"
-										},
-										{
-											"key": "pos_receive_note",
-											"value": "Nothing",
-											"type": "text"
-										}
-									]
-								},
-								"url": {
-									"raw": "{{dev}}/api/transaction/pos/receive",
-									"host": [
-										"{{dev}}"
-									],
-									"path": [
-										"api",
-										"transaction",
-										"pos",
-										"receive"
-									]
-								}
-							},
-							"response": []
-						}
-					]
-				},
-				{
-					"name": "Inbound",
-					"item": [
-						{
-							"name": "Get Inbound",
-							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "token",
-										"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
-										"type": "text"
-									}
-								],
-								"url": {
-									"raw": "{{dev}}/api/transaction/pos/inbound",
-									"host": [
-										"{{dev}}"
-									],
-									"path": [
-										"api",
-										"transaction",
-										"pos",
-										"inbound"
-									]
-								}
-							},
-							"response": []
-						}
-					]
-				},
-				{
-					"name": "Cashier",
-					"item": [
-						{
-							"name": "get Cashier",
-							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "token",
-										"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
-										"type": "text"
-									}
-								],
-								"url": {
-									"raw": "{{dev}}/api/transaction/pos/cashier",
-									"host": [
-										"{{dev}}"
-									],
-									"path": [
-										"api",
-										"transaction",
-										"pos",
-										"cashier"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Open Cashier",
-							"request": {
-								"method": "PUT",
-								"header": [
-									{
-										"key": "token",
-										"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
-										"type": "text"
-									}
-								],
-								"body": {
-									"mode": "urlencoded",
-									"urlencoded": [
-										{
-											"key": "pos_cashier_capital_cash",
-											"value": "150000",
-											"type": "text"
-										},
-										{
-											"key": "pos_cashier_shift",
-											"value": "1",
-											"type": "text"
-										}
-									]
-								},
-								"url": {
-									"raw": "{{dev}}/api/transaction/pos/cashier",
-									"host": [
-										"{{dev}}"
-									],
-									"path": [
-										"api",
-										"transaction",
-										"pos",
-										"cashier"
-									],
-									"query": [
-										{
-											"key": "mst_item_name",
-											"value": "Djarum Super",
-											"disabled": true
-										}
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Close Cashier",
-							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "token",
-										"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
-										"type": "text"
-									}
-								],
-								"body": {
-									"mode": "urlencoded",
-									"urlencoded": [
-										{
-											"key": "pos_cashier_id",
-											"value": "9",
-											"type": "text"
-										}
-									]
-								},
-								"url": {
-									"raw": "{{dev}}/api/transaction/pos/cashier?pos_cashier_id=12345",
-									"host": [
-										"{{dev}}"
-									],
-									"path": [
-										"api",
-										"transaction",
-										"pos",
-										"cashier"
-									],
-									"query": [
-										{
-											"key": "pos_cashier_id",
-											"value": "12345"
-										}
-									]
-								}
-							},
-							"response": []
-						}
-					]
-				},
-				{
-					"name": "Outbound / Sale",
-					"item": [
-						{
-							"name": "List Sale",
-							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "token",
-										"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
-										"type": "text"
-									}
-								],
-								"url": {
-									"raw": "{{dev}}/api/transaction/pos/sale?pos_trx_sale_id=1657509169333",
-									"host": [
-										"{{dev}}"
-									],
-									"path": [
-										"api",
-										"transaction",
-										"pos",
-										"sale"
-									],
-									"query": [
-										{
-											"key": "pos_trx_sale_id",
-											"value": "1657509169333"
-										},
-										{
-											"key": "pos_cashier_id",
-											"value": "2",
-											"disabled": true
-										}
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "List Sale By Cashier",
-							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "token",
-										"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
-										"type": "text"
-									}
-								],
-								"url": {
-									"raw": "{{dev}}/api/transaction/pos/sale-cashier?pos_cashier_id=9",
-									"host": [
-										"{{dev}}"
-									],
-									"path": [
-										"api",
-										"transaction",
-										"pos",
-										"sale-cashier"
-									],
-									"query": [
-										{
-											"key": "pos_cashier_id",
-											"value": "9"
-										}
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Sale New",
-							"request": {
-								"method": "PUT",
-								"header": [
-									{
-										"key": "token",
-										"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
-										"type": "text"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\r\n    \"mst_customer_id\": 1,\r\n    \"sale_item\": [\r\n        {\r\n            \"qty\": \"2\",\r\n            \"mst_item_variant_id\": \"20\"\r\n        }\r\n    ]\r\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "{{dev}}/api/transaction/pos/sale",
-									"host": [
-										"{{dev}}"
-									],
-									"path": [
-										"api",
-										"transaction",
-										"pos",
-										"sale"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Payment",
-							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "token",
-										"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
-										"type": "text"
-									}
-								],
-								"body": {
-									"mode": "urlencoded",
-									"urlencoded": [
-										{
-											"key": "pos_trx_sale_id",
-											"value": "1657509169333",
-											"type": "text"
-										},
-										{
-											"key": "payment_type",
-											"value": "cash",
-											"type": "text"
-										}
-									]
-								},
-								"url": {
-									"raw": "{{dev}}/api/transaction/pos/sale/payment",
-									"host": [
-										"{{dev}}"
-									],
-									"path": [
-										"api",
-										"transaction",
-										"pos",
-										"sale",
-										"payment"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Update/Insert to Sale",
-							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "token",
-										"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
-										"type": "text"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"qty\": 0,\n    \"mst_item_variant_id\": \"20\",\n    \"pos_trx_sale_id\": \"1657098259709\"\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "{{dev}}/api/transaction/pos/sale",
-									"host": [
-										"{{dev}}"
-									],
-									"path": [
-										"api",
-										"transaction",
-										"pos",
-										"sale"
-									]
-								}
-							},
-							"response": []
-						}
-					]
-				},
-				{
-					"name": "Return / Recall",
-					"item": [
-						{
-							"name": "Get Return",
-							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "token",
-										"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
-										"type": "text"
-									}
-								],
-								"url": {
-									"raw": "{{dev}}/api/transaction/pos/return?pos_trx_return_id=1657509553750",
-									"host": [
-										"{{dev}}"
-									],
-									"path": [
-										"api",
-										"transaction",
-										"pos",
-										"return"
-									],
-									"query": [
-										{
-											"key": "pos_trx_return_id",
-											"value": "1657509553750"
-										}
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "New Return",
-							"request": {
-								"method": "PUT",
-								"header": [
-									{
-										"key": "token",
-										"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
-										"type": "text"
-									}
-								],
-								"body": {
-									"mode": "urlencoded",
-									"urlencoded": [
-										{
-											"key": "pos_trx_sale_id",
-											"value": "1657509169333",
-											"type": "text"
-										}
-									]
-								},
-								"url": {
-									"raw": "{{dev}}/api/transaction/pos/return",
-									"host": [
-										"{{dev}}"
-									],
-									"path": [
-										"api",
-										"transaction",
-										"pos",
-										"return"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Approve Return",
-							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "token",
-										"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
-										"type": "text"
-									}
-								],
-								"body": {
-									"mode": "urlencoded",
-									"urlencoded": [
-										{
-											"key": "pos_trx_return_id",
-											"value": "1657509553750",
-											"type": "text"
-										},
-										{
-											"key": "is_approve",
-											"value": "false",
-											"type": "text"
-										},
-										{
-											"key": "pos_batch_note",
-											"value": "Nothing",
-											"type": "text",
-											"disabled": true
-										}
-									]
-								},
-								"url": {
-									"raw": "{{dev}}/api/transaction/pos/return",
-									"host": [
-										"{{dev}}"
-									],
-									"path": [
-										"api",
-										"transaction",
-										"pos",
-										"return"
-									]
-								}
-							},
-							"response": []
-						}
-					]
-				},
-				{
-					"name": "Destroy / Reject",
-					"item": [
-						{
-							"name": "Get Return",
-							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "token",
-										"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
-										"type": "text"
-									}
-								],
-								"url": {
-									"raw": "{{dev}}/api/transaction/pos/inbound",
-									"host": [
-										"{{dev}}"
-									],
-									"path": [
-										"api",
-										"transaction",
-										"pos",
-										"inbound"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "New Return",
-							"request": {
-								"method": "PUT",
-								"header": [
-									{
-										"key": "token",
-										"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
-										"type": "text"
-									}
-								],
-								"body": {
-									"mode": "urlencoded",
-									"urlencoded": [
-										{
-											"key": "pos_batch_no",
-											"value": "FG4547",
-											"type": "text"
-										},
-										{
-											"key": "pos_batch_exp_date",
-											"value": "21-12-2022",
-											"type": "text"
-										},
-										{
-											"key": "pos_batch_mfg_date",
-											"value": "21-12-2021",
-											"type": "text"
-										},
-										{
-											"key": "pos_batch_qty",
-											"value": "100",
-											"type": "text"
-										},
-										{
-											"key": "mst_item_id",
-											"value": "1656477974626",
-											"type": "text"
-										},
-										{
-											"key": "mst_supplier_id",
-											"value": "1",
-											"type": "text"
-										}
-									]
-								},
-								"url": {
-									"raw": "{{dev}}/api/transaction/pos/inbound",
-									"host": [
-										"{{dev}}"
-									],
-									"path": [
-										"api",
-										"transaction",
-										"pos",
-										"inbound"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Approve Return",
-							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "token",
-										"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
-										"type": "text"
-									}
-								],
-								"body": {
-									"mode": "urlencoded",
-									"urlencoded": [
-										{
-											"key": "pos_batch_id",
-											"value": "1656561864781",
-											"type": "text"
-										},
-										{
-											"key": "is_approve",
-											"value": "true",
-											"type": "text"
-										},
-										{
-											"key": "pos_batch_note",
-											"value": "Nothing",
-											"type": "text",
-											"disabled": true
-										}
-									]
-								},
-								"url": {
-									"raw": "{{dev}}/api/transaction/pos/inbound",
-									"host": [
-										"{{dev}}"
-									],
-									"path": [
-										"api",
-										"transaction",
-										"pos",
-										"inbound"
 									]
 								}
 							},
@@ -2073,7 +2547,7 @@
 							"response": []
 						},
 						{
-							"name": "Get-Variant",
+							"name": "Get-Item-Variant",
 							"request": {
 								"method": "GET",
 								"header": [

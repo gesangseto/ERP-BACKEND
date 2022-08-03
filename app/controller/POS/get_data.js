@@ -179,8 +179,8 @@ async function getSale(data = Object) {
     return ` 
   AND (CAST(a.pos_trx_sale_id AS TEXT) LIKE LOWER('%${search}%')
   OR  LOWER(b.mst_customer_name) LIKE LOWER('%${search}%')
-  OR  LOWER(a.mst_customer_phone) LIKE LOWER('%${search}%') 
-  OR  LOWER(a.mst_customer_email) LIKE LOWER('%${search}%') ) `;
+  OR  LOWER(b.mst_customer_phone) LIKE LOWER('%${search}%') 
+  OR  LOWER(b.mst_customer_email) LIKE LOWER('%${search}%') ) `;
   };
   let _sql = `SELECT 
   *,
@@ -212,7 +212,6 @@ async function getSale(data = Object) {
   if (data.hasOwnProperty("page") && data.hasOwnProperty("limit")) {
     _sql += getLimitOffset(data.page, data.limit);
   }
-  console.log(_sql);
   let _data = await get_query(_sql);
   return _data;
 }
@@ -337,6 +336,9 @@ async function getStockItem(data = Object) {
         STRING_AGG(coalesce(c.barcode::character varying,''), ';') as barcode,
         STRING_AGG(coalesce(c.mst_item_variant_name,''),';') AS mst_item_variant_name,
         STRING_AGG(coalesce(c.mst_item_variant_qty::character varying,''), ';') as mst_item_variant_qty,
+        STRING_AGG(coalesce(pack.mst_packaging_id,''),';') AS mst_packaging_id,
+        STRING_AGG(coalesce(pack.mst_packaging_name,''),';') AS mst_packaging_name,
+        STRING_AGG(coalesce(pack.mst_packaging_code,''),';') AS mst_packaging_code,
         STRING_AGG(coalesce(d.pos_discount_id ::character varying,''), ';') as pos_discount_id,
         STRING_AGG(coalesce(d.pos_discount::character varying,''), ';') as pos_discount,
         STRING_AGG(coalesce(d.pos_discount_starttime ::character varying,''), ';') as pos_discount_starttime,
@@ -344,12 +346,12 @@ async function getStockItem(data = Object) {
         STRING_AGG(coalesce(d.pos_discount_min_qty  ::character varying,''), ';') as pos_discount_min_qty,
         STRING_AGG(coalesce(d.pos_discount_free_qty  ::character varying,''), ';') as pos_discount_free_qty,
         STRING_AGG(coalesce(c.mst_item_variant_price  ::character varying,''), ';') as mst_item_variant_price,
-        STRING_AGG(coalesce(c.mst_item_variant_price  ::character varying,''), ';') as price,
-        STRING_AGG(coalesce(c.mst_item_variant_price::float * (d.pos_discount::float/100),0)::character varying, ';') as discount_price,
+        STRING_AGG(coalesce(c.mst_item_variant_price::float * (d.pos_discount::float/100),0)::character varying, ';') as discount,
         STRING_AGG(coalesce(c.mst_item_variant_price::float-c.mst_item_variant_price::float * (d.pos_discount::float/100),c.mst_item_variant_price)::character varying, ';') as after_discount_price
     FROM pos_item_stock AS a  
     LEFT JOIN mst_item AS b ON a.mst_item_id= b.mst_item_id 
     LEFT JOIN mst_item_variant AS c ON b.mst_item_id = c.mst_item_id
+    LEFT JOIN mst_packaging AS pack ON b.mst_packaging_id = pack.mst_packaging_id 
     LEFT JOIN pos_discount AS d 
       ON c.mst_item_variant_id = d.mst_item_variant_id
       AND d.status = '1'
@@ -377,7 +379,7 @@ async function getStockItem(data = Object) {
       _sql += genSearch(data.search);
     }
   }
-  _sql += ` GROUP BY a.pos_item_stock_id`;
+  _sql += ` GROUP BY a.pos_item_stock_id ; `;
   let _data = await get_query(_sql);
   return _data;
 }
@@ -443,9 +445,11 @@ async function proccessToStock(data) {
   return _sql;
 }
 async function getTrxDetailItem(data = Object) {
-  let _sql = `SELECT * FROM pos_trx_detail AS a
+  let _sql = `SELECT * 
+  FROM pos_trx_detail AS a
   LEFT JOIN mst_item_variant AS b ON a.mst_item_variant_id  = b.mst_item_variant_id 
   LEFT JOIN mst_item AS c ON c.mst_item_id  = b.mst_item_id 
+  LEFT JOIN mst_packaging AS d ON d.mst_packaging_id  = b.mst_packaging_id 
     WHERE 1+1=2 `;
   if (data.hasOwnProperty("pos_trx_ref_id")) {
     _sql += ` AND a.pos_trx_ref_id = '${data.pos_trx_ref_id}'`;

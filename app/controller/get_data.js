@@ -14,16 +14,28 @@ async function getVariantItem(data = Object, onlyQuery = false) {
     OR  LOWER(CASE WHEN a.status=1 THEN 'Active' ELSE 'Inactive' end) LIKE LOWER('%${search}%') ) `;
   };
   let _sql = `
-  SELECT *
+  SELECT 
+    *,
+    a.mst_item_variant_id AS mst_item_variant_id, 
+    a.status AS status,
+    a.flag_delete AS flag_delete
   FROM mst_item_variant AS a
   LEFT JOIN mst_item AS b ON a.mst_item_id = b.mst_item_id 
   LEFT JOIN mst_packaging AS c ON a.mst_packaging_id = c.mst_packaging_id 
+  LEFT JOIN pos_discount AS d 
+      ON a.mst_item_variant_id = d.mst_item_variant_id
+      AND d.status = '1'
+      AND (d.pos_discount_starttime <= now() AND pos_discount_endtime > now())
+      AND d.flag_delete = '0'
   WHERE a.flag_delete='0' `;
   if (data.hasOwnProperty("mst_item_id")) {
     _sql += ` AND a.mst_item_id = '${data.mst_item_id}'`;
   }
   if (data.hasOwnProperty("barcode")) {
     _sql += ` AND a.barcode = '${data.barcode}'`;
+  }
+  if (data.hasOwnProperty("mst_item_variant_id")) {
+    _sql += ` AND a.mst_item_variant_id = '${data.mst_item_variant_id}'`;
   }
   if (data.hasOwnProperty("status")) {
     _sql += ` AND b.status = '${data.status}'`;
@@ -436,7 +448,6 @@ async function getApproval(data = Object, onlyQuery = false) {
   if (data.hasOwnProperty("page") && data.hasOwnProperty("limit")) {
     _sql += getLimitOffset(data.page, data.limit);
   }
-  console.log(_sql);
   if (onlyQuery) {
     return _sql;
   }

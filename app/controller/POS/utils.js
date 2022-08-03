@@ -38,9 +38,10 @@ const calculateSale = async ({
   body.mst_customer_id = header.mst_customer_id ?? 0;
   body.price_percentage = header.price_percentage ?? 0;
   body.ppn = header.mst_customer_ppn;
+  body.mst_customer_ppn = header.mst_customer_ppn;
   body.is_paid = false;
+  body.total_capital_price = 0;
   body.total_price = 0;
-  body.total_discount = 0;
   body.grand_total = 0;
   let _detail_item = [];
   for (const it of detail) {
@@ -54,28 +55,28 @@ const calculateSale = async ({
     if (!_item) {
       throw new Error(`Item Variant is not found!`);
     }
-    it.qty = it.qty * _item.mst_item_variant_qty;
-    if (_item.qty < it.qty) {
+    let check_qty = it.qty * _item.mst_item_variant_qty;
+    if (_item.qty < check_qty) {
       throw new Error(`Request ${it.qty} Item Variant stock is not enough!`);
     }
-    let _dt = { ...it };
+    console.log(_item);
+    let _dt = {};
+    _dt.mst_item_variant_qty = _item.mst_item_variant_qty;
     _dt.pos_trx_ref_id = body[`pos_trx_${type}_id`];
     _dt.mst_item_variant_id = _item.mst_item_variant_id;
     _dt.mst_item_id = _item.mst_item_id;
     _dt.qty = it.qty;
-    _dt.capital_price = _item.price;
-    _dt.price = numberPercent(_item.price, body.price_percentage);
-    _dt.discount_price = numberPercent(
-      _item.discount_price,
-      body.price_percentage
-    );
-    _dt.total = _dt.qty * (_dt.price - _dt.discount_price);
+    _dt.capital_price = _item.mst_item_variant_price;
+    _dt.price_percentage = body.price_percentage;
+    _dt.price = numberPercent(_dt.capital_price, body.price_percentage);
+    if (_item.pos_discount_id) _dt.pos_discount_id = _item.pos_discount_id;
+    _dt.discount = _item.discount;
+    _dt.total = _dt.qty * numberPercent(_dt.price, -Math.abs(_dt.discount));
 
-    _item.qty = parseInt(_item.qty) - it.qty;
-    body.total_price += it.qty * _dt.price;
-    body.total_discount += it.qty * _dt.discount_price;
-    body.grand_total += body.total_price - body.total_discount;
-    body.grand_total = numberPercent(body.grand_total, body.ppn);
+    //TOTAL
+    body.total_capital_price += parseFloat(_dt.capital_price);
+    body.total_price += parseFloat(_dt.price);
+    body.grand_total = numberPercent(body.total_price, body.ppn);
     _detail_item.push(_dt);
   }
   let _item = { ...body };
