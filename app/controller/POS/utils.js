@@ -40,7 +40,6 @@ const calculateSale = async ({
   body.ppn = header.mst_customer_ppn;
   body.mst_customer_ppn = header.mst_customer_ppn;
   body.is_paid = false;
-  body.total_capital_price = 0;
   body.total_price = 0;
   body.grand_total = 0;
   let _detail_item = [];
@@ -53,20 +52,22 @@ const calculateSale = async ({
     let _item = await getStockItem(param);
     _item = _item.data[0];
     if (!_item) {
-      throw new Error(`Item Variant is not found!`);
+      throw new Error(`Item Variant is not found in stock!`);
     }
     let check_qty = it.qty * _item.mst_item_variant_qty;
     if (_item.qty < check_qty) {
       throw new Error(`Request ${it.qty} Item Variant stock is not enough!`);
     }
-    console.log(_item);
     let _dt = {};
+    if (it.hasOwnProperty("pos_trx_detail_id")) {
+      _dt.pos_trx_detail_id = it.pos_trx_detail_id;
+    }
     _dt.mst_item_variant_qty = _item.mst_item_variant_qty;
     _dt.pos_trx_ref_id = body[`pos_trx_${type}_id`];
     _dt.mst_item_variant_id = _item.mst_item_variant_id;
     _dt.mst_item_id = _item.mst_item_id;
     _dt.qty = it.qty;
-    _dt.capital_price = _item.mst_item_variant_price;
+    _dt.capital_price = parseInt(_item.mst_item_variant_price);
     _dt.price_percentage = body.price_percentage;
     _dt.price = numberPercent(_dt.capital_price, body.price_percentage);
     if (_item.pos_discount_id) _dt.pos_discount_id = _item.pos_discount_id;
@@ -74,8 +75,7 @@ const calculateSale = async ({
     _dt.total = _dt.qty * numberPercent(_dt.price, -Math.abs(_dt.discount));
 
     //TOTAL
-    body.total_capital_price += parseFloat(_dt.capital_price);
-    body.total_price += parseFloat(_dt.price);
+    body.total_price += parseFloat(_dt.total);
     body.grand_total = numberPercent(body.total_price, body.ppn);
     _detail_item.push(_dt);
   }

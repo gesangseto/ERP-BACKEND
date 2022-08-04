@@ -71,7 +71,8 @@ exports.insert = async function (req, res) {
           throw new Error(`Item not found!`);
         }
         _getItem = _getItem.data[0];
-        it.qty = it.qty * _getItem.mst_item_variant_qty;
+        it.qty = it.qty;
+        it.qty_stock = it.qty * _getItem.mst_item_variant_qty;
         it.pos_receive_id = body.pos_receive_id;
         delete _getItem.created_at;
         delete _getItem.updated_at;
@@ -112,38 +113,43 @@ exports.approve = async function (req, res) {
       }
     }
 
+    let _body = {
+      pos_receive_id: body.pos_receive_id,
+      is_approve: body.is_approve,
+      pos_receive_note: body.pos_receive_note,
+    };
+
     // Reject;
-    if (body.is_approve == "false") {
-      if (!body.pos_receive_note) {
+    if (_body.is_approve == "false") {
+      if (!_body.pos_receive_note) {
         throw new Error(`Receive Note is required!`);
       }
-      body.status = "-1";
+      _body.status = "-1";
       var update_data = await models.update_query({
-        data: body,
+        data: _body,
         table: "pos_receive",
         key: "pos_receive_id",
       });
       return response.response(update_data, res);
     }
     // Approve;
-    delete body.pos_receive_note;
-
-    let _check = await getReceive(body);
+    // delete body.pos_receive_note;
+    let _check = await getReceive(_body);
     if (_check.error || _check.data.length == 0) {
       throw new Error(`Receive is not found!`);
     } else if (_check.data[0].status != 0) {
       throw new Error(`Receive has already processed!`);
     }
-    body.status = "1";
+    _body.status = "1";
     var update_data = await models.update_query({
-      data: body,
+      data: _body,
       table: "pos_receive",
       key: "pos_receive_id",
     });
     if (update_data.error) {
       throw new Error(update_data.message);
     }
-    let _data = { ..._check.data[0], ...body };
+    let _data = { ..._check.data[0], ..._body };
     let _inbound = await proccessToInbound(_data);
     let _stock = await proccessToStock(_data);
     let _res = await models.exec_query(`${_inbound}${_stock}`);
@@ -161,6 +167,6 @@ exports.approve = async function (req, res) {
     });
     data.error = true;
     data.message = `${error}`;
-    return response.response(data, res);
+    return response.response(data, res, false);
   }
 };

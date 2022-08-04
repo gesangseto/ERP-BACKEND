@@ -18,6 +18,7 @@ async function getReceive(data = Object, onlyQuery = false) {
   OR  LOWER(d.mst_supplier_name) LIKE LOWER('%${search}%')
   OR  LOWER(b.batch_no) LIKE LOWER('%${search}%')
   OR  CAST(b.qty AS TEXT) LIKE LOWER('%${search}%')
+  OR  CAST(b.qty_stock AS TEXT) LIKE LOWER('%${search}%')
   OR  LOWER(CASE WHEN a.status=1 THEN 'Active' ELSE 'Inactive' end) LIKE LOWER('%${search}%') ) `;
   };
   let _sql = `SELECT 
@@ -28,9 +29,11 @@ async function getReceive(data = Object, onlyQuery = false) {
   MAX(e.user_name) as user_name,
   MAX(c.mst_item_id) as mst_item_id,
   STRING_AGG(c.mst_item_name,',') AS mst_item_name,
+  STRING_AGG(coalesce(b.mst_item_variant_qty::character varying,''), ';') AS mst_item_variant_qty,
   MAX(d.mst_supplier_id) as mst_supplier_id,
   MAX(d.mst_supplier_name) as mst_supplier_name,
   SUM(b.qty) as qty,
+  SUM(b.qty_stock) as qty_stock,
   MAX(a.status) as status,
   STRING_AGG(b.batch_no,',') AS batch
   FROM pos_receive AS a
@@ -74,7 +77,9 @@ async function getReceive(data = Object, onlyQuery = false) {
 async function getDetailReceive(data = Object) {
   let _sql = `SELECT * 
   FROM pos_receive_detail AS a 
-  LEFT JOIN mst_item AS b ON a.mst_item_id = b.mst_item_id
+  LEFT JOIN mst_item_variant AS b ON a.mst_item_variant_id = b.mst_item_variant_id
+  LEFT JOIN mst_packaging AS c ON c.mst_packaging_id = b.mst_packaging_id
+  LEFT JOIN mst_item AS d ON d.mst_item_id = b.mst_item_id
   WHERE 1+1=2 `;
   if (data.hasOwnProperty("pos_receive_id")) {
     _sql += ` AND a.pos_receive_id = '${data.pos_receive_id}'`;
@@ -84,6 +89,12 @@ async function getDetailReceive(data = Object) {
   }
   if (data.hasOwnProperty("mst_item_id")) {
     _sql += ` AND b.mst_item_id = '${data.mst_item_id}'`;
+  }
+  if (data.hasOwnProperty("barcode")) {
+    _sql += ` AND b.barcode = '${data.barcode}'`;
+  }
+  if (data.hasOwnProperty("mst_item_variant_id")) {
+    _sql += ` AND b.mst_item_variant_id = '${data.mst_item_variant_id}'`;
   }
   _sql += ` ORDER BY a.mst_item_id ASC`;
   let _data = await exec_query(_sql);
@@ -336,7 +347,6 @@ async function getStockItem(data = Object) {
         STRING_AGG(coalesce(c.barcode::character varying,''), ';') as barcode,
         STRING_AGG(coalesce(c.mst_item_variant_name,''),';') AS mst_item_variant_name,
         STRING_AGG(coalesce(c.mst_item_variant_qty::character varying,''), ';') as mst_item_variant_qty,
-        STRING_AGG(coalesce(pack.mst_packaging_id,''),';') AS mst_packaging_id,
         STRING_AGG(coalesce(pack.mst_packaging_name,''),';') AS mst_packaging_name,
         STRING_AGG(coalesce(pack.mst_packaging_code,''),';') AS mst_packaging_code,
         STRING_AGG(coalesce(d.pos_discount_id ::character varying,''), ';') as pos_discount_id,
@@ -351,7 +361,7 @@ async function getStockItem(data = Object) {
     FROM pos_item_stock AS a  
     LEFT JOIN mst_item AS b ON a.mst_item_id= b.mst_item_id 
     LEFT JOIN mst_item_variant AS c ON b.mst_item_id = c.mst_item_id
-    LEFT JOIN mst_packaging AS pack ON b.mst_packaging_id = pack.mst_packaging_id 
+    LEFT JOIN mst_packaging AS pack ON c.mst_packaging_id = pack.mst_packaging_id 
     LEFT JOIN pos_discount AS d 
       ON c.mst_item_variant_id = d.mst_item_variant_id
       AND d.status = '1'
@@ -417,15 +427,16 @@ async function proccessToStock(data) {
   } else if (data.hasOwnProperty("pos_trx_return_id")) {
     _datas = await getTrxDetailItem({ pos_trx_ref_id: data.pos_trx_return_id });
   }
-
   let reduce = sumByKey({
     key: "mst_item_id",
     array: _datas.data,
     sum: "qty",
+    sum2: "qty_stock",
   });
   let _sql = "";
   for (const it of reduce) {
     let _item = await getStockItem(it);
+    it.qty = it.qty_stock ?? it.qty;
     if (_item.data.length == 0) {
       _sql += await generate_query_insert({
         values: it,

@@ -136,7 +136,6 @@ exports.newSale = async function (req, res) {
         values: it,
       });
     }
-    console.log(`${_sale}${_saleDetail}`);
     let _res = await models.exec_query(`${_sale}${_saleDetail}`);
     _res.data = [_calculate];
     return response.response(_res, res);
@@ -291,32 +290,36 @@ exports.payment = async function (req, res) {
     }
     let sale = await getSale(body);
     if (sale.error || sale.data.length == 0) {
-      data.error = true;
-      data.message = `Sale not found!`;
-      return response.response(data, res);
+      throw new Error(`Sale not found!`);
     }
     sale = sale.data[0];
     if (sale.is_paid) {
-      data.error = true;
-      data.message = `Sale is already paid!`;
-      return response.response(data, res);
+      throw new Error(`Sale is already paid!`);
     }
     let sale_detail = await getTrxDetailItem({
       pos_trx_ref_id: body.pos_trx_sale_id,
     });
     let _update_sale = "";
     let _update_stock = "";
+
+    let _newSaleDetail = [];
+    for (const it of sale_detail.data) {
+      it.qty_stock = it.qty * it.mst_item_variant_qty;
+      _newSaleDetail.push(it);
+    }
+
     let _details = sumByKey({
-      array: sale_detail.data,
+      array: _newSaleDetail,
       key: "mst_item_id",
       sum: "qty",
+      sum: "qty_stock",
     });
     for (const it of _details) {
-      let _item = await getStockItem(it);
-      _item = _item.data[0];
-      _item.qty = _item.qty - it.qty;
+      let _stock = await getStockItem(it);
+      _stock = _stock.data[0];
+      _stock.qty = _stock.qty - (it.qty_stock ?? it.qty);
       _update_stock += await models.generate_query_update({
-        values: _item,
+        values: _stock,
         table: "pos_item_stock",
         key: "pos_item_stock_id",
       });

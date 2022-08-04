@@ -1589,7 +1589,7 @@
 											}
 										],
 										"url": {
-											"raw": "{{dev}}/api/transaction/pos/receive?pos_receive_id=1657080370911",
+											"raw": "{{dev}}/api/transaction/pos/receive",
 											"host": [
 												"{{dev}}"
 											],
@@ -1602,7 +1602,8 @@
 											"query": [
 												{
 													"key": "pos_receive_id",
-													"value": "1657080370911"
+													"value": "1657080370911",
+													"disabled": true
 												}
 											]
 										}
@@ -2002,7 +2003,7 @@
 											"urlencoded": [
 												{
 													"key": "pos_trx_sale_id",
-													"value": "1657097864006",
+													"value": "1659584308471",
 													"type": "text"
 												}
 											]
@@ -2884,11 +2885,11 @@
 									}
 								],
 								"url": {
-									"raw": "localhost:5000/api/master/customer",
+									"raw": "localhost:4000/api/master/customer",
 									"host": [
 										"localhost"
 									],
-									"port": "5000",
+									"port": "4000",
 									"path": [
 										"api",
 										"master",

@@ -5,7 +5,7 @@
 -- Dumped from database version 12.10
 -- Dumped by pg_dump version 13.3
 
--- Started on 2022-08-03 15:08:54
+-- Started on 2022-08-04 14:31:31
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -358,7 +358,7 @@ CREATE TABLE public.mst_item_variant (
     flag_delete integer DEFAULT 0,
     status integer DEFAULT 1,
     mst_item_variant_id integer NOT NULL,
-    mst_item_id bigint NOT NULL,
+    mst_item_id bigint,
     mst_item_variant_name character varying NOT NULL,
     mst_item_variant_price real,
     mst_item_variant_qty integer,
@@ -721,7 +721,9 @@ CREATE TABLE public.pos_receive_detail (
     mfg_date date NOT NULL,
     exp_date date NOT NULL,
     qty bigint NOT NULL,
-    qty_stock bigint
+    qty_stock bigint,
+    mst_item_variant_id bigint NOT NULL,
+    mst_item_variant_qty bigint NOT NULL
 );
 
 
@@ -771,7 +773,8 @@ CREATE TABLE public.pos_trx_detail (
     pos_discount_id bigint,
     discount double precision,
     total double precision,
-    capital_price double precision
+    capital_price double precision,
+    mst_item_variant_qty integer
 );
 
 
@@ -820,7 +823,7 @@ CREATE TABLE public.pos_trx_sale (
     price_percentage integer,
     is_paid boolean DEFAULT false NOT NULL,
     grand_total double precision,
-    total_capital_price double precision
+    payment_type character varying
 );
 
 
@@ -868,7 +871,6 @@ CREATE TABLE public.pos_trx_inbound (
     mst_customer_id integer,
     mst_warehouse_id integer,
     pos_ref_id bigint,
-    qty integer,
     pos_ref_table character varying
 );
 
@@ -1601,7 +1603,7 @@ COPY public.pos_receive (created_at, created_by, updated_at, updated_by, flag_de
 -- Data for Name: pos_receive_detail; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.pos_receive_detail (flag_delete, status, pos_receive_detail_id, pos_receive_id, mst_item_id, batch_no, mfg_date, exp_date, qty, qty_stock) FROM stdin;
+COPY public.pos_receive_detail (flag_delete, status, pos_receive_detail_id, pos_receive_id, mst_item_id, batch_no, mfg_date, exp_date, qty, qty_stock, mst_item_variant_id, mst_item_variant_qty) FROM stdin;
 \.
 
 
@@ -1611,7 +1613,7 @@ COPY public.pos_receive_detail (flag_delete, status, pos_receive_detail_id, pos_
 -- Data for Name: pos_trx_detail; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.pos_trx_detail (updated_at, updated_by, flag_delete, status, pos_trx_ref_id, mst_item_variant_id, qty, price, pos_trx_detail_id, mst_item_id, pos_discount_id, discount, total, capital_price) FROM stdin;
+COPY public.pos_trx_detail (updated_at, updated_by, flag_delete, status, pos_trx_ref_id, mst_item_variant_id, qty, price, pos_trx_detail_id, mst_item_id, pos_discount_id, discount, total, capital_price, mst_item_variant_qty) FROM stdin;
 \.
 
 
@@ -1621,7 +1623,7 @@ COPY public.pos_trx_detail (updated_at, updated_by, flag_delete, status, pos_trx
 -- Data for Name: pos_trx_inbound; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.pos_trx_inbound (created_at, created_by, updated_at, updated_by, flag_delete, status, pos_trx_inbound_id, pos_trx_inbound_type, mst_supplier_id, mst_customer_id, mst_warehouse_id, pos_ref_id, qty, pos_ref_table) FROM stdin;
+COPY public.pos_trx_inbound (created_at, created_by, updated_at, updated_by, flag_delete, status, pos_trx_inbound_id, pos_trx_inbound_type, mst_supplier_id, mst_customer_id, mst_warehouse_id, pos_ref_id, pos_ref_table) FROM stdin;
 \.
 
 
@@ -1641,7 +1643,7 @@ COPY public.pos_trx_return (created_at, created_by, updated_at, updated_by, flag
 -- Data for Name: pos_trx_sale; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.pos_trx_sale (created_at, created_by, updated_at, updated_by, flag_delete, status, pos_trx_sale_id, mst_customer_id, total_price, ppn, price_percentage, is_paid, grand_total, total_capital_price) FROM stdin;
+COPY public.pos_trx_sale (created_at, created_by, updated_at, updated_by, flag_delete, status, pos_trx_sale_id, mst_customer_id, total_price, ppn, price_percentage, is_paid, grand_total, payment_type) FROM stdin;
 \.
 
 
@@ -1884,7 +1886,7 @@ SELECT pg_catalog.setval('public.mst_item_mst_item_id_seq', 11, true);
 -- Name: mst_item_variant_mst_item_variant_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.mst_item_variant_mst_item_variant_id_seq', 24, true);
+SELECT pg_catalog.setval('public.mst_item_variant_mst_item_variant_id_seq', 26, true);
 
 
 --
@@ -1938,7 +1940,7 @@ SELECT pg_catalog.setval('public.pos_discount_pos_discount_id_seq', 26, true);
 -- Name: pos_item_stock_pos_item_stock_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.pos_item_stock_pos_item_stock_id_seq', 27, true);
+SELECT pg_catalog.setval('public.pos_item_stock_pos_item_stock_id_seq', 36, true);
 
 
 --
@@ -1947,7 +1949,7 @@ SELECT pg_catalog.setval('public.pos_item_stock_pos_item_stock_id_seq', 27, true
 -- Name: pos_receive_detail_pos_receive_detail_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.pos_receive_detail_pos_receive_detail_id_seq', 53, true);
+SELECT pg_catalog.setval('public.pos_receive_detail_pos_receive_detail_id_seq', 73, true);
 
 
 --
@@ -1956,7 +1958,7 @@ SELECT pg_catalog.setval('public.pos_receive_detail_pos_receive_detail_id_seq', 
 -- Name: pos_sale_detail_pos_sale_detail_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.pos_sale_detail_pos_sale_detail_id_seq', 83, true);
+SELECT pg_catalog.setval('public.pos_sale_detail_pos_sale_detail_id_seq', 117, true);
 
 
 --
@@ -2715,7 +2717,7 @@ ALTER TABLE ONLY public.user_section
     ADD CONSTRAINT user_section_fk FOREIGN KEY (user_department_id) REFERENCES public.user_department(user_department_id);
 
 
--- Completed on 2022-08-03 15:08:57
+-- Completed on 2022-08-04 14:31:34
 
 --
 -- PostgreSQL database dump complete

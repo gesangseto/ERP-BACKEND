@@ -149,11 +149,13 @@ function percentToFloat(percent) {
   return parseInt(percent) / 100;
 }
 
-function sumByKey({ key, sum, array }) {
+function sumByKey({ key, sum, sum2, array }) {
   let result = Object.values(
     array.reduce((map, r) => {
-      if (!map[r[key]]) map[r[key]] = { ...r, _id: r[key], qty: 0 };
+      if (!map[r[key]])
+        map[r[key]] = { ...r, _id: r[key], qty: 0, qty_stock: 0 };
       map[r[key]][sum] += parseInt(r[sum]);
+      map[r[key]][sum2] += parseInt(r[sum2]);
       return map;
     }, {})
   );
