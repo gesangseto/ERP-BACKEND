@@ -1,22 +1,11 @@
 "use strict";
 const response = require("../../response");
 const models = require("../../models");
+const { generateId, diffDate } = require("../../utils");
 const {
-  generateId,
-  numberPercent,
-  sumByKey,
-  isInt,
-  diffDate,
-} = require("../../utils");
-const { calculateSale } = require("./utils");
-const {
-  getStockItem,
   getTrxDetailItem,
   getCashier,
   getSale,
-  getSaleByCashier,
-  getItem,
-  getCustomer,
   getPosConfig,
   getReturn,
   proccessToInbound,
@@ -56,10 +45,10 @@ exports.getReturn = async function (req, res) {
 exports.newReturn = async function (req, res) {
   var data = { data: req.body };
   try {
-    perf.start();
     let today = moment().format("YYYY-MM-DD");
-    let pos_trx_return_id = generateId();
     let body = req.body;
+    body.pos_trx_return_id = generateId();
+    body.status = 0;
     let _check = await getCashier({
       created_by: body.created_by,
       is_cashier_open: true,
@@ -73,49 +62,46 @@ exports.newReturn = async function (req, res) {
         throw new Error(`${row} is required!`);
       }
     }
-    body.pos_trx_return_id = pos_trx_return_id;
-    let _getRet = await getReturn({
-      pos_trx_sale_id: body.pos_trx_sale_id,
-      is_returned: true,
-    });
-    if (_getRet.data.length > 0) {
-      throw new Error(`Data is already returned!`);
-    }
 
-    let _getSale = await getSale({ pos_trx_sale_id: body.pos_trx_sale_id });
-    if (_getSale.error || _getSale.data.length == 0) {
+    let config = await getPosConfig();
+    let return_day = moment(today)
+      .add(config.allow_return_day, "day")
+      .format("YYYY-MM-DD");
+    let filter = {
+      pos_trx_sale_id: body.pos_trx_sale_id,
+    };
+    let _getSale = await getSale({ ...filter });
+    if (!_getSale.total) {
       throw new Error(`Sale not found!`);
     }
     _getSale = _getSale.data[0];
-    _getSale.created_date = moment(_getSale.created_date).format("YYYY-MM-DD");
-    let config = await getPosConfig();
-
-    let allow_return_day = moment(today)
-      .add(config.allow_return_day, "day")
-      .format("YYYY-MM-DD");
-    let diff = diffDate(_getSale.created_date, allow_return_day);
+    _getSale.created_at = moment(_getSale.created_at).format("YYYY-MM-DD");
+    let diff = diffDate(_getSale.created_at, return_day);
     if (diff < 0) {
-      throw new Error(
-        `Cannot return this sale: date(${_getSale.created_date})!`
-      );
-    }
-    if (!_getSale.is_paid) {
+      throw new Error(`Cannot return this sale: date(${_getSale.created_at})!`);
+    } else if (!_getSale.is_paid) {
       throw new Error(`Please complete the payment!`);
-    }
-    if (_getSale.status == "0" || _getSale.flag_delete == "1") {
+    } else if (_getSale.status == "0" || _getSale.flag_delete == "1") {
       throw new Error(`Sale not found!`);
+    }
+
+    let _getRet = await getReturn({ ...filter, status: 0 });
+    let _getRetAct = await getReturn({ ...filter, status: 1 });
+
+    if (_getRet.total > 0 || _getRetAct > 0) {
+      throw new Error(`Data is already returned!`);
     }
 
     let _getSaleDetail = await getTrxDetailItem({
       pos_trx_ref_id: body.pos_trx_sale_id,
     });
-    if (_getSaleDetail.error || _getSaleDetail.data.length == 0) {
+    if (!_getSaleDetail.total) {
       throw new Error(`Sale Detail not found!`);
     }
     _getSale = { ..._getSale, ...body };
     delete _getSale.updated_by;
     delete _getSale.updated_at;
-    delete _getSale.pos_trx_detail_id;
+
     let _insertHeader = await models.insert_query({
       data: _getSale,
       table: "pos_trx_return",
@@ -126,13 +112,12 @@ exports.newReturn = async function (req, res) {
       delete it.updated_by;
       delete it.updated_at;
       delete it.pos_trx_detail_id;
-      it.pos_trx_ref_id = pos_trx_return_id;
+      it.pos_trx_ref_id = body.pos_trx_return_id;
       _insertDetail += await models.generate_query_insert({
         values: it,
         table: "pos_trx_detail",
       });
     }
-    // console.log(`${_insertHeader}${_insertDetail}`);
     _getSale.detail = _getSaleDetail.data;
     let _res = await models.exec_query(`${_insertHeader}${_insertDetail}`);
     _res.data = [_getSale];
@@ -155,7 +140,9 @@ exports.approveReturn = async function (req, res) {
         throw new Error(`${row} is required!`);
       }
     }
-    let _returnHeader = await getReturn(body);
+    let _returnHeader = await getReturn({
+      pos_trx_return_id: body.pos_trx_return_id,
+    });
     if (_returnHeader.error || _returnHeader.data.length == 0) {
       throw new Error(`Return data is not found!`);
     }
@@ -163,8 +150,10 @@ exports.approveReturn = async function (req, res) {
     if (_returnHeader.is_returned != null) {
       throw new Error(`Return data is already proccess!`);
     }
+
+    body.status = body.is_approve == "true" ? 1 : 0;
+    body.is_returned = req.body.is_approve;
     _returnHeader = { ..._returnHeader, ...body };
-    _returnHeader.is_returned = body.is_approve;
     let _updatetHeader = await models.update_query({
       data: _returnHeader,
       table: "pos_trx_return",
@@ -175,18 +164,17 @@ exports.approveReturn = async function (req, res) {
     if (body.is_approve == "true") {
       _allQuery += await proccessToInbound(_returnHeader);
       _allQuery += await proccessToStock(body);
-      let param = {
-        pos_trx_sale_id: _returnHeader.pos_trx_sale_id,
-        status: 0,
-        flag_delete: 1,
-      };
-      _allQuery += await models.generate_query_update({
-        values: param,
-        table: "pos_trx_sale",
-        key: "pos_trx_sale_id",
-      });
+      // let param = {
+      //   pos_trx_sale_id: _returnHeader.pos_trx_sale_id,
+      //   status: 0,
+      //   flag_delete: 1,
+      // };
+      // _allQuery += await models.generate_query_update({
+      //   values: param,
+      //   table: "pos_trx_sale",
+      //   key: "pos_trx_sale_id",
+      // });
     }
-    console.log(_allQuery);
     let _res = await models.exec_query(`${_allQuery}`);
     return response.response(_res, res);
   } catch (error) {

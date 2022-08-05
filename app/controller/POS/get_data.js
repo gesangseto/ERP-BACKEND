@@ -35,7 +35,8 @@ async function getReceive(data = Object, onlyQuery = false) {
   SUM(b.qty) as qty,
   SUM(b.qty_stock) as qty_stock,
   MAX(a.status) as status,
-  STRING_AGG(b.batch_no,',') AS batch
+  STRING_AGG(b.batch_no,',') AS batch,
+  BOOL_OR(a.is_received) AS is_received
   FROM pos_receive AS a
   LEFT JOIN pos_receive_detail as b on a.pos_receive_id = b.pos_receive_id
   LEFT JOIN mst_item AS c ON b.mst_item_id = c.mst_item_id
@@ -107,17 +108,16 @@ async function getInbound(data = Object, onlyQuery = false) {
   AND (CAST(a.pos_trx_inbound_id AS TEXT) LIKE LOWER('%${search}%')
   OR  CAST(a.created_at AS TEXT) LIKE LOWER('%${search}%')
   OR  LOWER(c.mst_customer_name) LIKE LOWER('%${search}%')
-  OR  LOWER(b.mst_supplier_name) LIKE LOWER('%${search}%')
-  OR  LOWER(CASE WHEN a.status=1 THEN 'Active' ELSE 'Inactive' end) LIKE LOWER('%${search}%') ) `;
+  OR  LOWER(b.mst_supplier_name) LIKE LOWER('%${search}%') ) `;
   };
   let _sql = ` 
   SELECT 
-    *, a.created_at AS created_at, a.status AS status
+    *, a.created_at AS created_at
   FROM pos_trx_inbound AS a 
   LEFT JOIN mst_supplier AS b ON b.mst_supplier_id = a.mst_supplier_id
   LEFT JOIN mst_customer AS c ON c.mst_customer_id = a.mst_customer_id
   --LEFT JOIN mst_warehouse AS d ON d.mst_warehouse_id = a.mst_warehouse_id
-  WHERE a.flag_delete='0' `;
+  WHERE 1+1=2 `;
   if (data.hasOwnProperty("pos_trx_inbound_id")) {
     _sql += ` AND a.pos_trx_inbound_id = '${data.pos_trx_inbound_id}'`;
   }
@@ -133,6 +133,7 @@ async function getInbound(data = Object, onlyQuery = false) {
   if (data.hasOwnProperty("page") && data.hasOwnProperty("limit")) {
     _sql += getLimitOffset(data.page, data.limit);
   }
+  console.log(_sql);
   if (onlyQuery) {
     return _sql;
   }
@@ -406,6 +407,7 @@ async function proccessToInbound(data) {
   } else if (data.hasOwnProperty("pos_trx_return_id")) {
     _data.mst_customer_id = data.mst_customer_id;
     _data.pos_trx_inbound_type = "return";
+    _data.pos_ref_table = "pos_trx_return";
     _data.pos_ref_id = _data.pos_trx_return_id;
   }
   // else if (data.hasOwnProperty("mst_warehouse_id")) {
@@ -427,9 +429,15 @@ async function proccessToStock(data) {
   } else if (data.hasOwnProperty("pos_trx_return_id")) {
     _datas = await getTrxDetailItem({ pos_trx_ref_id: data.pos_trx_return_id });
   }
+
+  let newData = [];
+  for (const it of _datas.data) {
+    it.qty_stock = it.qty * it.mst_item_variant_qty;
+    newData.push(it);
+  }
   let reduce = sumByKey({
     key: "mst_item_id",
-    array: _datas.data,
+    array: newData,
     sum: "qty",
     sum2: "qty_stock",
   });

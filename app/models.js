@@ -292,6 +292,7 @@ async function update_query({ data, key, table, onlyQuery = false }) {
     var is_text = false;
     var is_time = false;
     var is_int = false;
+    var is_bool = false;
     for (const col_name of column) {
       if (k == col_name.column_name) {
         isColumAvalaible = true;
@@ -299,6 +300,8 @@ async function update_query({ data, key, table, onlyQuery = false }) {
           is_time = true;
         } else if (col_name.data_type.includes("int")) {
           is_int = true;
+        } else if (col_name.data_type.includes("bool")) {
+          is_bool = true;
         } else {
           is_text = true;
         }
@@ -308,7 +311,9 @@ async function update_query({ data, key, table, onlyQuery = false }) {
       if (is_text) {
         dataArr.push(` ${k} = '${it}'`);
       } else if (is_int && isInt(it)) {
-        dataArr.push(` ${k} = '${it}'`);
+        dataArr.push(` ${k} = ${it}`);
+      } else if (is_bool) {
+        dataArr.push(` ${k} = ${it}`);
       } else if (
         is_time &&
         it != "created_at" &&

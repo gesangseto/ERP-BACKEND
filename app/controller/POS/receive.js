@@ -45,6 +45,7 @@ exports.insert = async function (req, res) {
     perf.start();
     let body = req.body;
     body.pos_receive_id = utils.generateId();
+    body.status = 0;
     let items = [];
     var req_data = ["mst_supplier_id", "item"];
     for (const row of req_data) {
@@ -112,7 +113,6 @@ exports.approve = async function (req, res) {
         throw new Error(`${row} is required!`);
       }
     }
-
     let _body = {
       pos_receive_id: body.pos_receive_id,
       is_approve: body.is_approve,
@@ -125,6 +125,7 @@ exports.approve = async function (req, res) {
         throw new Error(`Receive Note is required!`);
       }
       _body.status = "-1";
+      _body.is_received = false;
       var update_data = await models.update_query({
         data: _body,
         table: "pos_receive",
@@ -141,6 +142,7 @@ exports.approve = async function (req, res) {
       throw new Error(`Receive has already processed!`);
     }
     _body.status = "1";
+    _body.is_received = true;
     var update_data = await models.update_query({
       data: _body,
       table: "pos_receive",
@@ -156,17 +158,19 @@ exports.approve = async function (req, res) {
     if (_res.error) {
       throw new Error(_res.message);
     }
-    return response.response(_res, res);
+    return response.response(_res, res, false);
   } catch (error) {
     // ROLLBACK
     req.body.status = "0";
+    req.body.is_received = null;
     var update_data = await models.update_query({
       data: req.body,
       table: "pos_receive",
       key: "pos_receive_id",
     });
     data.error = true;
-    data.message = `${error}`;
+    // data.message = `${error}`;
+    data.message = `ROLLBACK`;
     return response.response(data, res, false);
   }
 };

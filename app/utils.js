@@ -183,7 +183,18 @@ function numberPercent(num, percent) {
   let result = num + num * (percent / 100);
   return result;
 }
-function isJsonString(str) {
+function isJsonString(item) {
+  item = typeof item !== "string" ? JSON.stringify(item) : item;
+  try {
+    item = JSON.parse(item);
+  } catch (e) {
+    return false;
+  }
+  if (typeof item === "object" && item !== null) {
+    return true;
+  }
+  return false;
+
   try {
     return JSON.parse(str);
   } catch (e) {
