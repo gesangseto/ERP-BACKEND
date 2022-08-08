@@ -35,7 +35,7 @@ const calculateSale = async ({
 }) => {
   let body = { ...header };
   body[`pos_trx_${type}_id`] = header[`pos_trx_${type}_id`];
-  body.mst_customer_id = header.mst_customer_id ?? 0;
+  body.mst_customer_id = header.mst_customer_id ?? null;
   body.price_percentage = header.price_percentage ?? 0;
   body.ppn = header.mst_customer_ppn;
   body.mst_customer_ppn = header.mst_customer_ppn;
@@ -67,6 +67,7 @@ const calculateSale = async ({
     _dt.mst_item_variant_id = _item.mst_item_variant_id;
     _dt.mst_item_id = _item.mst_item_id;
     _dt.qty = it.qty;
+    _dt.qty_stock = it.qty * _item.mst_item_variant_qty;
     _dt.capital_price = parseInt(_item.mst_item_variant_price);
     _dt.price_percentage = body.price_percentage;
     _dt.price = numberPercent(_dt.capital_price, body.price_percentage);
@@ -83,7 +84,9 @@ const calculateSale = async ({
   if (type == "sale") {
     _item.sale_item = _detail_item;
   } else if (type == "return") {
-    _item.return_item = _detail_item;
+    _item.item = _detail_item;
+  } else if (type == "destroy") {
+    _item.item = _detail_item;
   }
   return _item;
 };

@@ -74,6 +74,61 @@ async function getReceive(data = Object, onlyQuery = false) {
   let _data = await get_query(_sql);
   return _data;
 }
+async function getDestroy(data = Object, onlyQuery = false) {
+  const genSearch = (search) => {
+    return ` 
+  AND (CAST(a.pos_trx_destroy_id AS TEXT) LIKE LOWER('%${search}%')
+  OR  CAST(a.created_at AS TEXT) LIKE LOWER('%${search}%')
+  OR  LOWER(d.user_name) LIKE LOWER('%${search}%')
+  OR  LOWER(c.mst_item_name) LIKE LOWER('%${search}%')
+  OR  CAST(b.qty AS TEXT) LIKE LOWER('%${search}%')
+  OR  CAST(b.qty_stock AS TEXT) LIKE LOWER('%${search}%')
+  OR  LOWER(CASE WHEN a.status=1 THEN 'Active' ELSE 'Inactive' end) LIKE LOWER('%${search}%') )
+   `;
+  };
+  let _sql = `
+  SELECT 
+  MAX(a.pos_trx_destroy_id) as pos_trx_destroy_id,
+  MAX(a.created_at) as created_at,
+  MAX(a.created_by) as created_by,
+  MAX(d.user_name) as user_name,
+  MAX(c.mst_item_id) as mst_item_id,
+  STRING_AGG(c.mst_item_name,',') AS mst_item_name,
+  STRING_AGG(coalesce(b.mst_item_variant_qty::character varying,''), ';') AS mst_item_variant_qty,
+  SUM(b.qty) as qty,
+  SUM(b.qty_stock) as qty_stock,
+  MAX(a.status) as status,
+  BOOL_OR(a.is_destroyed) AS is_destroyed
+  FROM pos_trx_destroy AS a
+  LEFT JOIN pos_trx_detail as b on a.pos_trx_destroy_id = b.pos_trx_ref_id 
+  LEFT JOIN mst_item AS c ON b.mst_item_id = c.mst_item_id
+  LEFT JOIN "user" AS d ON a.created_by = d.user_id
+  WHERE 1+1=2 `;
+  if (data.hasOwnProperty("pos_trx_destroy_id")) {
+    _sql += ` AND a.pos_trx_destroy_id = '${data.pos_trx_destroy_id}'`;
+  }
+  if (data.hasOwnProperty("mst_item_id") && data.mst_item_id) {
+    _sql += ` AND b.mst_item_id = '${data.mst_item_id}'`;
+  }
+  if (data.hasOwnProperty("search")) {
+    if (isJsonString(data.search)) {
+      for (const it of JSON.parse(data.search)) {
+        _sql += genSearch(it);
+      }
+    } else {
+      _sql += genSearch(data.search);
+    }
+  }
+  _sql += ` GROUP BY a.pos_trx_destroy_id `;
+  if (data.hasOwnProperty("page") && data.hasOwnProperty("limit")) {
+    _sql += getLimitOffset(data.page, data.limit);
+  }
+  if (onlyQuery) {
+    return _sql;
+  }
+  let _data = await get_query(_sql);
+  return _data;
+}
 
 async function getDetailReceive(data = Object) {
   let _sql = `SELECT * 
@@ -133,7 +188,6 @@ async function getInbound(data = Object, onlyQuery = false) {
   if (data.hasOwnProperty("page") && data.hasOwnProperty("limit")) {
     _sql += getLimitOffset(data.page, data.limit);
   }
-  console.log(_sql);
   if (onlyQuery) {
     return _sql;
   }
@@ -428,6 +482,10 @@ async function proccessToStock(data) {
     _datas = await getDetailReceive({ pos_receive_id: data.pos_receive_id });
   } else if (data.hasOwnProperty("pos_trx_return_id")) {
     _datas = await getTrxDetailItem({ pos_trx_ref_id: data.pos_trx_return_id });
+  } else if (data.hasOwnProperty("pos_trx_destroy_id")) {
+    _datas = await getTrxDetailItem({
+      pos_trx_ref_id: data.pos_trx_destroy_id,
+    });
   }
 
   let newData = [];
@@ -453,6 +511,9 @@ async function proccessToStock(data) {
     } else {
       let body = { ..._item.data[0], ...it };
       body.qty += _item.data[0].qty ?? 0;
+      if (data.hasOwnProperty("pos_trx_destroy_id")) {
+        body.qty = _item.data[0].qty - body.qty_stock;
+      }
       body.status = 1;
       _sql += await generate_query_update({
         values: body,
@@ -464,7 +525,7 @@ async function proccessToStock(data) {
   return _sql;
 }
 async function getTrxDetailItem(data = Object) {
-  let _sql = `SELECT * 
+  let _sql = `SELECT *,  (a.qty * a.mst_item_variant_qty) as qty_stock 
   FROM pos_trx_detail AS a
   LEFT JOIN mst_item_variant AS b ON a.mst_item_variant_id  = b.mst_item_variant_id 
   LEFT JOIN mst_item AS c ON c.mst_item_id  = b.mst_item_id 
@@ -504,4 +565,5 @@ module.exports = {
   getDiscount,
   getCustomer,
   getPosConfig,
+  getDestroy,
 };

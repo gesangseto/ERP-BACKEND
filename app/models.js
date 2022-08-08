@@ -39,7 +39,8 @@ async function generate_query_insert({ table, values }) {
         let key = it.column_name;
         if (key_v === key) {
           if (it.data_type.includes("timestamp")) {
-            values[key_v] = moment(values[key_v]).format("YYYY-MM-DD hh:mm:ss");
+            let date = moment(values[key_v]).format("YYYY-MM-DD hh:mm:ss");
+            if (date !== "Invalid date") values[key_v] = date;
           }
           if (
             (values[key_v] || values[key_v] == 0) &&

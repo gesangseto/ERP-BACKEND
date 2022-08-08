@@ -127,6 +127,10 @@ module.exports = function (app) {
   app.route("/api/transaction/pos/return").get(_pos_ret.getReturn);
   app.route("/api/transaction/pos/return").put(_pos_ret.newReturn);
   app.route("/api/transaction/pos/return").post(_pos_ret.approveReturn);
+  var _pos_des = require("./controller/POS/destroy");
+  app.route("/api/transaction/pos/destroy").get(_pos_des.get);
+  app.route("/api/transaction/pos/destroy").put(_pos_des.insert);
+  app.route("/api/transaction/pos/destroy").post(_pos_des.approve);
   // CASHIER
   var _pos_cashier = require("./controller/POS/cashier");
   app.route("/api/transaction/pos/cashier").get(_pos_cashier.get);

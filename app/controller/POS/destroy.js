@@ -4,11 +4,11 @@ const models = require("../../models");
 const utils = require("../../utils");
 const {
   getItem,
-  proccessToInbound,
   proccessToStock,
-  getReceive,
-  getDetailReceive,
+  getDestroy,
+  getTrxDetailItem,
 } = require("./get_data");
+const { calculateSale } = require("./utils");
 const perf = require("execution-time")();
 
 exports.get = async function (req, res) {
@@ -24,10 +24,10 @@ exports.get = async function (req, res) {
       }
     }
     // LINE WAJIB DIBAWA
-    const check = await getReceive(req.query);
-    if (check.data.length > 0 && req.query.hasOwnProperty("pos_receive_id")) {
-      let child = await getDetailReceive({
-        pos_receive_id: req.query.pos_receive_id,
+    const check = await getDestroy(req.query);
+    if (check.total > 0 && req.query.hasOwnProperty("pos_trx_destroy_id")) {
+      let child = await getTrxDetailItem({
+        pos_trx_ref_id: req.query.pos_trx_destroy_id,
       });
       check.data[0].detail = child.data;
     }
@@ -44,27 +44,14 @@ exports.insert = async function (req, res) {
   try {
     perf.start();
     let body = req.body;
-    body.pos_receive_id = utils.generateId();
+    body.pos_trx_destroy_id = utils.generateId();
     body.status = 0;
     let items = [];
-    var req_data = ["mst_supplier_id", "item"];
-    for (const row of req_data) {
-      if (!body[`${row}`]) {
-        throw new Error(`${row} is required!`);
-      }
-    }
-    if (Array.isArray(body.item) == false) {
+    if (!body.item || Array.isArray(body.item) == false) {
       throw new Error(`Item must be an array!`);
     }
 
     for (const it of body.item) {
-      // var req_data = ["batch_no", "mfg_date", "exp_date", "qty"];
-      var req_data = ["mfg_date", "exp_date", "qty"];
-      for (const row of req_data) {
-        if (!it[`${row}`]) {
-          throw new Error(`${row} on Item is required!`);
-        }
-      }
       if (!it["mst_item_variant_id"] && !it["barcode"]) {
         throw new Error(`Item (barcode or mst_item_variant_id) is required!`);
       } else {
@@ -75,26 +62,37 @@ exports.insert = async function (req, res) {
         _getItem = _getItem.data[0];
         it.qty = it.qty;
         it.qty_stock = it.qty * _getItem.mst_item_variant_qty;
-        it.pos_receive_id = body.pos_receive_id;
+        it.pos_trx_ref_id = body.pos_trx_destroy_id;
+        it.pos_trx_destroy_id = body.pos_trx_destroy_id;
         delete _getItem.created_at;
         delete _getItem.updated_at;
         items.push({ ..._getItem, ...it });
       }
+      if (!it.qty) {
+        throw new Error(`Item Qty is required!`);
+      }
     }
+    let _calculate = await calculateSale({
+      header: body,
+      detail: items,
+      type: "destroy",
+    });
     let _header = await models.insert_query({
-      data: body,
-      table: "pos_receive",
+      data: _calculate,
+      table: "pos_trx_destroy",
       onlyQuery: true,
     });
     let _detail = "";
-    for (const it of items) {
+    for (const it of _calculate.item) {
+      delete it.updated_by;
+      delete it.updated_at;
       _detail += await models.generate_query_insert({
         values: it,
-        table: "pos_receive_detail",
+        table: "pos_trx_detail",
       });
     }
     let exec = await models.exec_query(`${_header}${_detail}`);
-    exec.data = [body];
+    exec.data = [_calculate];
     return response.response(exec, res);
   } catch (error) {
     data.error = true;
@@ -108,54 +106,54 @@ exports.approve = async function (req, res) {
   try {
     perf.start();
     let body = req.body;
-    var require_data = ["pos_receive_id", "is_approve"];
+    var require_data = [
+      "pos_trx_destroy_id",
+      "is_approve",
+      "pos_trx_destroy_note",
+    ];
     for (const row of require_data) {
       if (!body[`${row}`]) {
         throw new Error(`${row} is required!`);
       }
     }
     let _body = {
-      pos_receive_id: body.pos_receive_id,
+      pos_trx_destroy_id: body.pos_trx_destroy_id,
       is_approve: body.is_approve,
-      pos_receive_note: body.pos_receive_note,
+      pos_trx_destroy_note: body.pos_trx_destroy_note,
     };
 
     // Reject;
     if (_body.is_approve == "false") {
-      if (!_body.pos_receive_note) {
-        throw new Error(`Receive Note is required!`);
+      if (!_body.pos_trx_destroy_note) {
+        throw new Error(`Destroy Note is required!`);
       }
       _body.status = "-1";
-      _body.is_received = false;
+      _body.is_destroyed = false;
       var update_data = await models.update_query({
         data: _body,
-        table: "pos_receive",
-        key: "pos_receive_id",
+        table: "pos_trx_destroy",
+        key: "pos_trx_destroy_id",
       });
       return response.response(update_data, res);
     }
     // Approve;
-    // delete body.pos_receive_note;
-    let _check = await getReceive(_body);
+    // delete body.pos_trx_destroy_note;
+    let _check = await getDestroy(_body);
     if (_check.error || _check.data.length == 0) {
-      throw new Error(`Receive is not found!`);
+      throw new Error(`Destroy is not found!`);
     } else if (_check.data[0].status != 0) {
-      throw new Error(`Receive has already processed!`);
+      throw new Error(`Destroy has already processed!`);
     }
     _body.status = "1";
-    _body.is_received = true;
+    _body.is_destroyed = true;
     var update_data = await models.update_query({
       data: _body,
-      table: "pos_receive",
-      key: "pos_receive_id",
+      table: "pos_trx_destroy",
+      key: "pos_trx_destroy_id",
+      onlyQuery: true,
     });
-    if (update_data.error) {
-      throw new Error(update_data.message);
-    }
-    let _data = { ..._check.data[0], ..._body };
-    let _inbound = await proccessToInbound(_data);
-    let _stock = await proccessToStock(_data);
-    let _res = await models.exec_query(`${_inbound}${_stock}`);
+    let _stock = await proccessToStock(_body);
+    let _res = await models.exec_query(`${update_data}${_stock}`);
     if (_res.error) {
       throw new Error(_res.message);
     }
@@ -163,11 +161,11 @@ exports.approve = async function (req, res) {
   } catch (error) {
     // ROLLBACK
     req.body.status = "0";
-    req.body.is_received = null;
+    req.body.is_destroyed = null;
     var update_data = await models.update_query({
       data: req.body,
-      table: "pos_receive",
-      key: "pos_receive_id",
+      table: "pos_trx_destroy",
+      key: "pos_trx_destroy_id",
     });
     data.error = true;
     data.message = `${error}`;

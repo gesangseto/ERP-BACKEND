@@ -1860,7 +1860,7 @@
 											}
 										],
 										"url": {
-											"raw": "{{dev}}/api/transaction/pos/sale?pos_trx_sale_id=1657098259709",
+											"raw": "{{dev}}/api/transaction/pos/sale?pos_trx_sale_id=1659669672036",
 											"host": [
 												"{{dev}}"
 											],
@@ -1873,7 +1873,7 @@
 											"query": [
 												{
 													"key": "pos_trx_sale_id",
-													"value": "1657098259709"
+													"value": "1659669672036"
 												},
 												{
 													"key": "pos_cashier_id",
@@ -2082,7 +2082,7 @@
 											}
 										],
 										"url": {
-											"raw": "{{dev}}/api/transaction/pos/return?pos_trx_return_id=1656925295914",
+											"raw": "{{dev}}/api/transaction/pos/return?pos_trx_return_id=1659669854175",
 											"host": [
 												"{{dev}}"
 											],
@@ -2095,7 +2095,7 @@
 											"query": [
 												{
 													"key": "pos_trx_return_id",
-													"value": "1656925295914"
+													"value": "1659669854175"
 												}
 											]
 										}
@@ -2115,7 +2115,7 @@
 										],
 										"body": {
 											"mode": "raw",
-											"raw": "{\n    \"pos_trx_sale_id\": 1657095580899,\n    \"return_item\": [\n        {\n            \"qty\": 1,\n            \"mst_item_variant_id\": 20\n        }\n    ]\n}",
+											"raw": "{\n    \"pos_trx_sale_id\": 1659598438978\n}",
 											"options": {
 												"raw": {
 													"language": "json"
@@ -2153,7 +2153,7 @@
 											"urlencoded": [
 												{
 													"key": "pos_trx_return_id",
-													"value": "1656925322005",
+													"value": "1659669854175",
 													"type": "text"
 												},
 												{
@@ -2170,7 +2170,7 @@
 											]
 										},
 										"url": {
-											"raw": "{{dev}}/api/transaction/pos/return?is_approve=true&pos_trx_return_id=1656925322005",
+											"raw": "{{dev}}/api/transaction/pos/return",
 											"host": [
 												"{{dev}}"
 											],
@@ -2179,16 +2179,6 @@
 												"transaction",
 												"pos",
 												"return"
-											],
-											"query": [
-												{
-													"key": "is_approve",
-													"value": "true"
-												},
-												{
-													"key": "pos_trx_return_id",
-													"value": "1656925322005"
-												}
 											]
 										}
 									},
@@ -2200,7 +2190,7 @@
 							"name": "Destroy / Reject",
 							"item": [
 								{
-									"name": "Get Return",
+									"name": "Get",
 									"request": {
 										"method": "GET",
 										"header": [
@@ -2211,7 +2201,7 @@
 											}
 										],
 										"url": {
-											"raw": "{{dev}}/api/transaction/pos/inbound",
+											"raw": "{{dev}}/api/transaction/pos/destroy?pos_trx_destroy_id=1659936996177",
 											"host": [
 												"{{dev}}"
 											],
@@ -2219,14 +2209,20 @@
 												"api",
 												"transaction",
 												"pos",
-												"inbound"
+												"destroy"
+											],
+											"query": [
+												{
+													"key": "pos_trx_destroy_id",
+													"value": "1659936996177"
+												}
 											]
 										}
 									},
 									"response": []
 								},
 								{
-									"name": "New Return",
+									"name": "New Destroy",
 									"request": {
 										"method": "PUT",
 										"header": [
@@ -2237,42 +2233,16 @@
 											}
 										],
 										"body": {
-											"mode": "urlencoded",
-											"urlencoded": [
-												{
-													"key": "pos_batch_no",
-													"value": "FG4547",
-													"type": "text"
-												},
-												{
-													"key": "pos_batch_exp_date",
-													"value": "21-12-2022",
-													"type": "text"
-												},
-												{
-													"key": "pos_batch_mfg_date",
-													"value": "21-12-2021",
-													"type": "text"
-												},
-												{
-													"key": "pos_batch_qty",
-													"value": "100",
-													"type": "text"
-												},
-												{
-													"key": "mst_item_id",
-													"value": "1656477974626",
-													"type": "text"
-												},
-												{
-													"key": "mst_supplier_id",
-													"value": "1",
-													"type": "text"
+											"mode": "raw",
+											"raw": "{\r\n    \"item\": [\r\n        {\r\n            \"barcode\": 123457,\r\n            \"qty\":1\r\n        }\r\n    ]\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
 												}
-											]
+											}
 										},
 										"url": {
-											"raw": "{{dev}}/api/transaction/pos/inbound",
+											"raw": "{{dev}}/api/transaction/pos/destroy",
 											"host": [
 												"{{dev}}"
 											],
@@ -2280,14 +2250,14 @@
 												"api",
 												"transaction",
 												"pos",
-												"inbound"
+												"destroy"
 											]
 										}
 									},
 									"response": []
 								},
 								{
-									"name": "Approve Return",
+									"name": "Approve",
 									"request": {
 										"method": "POST",
 										"header": [
@@ -2301,8 +2271,8 @@
 											"mode": "urlencoded",
 											"urlencoded": [
 												{
-													"key": "pos_batch_id",
-													"value": "1656561864781",
+													"key": "pos_trx_destroy_id",
+													"value": "1659936996177",
 													"type": "text"
 												},
 												{
@@ -2311,15 +2281,14 @@
 													"type": "text"
 												},
 												{
-													"key": "pos_batch_note",
+													"key": "pos_trx_destroy_note",
 													"value": "Nothing",
-													"type": "text",
-													"disabled": true
+													"type": "text"
 												}
 											]
 										},
 										"url": {
-											"raw": "{{dev}}/api/transaction/pos/inbound",
+											"raw": "{{dev}}/api/transaction/pos/destroy",
 											"host": [
 												"{{dev}}"
 											],
@@ -2327,7 +2296,7 @@
 												"api",
 												"transaction",
 												"pos",
-												"inbound"
+												"destroy"
 											]
 										}
 									},
