@@ -18,6 +18,7 @@ const cleanup = async function (req, res) {
     TRUNCATE pos_receive_detail CASCADE;
     TRUNCATE pos_trx_sale CASCADE;
     TRUNCATE pos_trx_return CASCADE;
+    TRUNCATE pos_trx_destroy CASCADE;
     `;
     let _res = await models.exec_query(_query);
     return response.response(_res, res);
