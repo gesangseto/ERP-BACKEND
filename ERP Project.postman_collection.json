@@ -406,7 +406,7 @@
 									}
 								],
 								"url": {
-									"raw": "{{dev}}/api/master/user_section?user_section_id=10",
+									"raw": "{{dev}}/api/master/user_section",
 									"host": [
 										"{{dev}}"
 									],
@@ -428,7 +428,8 @@
 										},
 										{
 											"key": "user_section_id",
-											"value": "10"
+											"value": "10",
+											"disabled": true
 										}
 									]
 								}
@@ -1414,7 +1415,7 @@
 											}
 										],
 										"url": {
-											"raw": "{{dev}}/api/master/pos/discount?mst_item_variant_id=20",
+											"raw": "{{dev}}/api/master/pos/discount",
 											"host": [
 												"{{dev}}"
 											],
@@ -1431,8 +1432,9 @@
 													"disabled": true
 												},
 												{
-													"key": "mst_item_variant_id",
-													"value": "20"
+													"key": "pos_discount_id",
+													"value": "27",
+													"disabled": true
 												}
 											]
 										}
@@ -1860,7 +1862,7 @@
 											}
 										],
 										"url": {
-											"raw": "{{dev}}/api/transaction/pos/sale?pos_trx_sale_id=1659669672036",
+											"raw": "{{dev}}/api/transaction/pos/sale?pos_trx_sale_id=1660103858010",
 											"host": [
 												"{{dev}}"
 											],
@@ -1873,7 +1875,7 @@
 											"query": [
 												{
 													"key": "pos_trx_sale_id",
-													"value": "1659669672036"
+													"value": "1660103858010"
 												},
 												{
 													"key": "pos_cashier_id",

@@ -5,7 +5,7 @@
 -- Dumped from database version 12.10
 -- Dumped by pg_dump version 13.3
 
--- Started on 2022-08-08 12:55:41
+-- Started on 2022-08-10 14:29:06
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -595,12 +595,13 @@ CREATE TABLE public.pos_discount (
     status integer DEFAULT 1,
     pos_discount_id integer NOT NULL,
     mst_item_variant_id bigint NOT NULL,
-    pos_discount character varying,
+    discount integer,
     pos_discount_starttime timestamp without time zone NOT NULL,
     pos_discount_endtime timestamp without time zone NOT NULL,
-    pos_discount_min_qty integer,
-    pos_discount_free_qty integer,
-    pos_discount_code character varying
+    discount_min_qty integer NOT NULL,
+    discount_free_qty integer,
+    pos_discount_code character varying,
+    discount_max_qty integer
 );
 
 
@@ -609,10 +610,10 @@ ALTER TABLE public.pos_discount OWNER TO postgres;
 --
 -- TOC entry 3259 (class 0 OID 0)
 -- Dependencies: 223
--- Name: COLUMN pos_discount.pos_discount; Type: COMMENT; Schema: public; Owner: postgres
+-- Name: COLUMN pos_discount.discount; Type: COMMENT; Schema: public; Owner: postgres
 --
 
-COMMENT ON COLUMN public.pos_discount.pos_discount IS 'Per seratus';
+COMMENT ON COLUMN public.pos_discount.discount IS 'Per seratus';
 
 
 --
@@ -772,11 +773,14 @@ CREATE TABLE public.pos_trx_detail (
     pos_trx_detail_id bigint NOT NULL,
     mst_item_id bigint,
     pos_discount_id bigint,
-    discount double precision,
+    discount integer,
     total double precision,
     capital_price double precision,
     mst_item_variant_qty integer,
-    qty_stock bigint
+    qty_stock bigint,
+    discount_min_qty integer,
+    discount_max_qty integer,
+    discount_free_qty integer
 );
 
 
@@ -1537,10 +1541,10 @@ COPY public.mst_item_variant (created_at, created_by, updated_at, updated_by, fl
 2022-06-27 11:28:53	0	2022-07-30 08:39:09	0	0	1	20	1656477974626	Pack	20000	1	1	123456
 2022-06-27 11:28:53	0	2022-07-30 08:39:09	0	0	1	23	1659145670680	Bungkus	2500	1	1	11111
 2022-07-30 08:39:35	0	\N	\N	0	1	24	1659145670680	Dus	90000	40	1	22222
-\N	\N	\N	\N	0	1	27	1659929329253	-	2400	1	1	33333
-\N	\N	\N	\N	0	1	28	1659929329253	-	124000	24	9	44444
 \N	\N	\N	\N	0	1	29	1659929411583	@1	2450	1	1	33334
 \N	\N	\N	\N	0	1	30	1659929411583	@24	124500	24	9	44443
+\N	\N	\N	\N	1	1	27	1659929329253	-	2400	1	1	33333
+\N	\N	\N	\N	1	1	28	1659929329253	-	124000	24	9	44444
 \.
 
 
@@ -1580,7 +1584,8 @@ COPY public.pos_cashier (created_at, created_by, updated_at, updated_by, flag_de
 2022-07-06 15:32:51+07	0	2022-08-01 16:05:46+07	0	0	1	9	150000	1	f	\N
 2022-08-01 16:07:05+07	0	2022-08-01 16:20:14+07	0	0	1	10	150000	1	f	\N
 2022-08-01 16:20:17+07	0	2022-08-04 14:35:15+07	0	0	1	11	150000	1	f	\N
-2022-08-04 14:35:46+07	0	\N	\N	0	1	12	1500000	2	t	\N
+2022-08-04 14:35:46+07	0	2022-08-08 13:37:30+07	0	0	1	12	1500000	2	f	\N
+2022-08-08 13:38:34+07	0	\N	\N	0	1	13	1500000	1	t	\N
 \.
 
 
@@ -1601,7 +1606,7 @@ COPY public.pos_config (created_at, created_by, updated_at, updated_by, pos_conf
 -- Data for Name: pos_discount; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.pos_discount (created_at, created_by, updated_at, updated_by, flag_delete, status, pos_discount_id, mst_item_variant_id, pos_discount, pos_discount_starttime, pos_discount_endtime, pos_discount_min_qty, pos_discount_free_qty, pos_discount_code) FROM stdin;
+COPY public.pos_discount (created_at, created_by, updated_at, updated_by, flag_delete, status, pos_discount_id, mst_item_variant_id, discount, pos_discount_starttime, pos_discount_endtime, discount_min_qty, discount_free_qty, pos_discount_code, discount_max_qty) FROM stdin;
 \.
 
 
@@ -1642,12 +1647,6 @@ COPY public.pos_receive_detail (flag_delete, status, pos_receive_detail_id, pos_
 --
 
 COPY public.pos_trx_destroy (created_at, created_by, updated_at, updated_by, flag_delete, status, total_price, price_percentage, is_destroyed, grand_total, pos_trx_destroy_id, pos_trx_destroy_note) FROM stdin;
-2022-08-08 11:31:58	0	2022-08-08 11:48:10	0	0	1	20000	0	t	20000	1659933118972	Nothing
-2022-08-08 12:36:36	0	2022-08-08 12:38:45	0	0	1	200000	0	t	200000	1659936996177	Nothing
-2022-08-08 12:46:02	0	\N	\N	0	1	20000	0	t	20000	1659937562754	-
-2022-08-08 12:46:40	0	\N	\N	0	1	20000	0	t	20000	1659937600298	-
-2022-08-08 12:48:09	0	\N	\N	0	1	2500	0	t	2500	1659937689373	-
-2022-08-08 12:49:20	0	2022-08-08 12:53:18	0	0	1	124000	0	t	124000	1659937760604	-
 \.
 
 
@@ -1657,7 +1656,7 @@ COPY public.pos_trx_destroy (created_at, created_by, updated_at, updated_by, fla
 -- Data for Name: pos_trx_detail; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.pos_trx_detail (updated_at, updated_by, flag_delete, status, pos_trx_ref_id, mst_item_variant_id, qty, price, pos_trx_detail_id, mst_item_id, pos_discount_id, discount, total, capital_price, mst_item_variant_qty, qty_stock) FROM stdin;
+COPY public.pos_trx_detail (updated_at, updated_by, flag_delete, status, pos_trx_ref_id, mst_item_variant_id, qty, price, pos_trx_detail_id, mst_item_id, pos_discount_id, discount, total, capital_price, mst_item_variant_qty, qty_stock, discount_min_qty, discount_max_qty, discount_free_qty) FROM stdin;
 \.
 
 
@@ -1726,11 +1725,13 @@ COPY public.sys_menu (status, sys_menu_id, sys_menu_name, sys_menu_url, sys_menu
 1	100	Transaction	/pos/transaction	FundOutlined	\N	100	2
 1	101	Receive	/pos/transaction/receive		100	100.1	2
 1	102	Inbound	/pos/transaction/inbound		100	100.2	2
-1	110	Stock	/pos/transaction/stock	FundOutlined	\N	110	2
 1	103	Sale	/pos/transaction/sale		100	100.3	2
 1	15	Config Relation	/System/Config-Relation	\N	7	4.3	1
 1	104	Return	/pos/transaction/return		100	100.4	2
 1	105	Destroy	/pos/transaction/destroy		100	100.5	2
+1	111	Discount	/pos/master/discount		110	110.1	2
+1	120	Stock	/pos/transaction/stock	ContainerOutlined	\N	120	2
+1	110	Master	/pos/master	FolderOpenOutlined	\N	110	2
 \.
 
 
@@ -1959,7 +1960,7 @@ SELECT pg_catalog.setval('public.mst_supplier_mst_supplier_id_seq', 2, true);
 -- Name: pos_cashier_pos_cashier_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.pos_cashier_pos_cashier_id_seq', 12, true);
+SELECT pg_catalog.setval('public.pos_cashier_pos_cashier_id_seq', 13, true);
 
 
 --
@@ -1977,7 +1978,7 @@ SELECT pg_catalog.setval('public.pos_config_pos_config_id_seq', 1, true);
 -- Name: pos_discount_pos_discount_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.pos_discount_pos_discount_id_seq', 26, true);
+SELECT pg_catalog.setval('public.pos_discount_pos_discount_id_seq', 39, true);
 
 
 --
@@ -1986,7 +1987,7 @@ SELECT pg_catalog.setval('public.pos_discount_pos_discount_id_seq', 26, true);
 -- Name: pos_item_stock_pos_item_stock_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.pos_item_stock_pos_item_stock_id_seq', 47, true);
+SELECT pg_catalog.setval('public.pos_item_stock_pos_item_stock_id_seq', 53, true);
 
 
 --
@@ -1995,7 +1996,7 @@ SELECT pg_catalog.setval('public.pos_item_stock_pos_item_stock_id_seq', 47, true
 -- Name: pos_receive_detail_pos_receive_detail_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.pos_receive_detail_pos_receive_detail_id_seq', 102, true);
+SELECT pg_catalog.setval('public.pos_receive_detail_pos_receive_detail_id_seq', 108, true);
 
 
 --
@@ -2004,7 +2005,7 @@ SELECT pg_catalog.setval('public.pos_receive_detail_pos_receive_detail_id_seq', 
 -- Name: pos_sale_detail_pos_sale_detail_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.pos_sale_detail_pos_sale_detail_id_seq', 149, true);
+SELECT pg_catalog.setval('public.pos_sale_detail_pos_sale_detail_id_seq', 161, true);
 
 
 --
@@ -2754,7 +2755,7 @@ ALTER TABLE ONLY public.user_section
     ADD CONSTRAINT user_section_fk FOREIGN KEY (user_department_id) REFERENCES public.user_department(user_department_id);
 
 
--- Completed on 2022-08-08 12:55:44
+-- Completed on 2022-08-10 14:29:09
 
 --
 -- PostgreSQL database dump complete

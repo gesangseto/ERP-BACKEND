@@ -25,7 +25,7 @@ async function getVariantItem(data = Object, onlyQuery = false) {
   LEFT JOIN pos_discount AS d 
       ON a.mst_item_variant_id = d.mst_item_variant_id
       AND d.status = '1'
-      AND (d.pos_discount_starttime <= now() AND pos_discount_endtime > now())
+      AND (d.pos_discount_starttime <= now() AND pos_discount_endtime >= now())
       AND d.flag_delete = '0'
   WHERE a.flag_delete='0' `;
   if (data.hasOwnProperty("mst_item_id")) {
@@ -52,6 +52,7 @@ async function getVariantItem(data = Object, onlyQuery = false) {
   if (data.hasOwnProperty("page") && data.hasOwnProperty("limit")) {
     _sql += getLimitOffset(data.page, data.limit);
   }
+  console.log(_sql);
   if (onlyQuery) {
     return _sql;
   }

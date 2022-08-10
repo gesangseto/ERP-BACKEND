@@ -162,8 +162,8 @@ function sumByKey({ key, sum, sum2, array }) {
   return result;
 }
 
-function isDate(date, format = "YYYY-MM-DD") {
-  let dt = moment(date).format("YYYY-MM-DD");
+function isDate(date, format = "YYYY-MM-DD hh:mm:ss") {
+  let dt = moment(date).format(format);
   if (dt == "Invalid date") {
     return false;
   } else {

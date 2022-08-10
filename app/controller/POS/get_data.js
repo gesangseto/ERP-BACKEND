@@ -337,7 +337,7 @@ async function getDiscount(data = Object) {
   if (data.hasOwnProperty("status")) {
     _sql += ` AND a.status = '${data.status}'`;
   }
-  let _data = await exec_query(_sql);
+  let _data = await get_query(_sql);
   return _data;
 }
 
@@ -405,14 +405,15 @@ async function getStockItem(data = Object) {
         STRING_AGG(coalesce(pack.mst_packaging_name,''),';') AS mst_packaging_name,
         STRING_AGG(coalesce(pack.mst_packaging_code,''),';') AS mst_packaging_code,
         STRING_AGG(coalesce(d.pos_discount_id ::character varying,''), ';') as pos_discount_id,
-        STRING_AGG(coalesce(d.pos_discount::character varying,''), ';') as pos_discount,
+        STRING_AGG(coalesce(d.discount::character varying,''), ';') as discount,
         STRING_AGG(coalesce(d.pos_discount_starttime ::character varying,''), ';') as pos_discount_starttime,
         STRING_AGG(coalesce(d.pos_discount_endtime  ::character varying,''), ';') as pos_discount_endtime,
-        STRING_AGG(coalesce(d.pos_discount_min_qty  ::character varying,''), ';') as pos_discount_min_qty,
-        STRING_AGG(coalesce(d.pos_discount_free_qty  ::character varying,''), ';') as pos_discount_free_qty,
+        STRING_AGG(coalesce(d.discount_min_qty  ::character varying,''), ';') as discount_min_qty,
+        STRING_AGG(coalesce(d.discount_max_qty  ::character varying,''), ';') as discount_max_qty,
+        STRING_AGG(coalesce(d.discount_free_qty  ::character varying,''), ';') as discount_free_qty,
         STRING_AGG(coalesce(c.mst_item_variant_price  ::character varying,''), ';') as mst_item_variant_price,
-        STRING_AGG(coalesce(c.mst_item_variant_price::float * (d.pos_discount::float/100),0)::character varying, ';') as discount,
-        STRING_AGG(coalesce(c.mst_item_variant_price::float-c.mst_item_variant_price::float * (d.pos_discount::float/100),c.mst_item_variant_price)::character varying, ';') as after_discount_price
+        STRING_AGG(coalesce(c.mst_item_variant_price::float * (d.discount::float/100),0)::character varying, ';') as discount_price,
+        STRING_AGG(coalesce(c.mst_item_variant_price::float-c.mst_item_variant_price::float * (d.discount::float/100),c.mst_item_variant_price)::character varying, ';') as after_discount_price
     FROM pos_item_stock AS a  
     LEFT JOIN mst_item AS b ON a.mst_item_id= b.mst_item_id 
     LEFT JOIN mst_item_variant AS c ON b.mst_item_id = c.mst_item_id
@@ -420,7 +421,7 @@ async function getStockItem(data = Object) {
     LEFT JOIN pos_discount AS d 
       ON c.mst_item_variant_id = d.mst_item_variant_id
       AND d.status = '1'
-      AND (d.pos_discount_starttime <= now() AND pos_discount_endtime > now())
+      AND (d.pos_discount_starttime <= now() AND pos_discount_endtime >= now())
       AND d.flag_delete = '0'
     WHERE 1+1=2  `;
   if (data.hasOwnProperty("pos_item_stock_id") && data.pos_item_stock_id) {

@@ -19,6 +19,8 @@ exports.get = async function (req, res) {
       }
     }
     // LINE WAJIB DIBAWA
+    let upd = `UPDATE pos_discount set status = '0' WHERE pos_discount_endtime < now(); `;
+    await models.exec_query(upd);
     const check = await getDiscount(req.query);
     return response.response(check, res);
   } catch (error) {
@@ -44,10 +46,10 @@ exports.insert = async function (req, res) {
       }
     }
 
-    if (!body.hasOwnProperty("pos_discount")) {
+    if (!body.hasOwnProperty("discount")) {
       if (
-        !body.hasOwnProperty("pos_discount_min_qty") ||
-        !body.hasOwnProperty("pos_discount_free_qty")
+        !body.hasOwnProperty("discount_min_qty") ||
+        !body.hasOwnProperty("discount_free_qty")
       ) {
         throw new Error(`Discount or (Min qty and Free qty) is required!`);
       }
@@ -86,15 +88,15 @@ exports.update = async function (req, res) {
   try {
     perf.start();
     let body = req.body;
-    var require_data = ["pos_discount_id", "status"];
+    var require_data = ["pos_discount_id"];
     for (const row of require_data) {
       if (!body[`${row}`]) {
         throw new Error(`${row} is required!`);
       }
     }
-    if (body.status != 0) {
-      throw new Error(`Cannot set other than inactive!`);
-    }
+    // if (body.status != 0) {
+    //   throw new Error(`Cannot set other than inactive!`);
+    // }
     let check = await getDiscount({
       pos_discount_id: body.pos_discount_id,
     });

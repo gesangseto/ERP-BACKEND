@@ -3,6 +3,7 @@ const response = require("../../response");
 const models = require("../../models");
 const { getStockItem } = require("./get_data");
 const { numberPercent } = require("../../utils");
+const { min } = require("moment");
 const perf = require("execution-time")();
 
 const cleanup = async function (req, res) {
@@ -27,6 +28,44 @@ const cleanup = async function (req, res) {
     data.message = `${error}`;
     return response.response(data, res);
   }
+};
+
+const generateTotalDiscount = (buyQty, item) => {
+  let min_qty = item.discount_min_qty;
+  let max_qty = item.discount_max_qty;
+  let free_qty = item.discount_free_qty;
+  let disc = item.discount;
+  let disc_price = numberPercent(item.mst_item_variant_price, -Math.abs(disc));
+  let price = item.mst_item_variant_price;
+  let total = 0;
+  console.log(item);
+  if (buyQty >= min_qty) {
+    // DISCOUNT
+    if (disc && disc !== "0") {
+      if (buyQty <= max_qty || max_qty === "0") {
+        total = buyQty * disc_price;
+      } else {
+        let sisa = buyQty - max_qty;
+        total = max_qty * disc_price;
+        total += sisa * price;
+      }
+    } else if (free_qty && free_qty !== "0") {
+      // FREE QTY
+      let sisa = buyQty - min_qty;
+      total = min_qty * price;
+      sisa = sisa - free_qty;
+      if (sisa > 0) {
+        if (sisa <= max_qty || max_qty === "0")
+          total += generateTotalDiscount(sisa, item);
+        else total += price * sisa;
+      }
+    }
+  }
+  if (total == 0) {
+    total = price * buyQty;
+  }
+  console.log(total);
+  return total;
 };
 
 const calculateSale = async ({
@@ -70,12 +109,17 @@ const calculateSale = async ({
     _dt.qty = it.qty;
     _dt.qty_stock = it.qty * _item.mst_item_variant_qty;
     _dt.capital_price = parseInt(_item.mst_item_variant_price);
-    _dt.price_percentage = body.price_percentage;
+    _dt.price_percentage = body.price_percentage ?? 0;
     _dt.price = numberPercent(_dt.capital_price, body.price_percentage);
     if (_item.pos_discount_id) _dt.pos_discount_id = _item.pos_discount_id;
-    _dt.discount = _item.discount;
-    _dt.total = _dt.qty * numberPercent(_dt.price, -Math.abs(_dt.discount));
-
+    let total_price = generateTotalDiscount(_dt.qty, _item);
+    _dt.total = numberPercent(total_price, body.price_percentage);
+    _dt.discount = _item.discount ?? 0;
+    _dt.discount_min_qty = _item.discount_min_qty ? _item.discount_min_qty : 0;
+    _dt.discount_max_qty = _item.discount_max_qty ? _item.discount_max_qty : 0;
+    _dt.discount_free_qty = _item.discount_free_qty
+      ? _item.discount_free_qty
+      : 0;
     //TOTAL
     body.total_price += parseFloat(_dt.total);
     body.grand_total = numberPercent(body.total_price, body.ppn);

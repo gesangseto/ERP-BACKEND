@@ -320,7 +320,7 @@ async function update_query({ data, key, table, onlyQuery = false }) {
         it != "created_at" &&
         moment(it, moment.ISO_8601, true).isValid()
       ) {
-        it = moment(it).format("YYYY-MM-DD HH:mm:ss");
+        it = moment(it).format("YYYY-MM-DD hh:mm:ss");
         dataArr.push(` ${k} = '${it}'`);
       }
     }
