@@ -281,6 +281,104 @@ async function getSale(data = Object) {
   let _data = await get_query(_sql);
   return _data;
 }
+async function getReportSale(data = Object) {
+  const genSearch = (search) => {
+    return ` 
+  AND (CAST(a.pos_trx_sale_id AS TEXT) LIKE LOWER('%${search}%')
+  OR  LOWER(b.mst_customer_name) LIKE LOWER('%${search}%')
+  OR  LOWER(b.mst_customer_phone) LIKE LOWER('%${search}%') 
+  OR  LOWER(b.mst_customer_email) LIKE LOWER('%${search}%') ) `;
+  };
+  let _sql = `SELECT 
+  *,
+  a.status AS status,
+  a.flag_delete AS flag_delete,
+  a.created_at AS created_at,
+  a.created_by AS created_by
+      FROM pos_trx_sale AS a
+      LEFT JOIN mst_customer AS b ON a.mst_customer_id = b.mst_customer_id
+      left join pos_cashier as c on a.created_by = c.created_by and a.created_at >= c.created_at  and a.created_at <= c.updated_at 
+      left join "user" as d on a.created_by = d.user_id 
+      WHERE a.flag_delete='0'  `;
+  if (data.hasOwnProperty("pos_trx_sale_id")) {
+    _sql += ` AND a.pos_trx_sale_id = '${data.pos_trx_sale_id}'`;
+  }
+  if (data.hasOwnProperty("mst_customer_id")) {
+    _sql += ` AND b.mst_customer_id = '${data.mst_customer_id}'`;
+  }
+  if (data.hasOwnProperty("pos_cashier_id")) {
+    _sql += ` AND c.pos_cashier_id = '${data.pos_cashier_id}'`;
+  }
+  if (data.hasOwnProperty("user_id")) {
+    _sql += ` AND d.user_id = '${data.user_id}'`;
+  }
+  if (data.hasOwnProperty("is_paid")) {
+    _sql += ` AND a.is_paid = '${data.is_paid}'`;
+  }
+  if (data.hasOwnProperty("search")) {
+    if (isJsonString(data.search)) {
+      for (const it of JSON.parse(data.search)) {
+        _sql += genSearch(it);
+      }
+    } else {
+      _sql += genSearch(data.search);
+    }
+  }
+  if (data.hasOwnProperty("page") && data.hasOwnProperty("limit")) {
+    _sql += getLimitOffset(data.page, data.limit);
+  }
+  let _data = await get_query(_sql);
+  return _data;
+}
+async function getReportCashierSale(data = Object) {
+  const genSearch = (search) => {
+    return ` 
+  AND (CAST(a.pos_cashier_id AS TEXT) LIKE LOWER('%${search}%')
+  OR  LOWER(b.user_name) LIKE LOWER('%${search}%')
+  OR  LOWER(b.user_email) LIKE LOWER('%${search}%') ) `;
+  };
+  let _sql = `SELECT 
+  MAX(a.pos_cashier_id) AS pos_cashier_id,
+  MAX(a.pos_cashier_shift) AS pos_cashier_shift,
+  MAX(a.pos_cashier_capital_cash) AS pos_cashier_capital_cash,
+  BOOL_OR(a.is_cashier_open) AS is_cashier_open,
+  MAX(a.pos_cashier_number) AS pos_cashier_number,
+  MAX(a.created_at) AS created_at,
+  MAX(a.updated_at) AS updated_at,
+  MAX(b.user_id) AS user_id,
+  MAX(b.user_name) AS user_name,
+  MAX(b.user_email) AS user_email,
+  SUM(c.total_price) AS total_price,
+  SUM(c.grand_total) AS grand_total,
+  SUM(d.qty) AS total_qty
+FROM pos_cashier AS a
+LEFT JOIN "user" AS b ON a.created_by = b.user_id
+LEFT JOIN pos_trx_sale as c on a.created_by = c.created_by 
+  AND c.created_at >=a.created_at AND (CASE WHEN a.updated_at is not null THEN c.created_at <= a.updated_at ELSE 1+1=2 END)
+LEFT JOIN pos_trx_detail AS d ON c.pos_trx_sale_id = d.pos_trx_ref_id 
+WHERE a.flag_delete='0'  `;
+  if (data.hasOwnProperty("pos_cashier_id")) {
+    _sql += ` AND a.pos_cashier_id = '${data.pos_cashier_id}'`;
+  }
+  if (data.hasOwnProperty("user_id")) {
+    _sql += ` AND b.user_id = '${data.user_id}'`;
+  }
+  if (data.hasOwnProperty("search")) {
+    if (isJsonString(data.search)) {
+      for (const it of JSON.parse(data.search)) {
+        _sql += genSearch(it);
+      }
+    } else {
+      _sql += genSearch(data.search);
+    }
+  }
+  _sql += ` GROUP BY a.pos_cashier_id `;
+  if (data.hasOwnProperty("page") && data.hasOwnProperty("limit")) {
+    _sql += getLimitOffset(data.page, data.limit);
+  }
+  let _data = await get_query(_sql);
+  return _data;
+}
 async function getReturn(data = Object) {
   let _sql = `SELECT 
   *,
@@ -544,8 +642,12 @@ async function getTrxDetailItem(data = Object) {
   let _data = await exec_query(_sql);
   return _data;
 }
-async function getPosConfig() {
-  let _sql = `SELECT * FROM pos_config LIMIT 1 `;
+async function getPosBranch(data = Object) {
+  let _sql = `SELECT * FROM pos_branch AS a WHERE 1+1=2 `;
+
+  if (data.hasOwnProperty("pos_branch_id")) {
+    _sql += ` AND a.pos_branch_id = '${data.pos_branch_id}'`;
+  }
   let _data = await exec_query(_sql);
   return _data.data[0];
 }
@@ -565,6 +667,8 @@ module.exports = {
   getSaleByCashier,
   getDiscount,
   getCustomer,
-  getPosConfig,
+  getPosBranch,
   getDestroy,
+  getReportSale,
+  getReportCashierSale,
 };

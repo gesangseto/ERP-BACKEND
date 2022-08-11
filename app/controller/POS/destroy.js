@@ -9,13 +9,11 @@ const {
   getTrxDetailItem,
 } = require("./get_data");
 const { calculateSale } = require("./utils");
-const perf = require("execution-time")();
 
 exports.get = async function (req, res) {
   var data = { data: req.query };
   try {
     // LINE WAJIB DIBAWA
-    perf.start();
 
     const require_data = [];
     for (const row of require_data) {
@@ -42,7 +40,6 @@ exports.get = async function (req, res) {
 exports.insert = async function (req, res) {
   var data = { data: req.body };
   try {
-    perf.start();
     let body = req.body;
     body.pos_trx_destroy_id = utils.generateId();
     body.status = 0;
@@ -104,7 +101,6 @@ exports.insert = async function (req, res) {
 exports.approve = async function (req, res) {
   var data = { data: req.body };
   try {
-    perf.start();
     let body = req.body;
     var require_data = [
       "pos_trx_destroy_id",

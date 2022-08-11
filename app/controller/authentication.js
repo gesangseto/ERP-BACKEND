@@ -2,7 +2,7 @@
 const response = require("../response");
 const models = require("../models");
 const utils = require("../utils");
-const perf = require("execution-time")();
+
 const moment = require("moment");
 const dotenv = require("dotenv");
 dotenv.config(); //- MYSQL Module
@@ -10,7 +10,7 @@ dotenv.config(); //- MYSQL Module
 exports.user_login = async function (req, res) {
   // LINE WAJIB DIBAWA
   var data = { data: req.body };
-  perf.start();
+
   try {
     const require_data = ["user_name", "user_password"];
     for (const row of require_data) {

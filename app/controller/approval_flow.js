@@ -2,14 +2,12 @@
 const response = require("../response");
 const models = require("../models");
 const utils = require("../utils");
-const perf = require("execution-time")();
 
 const total_approval = 5;
 exports.get = async function (req, res) {
   var data = { data: req.query };
   try {
     // LINE WAJIB DIBAWA
-    perf.start();
 
     const require_data = [];
     for (const row of require_data) {
@@ -54,7 +52,6 @@ exports.get = async function (req, res) {
 exports.update = async function (req, res) {
   var data = { data: req.body };
   try {
-    perf.start();
     req.body.created_by = req.headers.user_id;
     req.body.updated_by = req.headers.user_id;
 

@@ -6,19 +6,16 @@ const {
   getTrxDetailItem,
   getCashier,
   getSale,
-  getPosConfig,
   getReturn,
   proccessToInbound,
   proccessToStock,
 } = require("./get_data");
 const moment = require("moment");
-const perf = require("execution-time")();
 
 exports.getReturn = async function (req, res) {
   var data = { data: req.query };
   try {
     // LINE WAJIB DIBAWA
-    perf.start();
 
     const require_data = [];
     for (const row of require_data) {
@@ -63,10 +60,7 @@ exports.newReturn = async function (req, res) {
       }
     }
 
-    let config = await getPosConfig();
-    let return_day = moment(today)
-      .add(config.allow_return_day, "day")
-      .format("YYYY-MM-DD");
+    let return_day = moment(today).add(1, "day").format("YYYY-MM-DD");
     let filter = {
       pos_trx_sale_id: body.pos_trx_sale_id,
     };
@@ -132,7 +126,6 @@ exports.newReturn = async function (req, res) {
 exports.approveReturn = async function (req, res) {
   var data = { data: req.body };
   try {
-    perf.start();
     let body = req.body;
     var require_data = ["pos_trx_return_id", "is_approve"];
     for (const row of require_data) {

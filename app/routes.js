@@ -110,6 +110,10 @@ module.exports = function (app) {
   TRANSACTION
   */
   // RECEIVE
+  var _pos_report = require("./controller/POS/report");
+  app.route("/api/report/pos/sale").get(_pos_report.reportSale);
+  app.route("/api/report/pos/sale-cashier").get(_pos_report.reportCashierSale);
+  // RECEIVE
   var _pos_rec = require("./controller/POS/receive");
   app.route("/api/transaction/pos/receive").get(_pos_rec.get);
   app.route("/api/transaction/pos/receive").put(_pos_rec.insert);
@@ -117,7 +121,6 @@ module.exports = function (app) {
   // SALE
   var _pos_sale = require("./controller/POS/sale");
   app.route("/api/transaction/pos/sale").get(_pos_sale.get);
-  app.route("/api/transaction/pos/sale-cashier").get(_pos_sale.getByCashier);
   app.route("/api/transaction/pos/sale").put(_pos_sale.newSale);
   app.route("/api/transaction/pos/sale").post(_pos_sale.updateSale);
   app.route("/api/transaction/pos/sale").delete(_pos_sale.deleteSale);

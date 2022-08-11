@@ -3,13 +3,11 @@ const response = require("../response");
 const models = require("../models");
 const utils = require("../utils");
 const { getAudit } = require("./get_data");
-const perf = require("execution-time")();
 
 exports.get = async function (req, res) {
   var data = { data: req.query };
   try {
     // LINE WAJIB DIBAWA
-    perf.start();
 
     const require_data = [];
     for (const row of require_data) {

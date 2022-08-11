@@ -13,13 +13,11 @@ const {
   getCustomer,
 } = require("./get_data");
 const e = require("cors");
-const perf = require("execution-time")();
 
 exports.get = async function (req, res) {
   var data = { data: req.query };
   try {
     // LINE WAJIB DIBAWA
-    perf.start();
 
     const require_data = [];
     for (const row of require_data) {
@@ -45,34 +43,9 @@ exports.get = async function (req, res) {
   }
 };
 
-exports.getByCashier = async function (req, res) {
-  var data = { data: req.query };
-  try {
-    // LINE WAJIB DIBAWA
-    perf.start();
-
-    const require_data = ["pos_cashier_id"];
-    for (const row of require_data) {
-      if (!req.query[`${row}`]) {
-        data.error = true;
-        data.message = `${row} is required!`;
-        return response.response(data, res);
-      }
-    }
-    // LINE WAJIB DIBAWA
-    let check = await getSaleByCashier(req.query);
-    return response.response(check, res, false);
-  } catch (error) {
-    data.error = true;
-    data.message = `${error}`;
-    return response.response(data, res);
-  }
-};
-
 exports.newSale = async function (req, res) {
   var data = { data: req.body };
   try {
-    perf.start();
     let pos_trx_sale_id = generateId();
     req.body.created_by = req.headers.user_id;
     let body = req.body;
@@ -149,7 +122,6 @@ exports.newSale = async function (req, res) {
 exports.updateSale = async function (req, res) {
   var data = { data: req.body };
   try {
-    perf.start();
     let body = req.body;
 
     let _check = await getCashier({
@@ -227,7 +199,6 @@ exports.updateSale = async function (req, res) {
 exports.deleteSale = async function (req, res) {
   var data = { data: req.body };
   try {
-    perf.start();
     let body = req.body;
 
     const require_data = ["pos_trx_sale_id"];
@@ -280,7 +251,6 @@ exports.deleteSale = async function (req, res) {
 exports.payment = async function (req, res) {
   var data = { data: req.body };
   try {
-    perf.start();
     let body = req.body;
     var require_data = ["pos_trx_sale_id", "payment_type"];
     for (const row of require_data) {

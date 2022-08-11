@@ -3,13 +3,11 @@ const response = require("../response");
 const models = require("../models");
 const utils = require("../utils");
 const { getSupplier } = require("./get_data");
-const perf = require("execution-time")();
 
 exports.get = async function (req, res) {
   var data = { data: req.query };
   try {
     // LINE WAJIB DIBAWA
-    perf.start();
 
     const require_data = [];
     for (const row of require_data) {
@@ -31,7 +29,6 @@ exports.get = async function (req, res) {
 exports.insert = async function (req, res) {
   var data = { data: req.body };
   try {
-    perf.start();
     req.body.created_by = req.headers.user_id;
     var require_data = [
       "mst_supplier_name",
@@ -62,8 +59,6 @@ exports.insert = async function (req, res) {
 exports.update = async function (req, res) {
   var data = { data: req.body };
   try {
-    perf.start();
-
     const require_data = [
       "mst_supplier_id",
       "mst_supplier_name",
@@ -94,8 +89,6 @@ exports.update = async function (req, res) {
 exports.delete = async function (req, res) {
   var data = { data: req.body };
   try {
-    perf.start();
-
     const require_data = ["mst_supplier_id"];
     for (const row of require_data) {
       if (!req.body[`${row}`]) {

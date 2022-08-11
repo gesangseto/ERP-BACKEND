@@ -4,12 +4,10 @@ const models = require("../../models");
 const { getStockItem } = require("./get_data");
 const { numberPercent } = require("../../utils");
 const { min } = require("moment");
-const perf = require("execution-time")();
 
 const cleanup = async function (req, res) {
   var data = { data: req.body };
   try {
-    perf.start();
     let _query = `
     TRUNCATE pos_item_stock CASCADE;
     TRUNCATE pos_discount CASCADE;
@@ -20,6 +18,7 @@ const cleanup = async function (req, res) {
     TRUNCATE pos_trx_sale CASCADE;
     TRUNCATE pos_trx_return CASCADE;
     TRUNCATE pos_trx_destroy CASCADE;
+    TRUNCATE pos_cashier CASCADE;
     `;
     let _res = await models.exec_query(_query);
     return response.response(_res, res);
@@ -108,18 +107,16 @@ const calculateSale = async ({
     _dt.mst_item_id = _item.mst_item_id;
     _dt.qty = it.qty;
     _dt.qty_stock = it.qty * _item.mst_item_variant_qty;
-    _dt.capital_price = parseInt(_item.mst_item_variant_price);
+    _dt.capital_price = parseFloat(_item.mst_item_variant_price);
     _dt.price_percentage = body.price_percentage ?? 0;
     _dt.price = numberPercent(_dt.capital_price, body.price_percentage);
     if (_item.pos_discount_id) _dt.pos_discount_id = _item.pos_discount_id;
     let total_price = generateTotalDiscount(_dt.qty, _item);
     _dt.total = numberPercent(total_price, body.price_percentage);
-    _dt.discount = _item.discount ?? 0;
-    _dt.discount_min_qty = _item.discount_min_qty ? _item.discount_min_qty : 0;
-    _dt.discount_max_qty = _item.discount_max_qty ? _item.discount_max_qty : 0;
-    _dt.discount_free_qty = _item.discount_free_qty
-      ? _item.discount_free_qty
-      : 0;
+    _dt.discount = parseFloat(_item.discount) || 0;
+    _dt.discount_min_qty = parseFloat(_item.discount_min_qty) || 0;
+    _dt.discount_max_qty = parseFloat(_item.discount_max_qty) || 0;
+    _dt.discount_free_qty = parseFloat(_item.discount_free_qty) || 0;
     //TOTAL
     body.total_price += parseFloat(_dt.total);
     body.grand_total = numberPercent(body.total_price, body.ppn);

@@ -1,20 +1,13 @@
 "use strict";
 const response = require("../../response");
 const models = require("../../models");
-const { percentToFloat, generateId } = require("../../utils");
-const {
-  getStockItem,
-  getTrxDetailItem,
-  getCashier,
-  getSaleByCashier,
-} = require("./get_data");
-const perf = require("execution-time")();
+const { generateId } = require("../../utils");
+const { getCashier, getSaleByCashier } = require("./get_data");
 
 exports.get = async function (req, res) {
   var data = { data: req.query };
   try {
     // LINE WAJIB DIBAWA
-    perf.start();
 
     const require_data = [];
     for (const row of require_data) {
@@ -37,7 +30,6 @@ exports.get = async function (req, res) {
 exports.openCashier = async function (req, res) {
   var data = { data: req.body };
   try {
-    perf.start();
     let pos_trx_sale_id = generateId();
     req.body.created_by = req.headers.user_id;
 
@@ -70,7 +62,6 @@ exports.openCashier = async function (req, res) {
 exports.closeCashier = async function (req, res) {
   var data = { data: req.body };
   try {
-    perf.start();
     var require_data = ["pos_cashier_id"];
     let body = req.body;
     for (const row of require_data) {

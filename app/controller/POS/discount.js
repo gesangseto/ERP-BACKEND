@@ -4,13 +4,11 @@ const models = require("../../models");
 const { isDate, diffDate } = require("../../utils");
 const moment = require("moment");
 const { getDiscount } = require("./get_data");
-const perf = require("execution-time")();
 
 exports.get = async function (req, res) {
   var data = { data: req.query };
   try {
     // LINE WAJIB DIBAWA
-    perf.start();
 
     const require_data = [];
     for (const row of require_data) {
@@ -33,7 +31,6 @@ exports.get = async function (req, res) {
 exports.insert = async function (req, res) {
   var data = { data: req.body };
   try {
-    perf.start();
     let body = req.body;
     var require_data = [
       "mst_item_variant_id",
@@ -86,7 +83,6 @@ exports.insert = async function (req, res) {
 exports.update = async function (req, res) {
   var data = { data: req.body };
   try {
-    perf.start();
     let body = req.body;
     var require_data = ["pos_discount_id"];
     for (const row of require_data) {
@@ -120,8 +116,6 @@ exports.update = async function (req, res) {
 exports.delete = async function (req, res) {
   var data = { data: req.body };
   try {
-    perf.start();
-
     const require_data = ["pos_discount_id"];
     for (const row of require_data) {
       if (!req.body[`${row}`]) {

@@ -1888,38 +1888,6 @@
 									"response": []
 								},
 								{
-									"name": "List Sale By Cashier",
-									"request": {
-										"method": "GET",
-										"header": [
-											{
-												"key": "token",
-												"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
-												"type": "text"
-											}
-										],
-										"url": {
-											"raw": "{{dev}}/api/transaction/pos/sale-cashier?pos_cashier_id=9",
-											"host": [
-												"{{dev}}"
-											],
-											"path": [
-												"api",
-												"transaction",
-												"pos",
-												"sale-cashier"
-											],
-											"query": [
-												{
-													"key": "pos_cashier_id",
-													"value": "9"
-												}
-											]
-										}
-									},
-									"response": []
-								},
-								{
 									"name": "Sale New",
 									"request": {
 										"method": "PUT",
@@ -2349,6 +2317,63 @@
 											"value": "21",
 											"disabled": true
 										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Report",
+					"item": [
+						{
+							"name": "Sale By All",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "token",
+										"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{dev}}/api/report/pos/sale",
+									"host": [
+										"{{dev}}"
+									],
+									"path": [
+										"api",
+										"report",
+										"pos",
+										"sale"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Sale By Cashier",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "token",
+										"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{dev}}/api/report/pos/sale-cashier",
+									"host": [
+										"{{dev}}"
+									],
+									"path": [
+										"api",
+										"report",
+										"pos",
+										"sale-cashier"
 									]
 								}
 							},

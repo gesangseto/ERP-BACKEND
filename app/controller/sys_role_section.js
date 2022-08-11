@@ -3,7 +3,6 @@ const response = require("../response");
 const models = require("../models");
 const utils = require("../utils");
 const { getSysMenu } = require("./get_data");
-const perf = require("execution-time")();
 
 const _flag = {
   flag_create: 0,
@@ -117,8 +116,6 @@ const generateQueryMenuRole = async (array) => {
 exports.getRoleMenu = async function (req, res) {
   var data = { data: req.query };
   try {
-    perf.start();
-
     const require_data = ["user_section_id"];
     for (const row of require_data) {
       if (!req.query[`${row}`]) {
@@ -149,8 +146,6 @@ exports.getRoleMenu = async function (req, res) {
 exports.insertUpdateRoleMenu = async function (req, res) {
   var data = { data: req.body };
   try {
-    perf.start();
-
     let roles = req.body;
     if (Array.isArray(roles)) {
       if (roles.length === 0) {
