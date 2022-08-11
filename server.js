@@ -38,6 +38,7 @@ app.use(async function (req, res, next) {
   // End Create log for request
   if (
     req.originalUrl == "/api/login/user" ||
+    req.originalUrl.includes("/api/generate-barcode") ||
     (req.originalUrl == "/api/configuration" && req.method == "GET")
   ) {
     next();

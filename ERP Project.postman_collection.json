@@ -3004,6 +3004,54 @@
 					]
 				}
 			]
+		},
+		{
+			"name": "Generate-Barcode",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "token",
+						"value": "OY0TC9T7iyCbHGtixotgyXzDbXR4cnMP",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "text",
+							"value": "8994171101289",
+							"type": "text"
+						}
+					],
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{dev}}/api/generate-barcode?text=8994171101289",
+					"host": [
+						"{{dev}}"
+					],
+					"path": [
+						"api",
+						"generate-barcode"
+					],
+					"query": [
+						{
+							"key": "text",
+							"value": "8994171101289"
+						}
+					]
+				}
+			},
+			"response": []
 		}
 	]
 }

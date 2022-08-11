@@ -21,9 +21,12 @@ var data_set = {
 };
 
 async function get_configuration({ property = null }) {
-  let _data = JSON.parse(JSON.stringify(data_set));
-  _data = await exec_query("SELECT * FROM sys_configuration LIMIT 1");
-  return _data.data[0];
+  let _data = await exec_query("SELECT * FROM sys_configuration LIMIT 1");
+  try {
+    return _data.data[0];
+  } catch (error) {
+    return false;
+  }
 }
 
 async function generate_query_insert({ table, values }) {

@@ -194,12 +194,6 @@ function isJsonString(item) {
     return true;
   }
   return false;
-
-  try {
-    return JSON.parse(str);
-  } catch (e) {
-    return false;
-  }
 }
 
 function haveRole(item) {

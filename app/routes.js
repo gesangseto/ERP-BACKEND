@@ -4,6 +4,10 @@ module.exports = function (app) {
   var authentication = require("./controller/authentication");
   app.route("/api/login/user").post(authentication.user_login);
 
+  var genBarcode = require("./controller/generate_barcode");
+  app.route("/api/generate-barcode").post(genBarcode.generateBarcode);
+  app.route("/api/generate-barcode").get(genBarcode.generateBarcode);
+
   var audit_log = require("./controller/audit_log");
   app.route("/api/audit/log").get(audit_log.get);
 
