@@ -153,7 +153,9 @@ exports.insertUpdateRoleMenu = async function (req, res) {
         data.message = `No data to change`;
         return response.response(data, res);
       } else {
+        console.log(roles);
         for (const it of roles) {
+          console.log(JSON.stringify(it));
           if (!it.sys_menu_id || !it.user_section_id) {
             data.error = true;
             data.message = `Data must include [sys_menu_id,user_section_id]`;

@@ -210,6 +210,18 @@ function haveRole(item) {
   return true;
 }
 
+const sqlInjectionPrevention = (obj) => {
+  let sqlRegex = "/[\t\r\n]|(--[^\r\n]*)|(/*[wW]*?(?=*)*/)/gi";
+  if (Object.keys(obj).length > 0) {
+    for (const key in obj) {
+      if (!isJsonString(obj[key])) {
+        obj[key] = obj[key].toString().replace("'", "`");
+      }
+    }
+  }
+  return obj;
+};
+
 module.exports = {
   isJsonString,
   numberPercent,
@@ -227,4 +239,5 @@ module.exports = {
   sumByKey,
   getOnlyParent,
   haveRole,
+  sqlInjectionPrevention,
 };

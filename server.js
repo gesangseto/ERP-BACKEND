@@ -2,6 +2,7 @@ const moment = require("moment");
 const dotenv = require("dotenv");
 const cors = require("cors");
 const fileUpload = require("express-fileupload");
+const { sqlInjectionPrevention } = require("./app/utils");
 dotenv.config();
 var express = require("express"),
   app = express(),
@@ -33,9 +34,12 @@ app.use(async function (req, res, next) {
   };
   console.log("======================================================");
   console.log(`req : ${JSON.stringify(request)}`);
-  // next();
-  // return;
-  // End Create log for request
+  // PREVENT FROM SQL INJECTION
+  if (req.method === "GET") {
+    req.query = sqlInjectionPrevention(req.query);
+  } else {
+    req.body = sqlInjectionPrevention(req.body);
+  }
   if (
     req.originalUrl == "/api/login/user" ||
     req.originalUrl.includes("/api/generate-barcode") ||
