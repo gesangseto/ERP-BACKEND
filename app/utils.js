@@ -215,7 +215,8 @@ const sqlInjectionPrevention = (obj) => {
   if (Object.keys(obj).length > 0) {
     for (const key in obj) {
       if (!isJsonString(obj[key])) {
-        obj[key] = obj[key].toString().replace("'", "`");
+        if (typeof obj[key] === "string" || obj[key] instanceof String)
+          obj[key] = obj[key].toString().replace("'", "`");
       }
     }
   }
