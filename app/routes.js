@@ -92,17 +92,17 @@ module.exports = function (app) {
   MASTER
   */
   // BRANCH *CABANG
-  // var _pos_brc = require("./controller/POS/branch");
-  // app.route("/api/master/pos/branch").get(_pos_brc.get);
-  // app.route("/api/master/pos/branch").put(_pos_brc.insert);
-  // app.route("/api/master/pos/branch").post(_pos_brc.update);
-  // app.route("/api/master/pos/branch").delete(_pos_brc.delete);
+  var _pos_brc = require("./controller/POS/branch");
+  app.route("/api/master/pos/branch").get(_pos_brc.get);
+  app.route("/api/master/pos/branch").put(_pos_brc.insert);
+  app.route("/api/master/pos/branch").post(_pos_brc.update);
+  app.route("/api/master/pos/branch").delete(_pos_brc.delete);
   // USER BRANCH
-  // var _pos_ub = require("./controller/POS/user_branch");
-  // app.route("/api/master/pos/user-branch").get(_pos_ub.get);
-  // app.route("/api/master/pos/user-branch").put(_pos_ub.insert);
-  // app.route("/api/master/pos/user-branch").post(_pos_ub.update);
-  // app.route("/api/master/pos/user-branch").delete(_pos_ub.delete);
+  var _pos_ub = require("./controller/POS/user_branch");
+  app.route("/api/master/pos/user-branch").get(_pos_ub.get);
+  app.route("/api/master/pos/user-branch").put(_pos_ub.insert);
+  app.route("/api/master/pos/user-branch").post(_pos_ub.update);
+  app.route("/api/master/pos/user-branch").delete(_pos_ub.delete);
   // DISCOUNT
   var _pos_dis = require("./controller/POS/discount");
   app.route("/api/master/pos/discount").get(_pos_dis.get);

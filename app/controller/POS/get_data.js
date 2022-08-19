@@ -643,13 +643,109 @@ async function getTrxDetailItem(data = Object) {
   return _data;
 }
 async function getPosBranch(data = Object) {
+  const genSearch = (search) => {
+    return ` 
+  AND (CAST(a.pos_receive_id AS TEXT) LIKE LOWER('%${search}%')
+  OR  CAST(a.created_at AS TEXT) LIKE LOWER('%${search}%')
+  OR  LOWER(a.pos_branch_name) LIKE LOWER('%${search}%')
+  OR  LOWER(a.pos_branch_desc) LIKE LOWER('%${search}%')
+  OR  LOWER(a.pos_branch_address) LIKE LOWER('%${search}%')
+  OR  LOWER(a.pos_branch_phone) LIKE LOWER('%${search}%')
+  OR  LOWER(CASE WHEN a.status=1 THEN 'Active' ELSE 'Inactive' end) LIKE LOWER('%${search}%') ) `;
+  };
   let _sql = `SELECT * FROM pos_branch AS a WHERE 1+1=2 `;
-
   if (data.hasOwnProperty("pos_branch_id")) {
     _sql += ` AND a.pos_branch_id = '${data.pos_branch_id}'`;
   }
-  let _data = await exec_query(_sql);
-  return _data.data[0];
+  if (data.hasOwnProperty("search")) {
+    if (isJsonString(data.search)) {
+      for (const it of JSON.parse(data.search)) {
+        _sql += genSearch(it);
+      }
+    } else {
+      _sql += genSearch(data.search);
+    }
+  }
+  let _data = await get_query(_sql);
+  return _data;
+}
+
+async function getPosUserBranch(data = Object) {
+  const genSearch = (search) => {
+    return ` 
+  AND (CAST(a.pos_receive_id AS TEXT) LIKE LOWER('%${search}%')
+  OR  CAST(a.created_at AS TEXT) LIKE LOWER('%${search}%')
+  OR  LOWER(a.pos_branch_name) LIKE LOWER('%${search}%')
+  OR  LOWER(a.pos_branch_desc) LIKE LOWER('%${search}%')
+  OR  LOWER(a.pos_branch_address) LIKE LOWER('%${search}%')
+  OR  LOWER(a.pos_branch_phone) LIKE LOWER('%${search}%')
+  OR  LOWER(CASE WHEN a.status=1 THEN 'Active' ELSE 'Inactive' end) LIKE LOWER('%${search}%') ) `;
+  };
+  let _sql = `SELECT 
+  MAX(a.pos_branch_id) AS pos_branch_id,
+  MAX(a.created_at) AS created_at, 
+  MAX(a.updated_at) AS updated_at,
+  MAX(a.flag_delete) AS flag_delete, 
+  MAX(a.status) AS status,
+  STRING_AGG(coalesce(b.pos_user_branch_id::character varying,''), ';') as pos_user_branch_id,
+  MAX(a.pos_branch_name) AS pos_branch_name, 
+  MAX(a.pos_branch_desc) AS pos_branch_desc,
+  MAX(a.pos_branch_phone) AS pos_branch_phone,
+  MAX(a.pos_branch_address) AS pos_branch_address,
+  COUNT(*) FILTER (WHERE b.is_cashier IS TRUE) AS total_cashier,
+  COUNT(b.user_id) AS total_user,
+  STRING_AGG(c.user_name,',') AS user_name,
+  STRING_AGG(c.user_email,',') AS user_email
+  FROM pos_branch AS a 
+  LEFT JOIN pos_user_branch AS b 
+    ON b.pos_branch_id = a.pos_branch_id 
+    AND b.flag_delete = 0
+  LEFT JOIN "user" AS c ON b.user_id =c.user_id 
+  WHERE 1+1=2 `;
+  if (data.hasOwnProperty("pos_branch_id")) {
+    _sql += ` AND a.pos_branch_id = '${data.pos_branch_id}'`;
+  }
+  if (data.hasOwnProperty("pos_user_branch_id")) {
+    _sql += ` AND a.pos_user_branch_id = '${data.pos_user_branch_id}'`;
+  }
+  if (data.hasOwnProperty("user_id")) {
+    _sql += ` AND b.user_id = '${data.user_id}'`;
+  }
+  if (data.hasOwnProperty("search")) {
+    if (isJsonString(data.search)) {
+      for (const it of JSON.parse(data.search)) {
+        _sql += genSearch(it);
+      }
+    } else {
+      _sql += genSearch(data.search);
+    }
+  }
+  _sql += ` GROUP BY a.pos_branch_id ; `;
+  let _data = await get_query(_sql);
+  return _data;
+}
+async function getPosUser(data = Object) {
+  let _sql = `SELECT  * , a.status AS status, a.flag_delete AS flag_delete
+  FROM pos_user_branch AS a
+  LEFT JOIN "user" AS b ON b.user_id = a.user_id 
+  WHERE a.flag_delete = 0  `;
+  if (data.hasOwnProperty("pos_branch_id")) {
+    _sql += ` AND a.pos_branch_id = '${data.pos_branch_id}'`;
+  }
+  if (data.hasOwnProperty("pos_user_branch_id")) {
+    _sql += ` AND a.pos_user_branch_id = '${data.pos_user_branch_id}'`;
+  }
+  if (data.hasOwnProperty("user_id")) {
+    _sql += ` AND a.user_id = '${data.user_id}'`;
+  }
+  if (data.hasOwnProperty("is_cashier")) {
+    _sql += ` AND a.is_cashier IS ${data.is_cashier}`;
+  }
+  if (data.hasOwnProperty("status")) {
+    _sql += ` AND a.status = '${data.status}'`;
+  }
+  let _data = await get_query(_sql);
+  return _data;
 }
 
 module.exports = {
@@ -671,4 +767,6 @@ module.exports = {
   getDestroy,
   getReportSale,
   getReportCashierSale,
+  getPosUserBranch,
+  getPosUser,
 };
