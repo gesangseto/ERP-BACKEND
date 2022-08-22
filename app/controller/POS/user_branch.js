@@ -109,7 +109,7 @@ exports.update = async function (req, res) {
 exports.delete = async function (req, res) {
   var data = { data: req.body };
   try {
-    const require_data = ["pos_branch_id"];
+    const require_data = ["pos_user_branch_id"];
     for (const row of require_data) {
       if (!req.body[`${row}`]) {
         throw new Error(`${row} is required!`);
@@ -118,8 +118,8 @@ exports.delete = async function (req, res) {
     // LINE WAJIB DIBAWA
     var _res = await models.delete_query({
       data: req.body,
-      table: "pos_branch",
-      key: "pos_branch_id",
+      table: "pos_user_branch",
+      key: "pos_user_branch_id",
       deleted: true,
     });
     return response.response(_res, res);

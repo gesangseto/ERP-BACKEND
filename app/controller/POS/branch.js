@@ -28,9 +28,9 @@ exports.getByUser = async function (req, res) {
     let user_id = req.headers.user_id;
     let check = {};
     if (user_id === 0) {
-      check = await getPosUserBranch();
+      check = await getPosUserBranch({ ...req.query });
     } else {
-      check = await getPosUserBranch({ user_id: user_id });
+      check = await getPosUserBranch({ ...req.query, user_id: user_id });
     }
     return response.response(check, res);
   } catch (error) {

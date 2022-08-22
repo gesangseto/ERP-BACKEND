@@ -5,7 +5,7 @@
 -- Dumped from database version 12.10
 -- Dumped by pg_dump version 13.3
 
--- Started on 2022-08-22 10:55:08
+-- Started on 2022-08-22 16:27:44
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -1764,8 +1764,10 @@ COPY public.pos_trx_sale (created_at, created_by, updated_at, updated_by, flag_d
 --
 
 COPY public.pos_user_branch (created_at, created_by, updated_at, updated_by, flag_delete, status, user_id, pos_user_branch_id, is_cashier, pos_branch_id) FROM stdin;
-2022-08-22 09:09:22+07	0	2022-08-22 09:35:24+07	0	0	1	1	15	t	3
 2022-06-15 09:00:36+07	0	2022-08-22 09:35:46+07	0	0	0	1	2	f	1
+2022-08-22 16:12:11+07	0	\N	\N	0	1	32	18	t	5
+2022-06-15 09:00:36+07	0	2022-08-22 04:17:19+07	0	0	0	1	20	f	3
+2022-06-15 09:00:36+07	0	2022-08-22 04:17:26+07	0	0	1	1	17	t	5
 \.
 
 
@@ -2179,7 +2181,7 @@ SELECT pg_catalog.setval('public.pos_sale_pos_sale_id_seq', 1, false);
 -- Name: pos_user_branch_pos_user_branch_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.pos_user_branch_pos_user_branch_id_seq', 15, true);
+SELECT pg_catalog.setval('public.pos_user_branch_pos_user_branch_id_seq', 20, true);
 
 
 --
@@ -2992,7 +2994,7 @@ ALTER TABLE ONLY public.user_section
     ADD CONSTRAINT user_section_fk FOREIGN KEY (user_department_id) REFERENCES public.user_department(user_department_id);
 
 
--- Completed on 2022-08-22 10:55:11
+-- Completed on 2022-08-22 16:27:48
 
 --
 -- PostgreSQL database dump complete

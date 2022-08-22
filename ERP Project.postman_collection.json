@@ -1133,7 +1133,7 @@
 											}
 										],
 										"url": {
-											"raw": "{{dev}}/api/master/pos/branch/by-user",
+											"raw": "{{dev}}/api/master/pos/branch/by-user?page=1&limit=10&search=amd+1",
 											"host": [
 												"{{dev}}"
 											],
@@ -1143,6 +1143,20 @@
 												"pos",
 												"branch",
 												"by-user"
+											],
+											"query": [
+												{
+													"key": "page",
+													"value": "1"
+												},
+												{
+													"key": "limit",
+													"value": "10"
+												},
+												{
+													"key": "search",
+													"value": "amd+1"
+												}
 											]
 										}
 									},
