@@ -419,6 +419,7 @@ async function getDiscount(data = Object) {
   FROM pos_discount AS a 
   LEFT JOIN mst_item_variant AS b ON a.mst_item_variant_id = b.mst_item_variant_id
   LEFT JOIN mst_item AS c ON b.mst_item_id = c.mst_item_id
+  LEFT JOIN pos_branch AS br ON a.pos_branch_id = br.pos_branch_id
   WHERE a.flag_delete='0' `;
   if (data.hasOwnProperty("pos_discount_id")) {
     _sql += ` AND a.pos_discount_id = '${data.pos_discount_id}'`;
@@ -645,12 +646,12 @@ async function getTrxDetailItem(data = Object) {
 async function getPosBranch(data = Object) {
   const genSearch = (search) => {
     return ` 
-  AND (CAST(a.pos_receive_id AS TEXT) LIKE LOWER('%${search}%')
+  AND (CAST(a.pos_branch_id AS TEXT) LIKE LOWER('%${search}%')
   OR  CAST(a.created_at AS TEXT) LIKE LOWER('%${search}%')
   OR  LOWER(a.pos_branch_name) LIKE LOWER('%${search}%')
   OR  LOWER(a.pos_branch_desc) LIKE LOWER('%${search}%')
   OR  LOWER(a.pos_branch_address) LIKE LOWER('%${search}%')
-  OR  LOWER(a.pos_branch_phone) LIKE LOWER('%${search}%')
+  OR  CAST(a.pos_branch_phone AS TEXT) LIKE LOWER('%${search}%')
   OR  LOWER(CASE WHEN a.status=1 THEN 'Active' ELSE 'Inactive' end) LIKE LOWER('%${search}%') ) `;
   };
   let _sql = `SELECT * FROM pos_branch AS a WHERE 1+1=2 `;
@@ -666,6 +667,7 @@ async function getPosBranch(data = Object) {
       _sql += genSearch(data.search);
     }
   }
+  console.log(_sql);
   let _data = await get_query(_sql);
   return _data;
 }
@@ -673,12 +675,14 @@ async function getPosBranch(data = Object) {
 async function getPosUserBranch(data = Object) {
   const genSearch = (search) => {
     return ` 
-  AND (CAST(a.pos_receive_id AS TEXT) LIKE LOWER('%${search}%')
+  AND (CAST(a.pos_branch_id AS TEXT) LIKE LOWER('%${search}%')
   OR  CAST(a.created_at AS TEXT) LIKE LOWER('%${search}%')
   OR  LOWER(a.pos_branch_name) LIKE LOWER('%${search}%')
   OR  LOWER(a.pos_branch_desc) LIKE LOWER('%${search}%')
   OR  LOWER(a.pos_branch_address) LIKE LOWER('%${search}%')
-  OR  LOWER(a.pos_branch_phone) LIKE LOWER('%${search}%')
+  OR  CAST(a.pos_branch_phone AS TEXT) LIKE LOWER('%${search}%')
+  OR  LOWER(c.user_name) LIKE LOWER('%${search}%')
+  OR  LOWER(c.user_email) LIKE LOWER('%${search}%')
   OR  LOWER(CASE WHEN a.status=1 THEN 'Active' ELSE 'Inactive' end) LIKE LOWER('%${search}%') ) `;
   };
   let _sql = `SELECT 
@@ -700,6 +704,7 @@ async function getPosUserBranch(data = Object) {
   LEFT JOIN pos_user_branch AS b 
     ON b.pos_branch_id = a.pos_branch_id 
     AND b.flag_delete = 0
+    -- AND b.status = 1
   LEFT JOIN "user" AS c ON b.user_id =c.user_id 
   WHERE 1+1=2 `;
   if (data.hasOwnProperty("pos_branch_id")) {

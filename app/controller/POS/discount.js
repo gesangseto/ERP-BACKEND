@@ -33,6 +33,7 @@ exports.insert = async function (req, res) {
   try {
     let body = req.body;
     var require_data = [
+      "pos_branch_id",
       "mst_item_variant_id",
       "pos_discount_starttime",
       "pos_discount_endtime",

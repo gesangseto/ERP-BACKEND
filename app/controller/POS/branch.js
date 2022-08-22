@@ -2,28 +2,36 @@
 const response = require("../../response");
 const models = require("../../models");
 const utils = require("../../utils");
-const {
-  getItem,
-  proccessToInbound,
-  proccessToStock,
-  getReceive,
-  getDetailReceive,
-  getPosBranch,
-} = require("./get_data");
+const { getPosBranch, getPosUserBranch } = require("./get_data");
 
 exports.get = async function (req, res) {
   var data = { data: req.query };
   try {
-    // LINE WAJIB DIBAWA
-
     const require_data = [];
     for (const row of require_data) {
       if (!req.query[`${row}`]) {
         throw new Error(`${row} is required!`);
       }
     }
-    // LINE WAJIB DIBAWA
     const check = await getPosBranch(req.query);
+    return response.response(check, res);
+  } catch (error) {
+    data.error = true;
+    data.message = `${error}`;
+    return response.response(data, res);
+  }
+};
+
+exports.getByUser = async function (req, res) {
+  var data = { data: req.query };
+  try {
+    let user_id = req.headers.user_id;
+    let check = {};
+    if (user_id === 0) {
+      check = await getPosUserBranch();
+    } else {
+      check = await getPosUserBranch({ user_id: user_id });
+    }
     return response.response(check, res);
   } catch (error) {
     data.error = true;

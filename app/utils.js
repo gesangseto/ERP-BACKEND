@@ -209,6 +209,13 @@ function haveRole(item) {
   }
   return true;
 }
+const strToBool = (str) => {
+  let res = false;
+  if (str === "true" || str === "True" || str === "TRUE" || str === true) {
+    res = true;
+  }
+  return res;
+};
 
 const sqlInjectionPrevention = (obj) => {
   let sqlRegex = "/[\t\r\n]|(--[^\r\n]*)|(/*[wW]*?(?=*)*/)/gi";
@@ -224,6 +231,7 @@ const sqlInjectionPrevention = (obj) => {
 };
 
 module.exports = {
+  strToBool,
   isJsonString,
   numberPercent,
   diffDate,

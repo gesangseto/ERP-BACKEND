@@ -1,7 +1,7 @@
 "use strict";
 const response = require("../../response");
 const models = require("../../models");
-const utils = require("../../utils");
+const { strToBool } = require("../../utils");
 const { getPosBranch, getPosUserBranch, getPosUser } = require("./get_data");
 
 exports.get = async function (req, res) {
@@ -44,11 +44,14 @@ exports.insert = async function (req, res) {
         throw new Error(`${row} is required!`);
       }
     }
-    if (body.is_cashier) {
-      let check = await getPosUser({ ...body, status: 1, is_cashier: true });
-      if (check.total > 0) {
+    let check = await getPosUser({ user_id: body.user_id, status: 1 });
+    for (const it of check.data) {
+      if (it.is_cashier === true) {
         throw new Error(`User is cashier!`);
       }
+    }
+    if (check.total > 0 && body.is_cashier == "true") {
+      throw new Error(`User already register!`);
     }
     let _sql = await models.insert_query({
       data: body,
@@ -75,12 +78,18 @@ exports.update = async function (req, res) {
         throw new Error(`${row} is required!`);
       }
     }
-    if (body.is_cashier) {
-      let check = await getPosUser({ user_id: body.user_id, status: 1 });
-      if (check.total > 1) {
-        throw new Error(
-          `Cannot change user to cashier, must delete all this user on other branch!`
-        );
+    let check = await getPosUser({ user_id: body.user_id, status: 1 });
+    for (const it of check.data) {
+      if (body.pos_user_branch_id != it.pos_user_branch_id) {
+        if (strToBool(it.is_cashier)) {
+          throw new Error(
+            `Cannot change user cause the user is cashier on other branch!`
+          );
+        } else if (strToBool(body.is_cashier)) {
+          throw new Error(
+            `Cannot change user to cashier, must delete all this user on other branch!`
+          );
+        }
       }
     }
     let exec = await models.update_query({

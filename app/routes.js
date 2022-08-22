@@ -94,6 +94,7 @@ module.exports = function (app) {
   // BRANCH *CABANG
   var _pos_brc = require("./controller/POS/branch");
   app.route("/api/master/pos/branch").get(_pos_brc.get);
+  app.route("/api/master/pos/branch/by-user").get(_pos_brc.getByUser);
   app.route("/api/master/pos/branch").put(_pos_brc.insert);
   app.route("/api/master/pos/branch").post(_pos_brc.update);
   app.route("/api/master/pos/branch").delete(_pos_brc.delete);
