@@ -5,7 +5,7 @@
 -- Dumped from database version 12.10
 -- Dumped by pg_dump version 13.3
 
--- Started on 2022-08-22 16:27:44
+-- Started on 2022-08-23 16:03:16
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -29,7 +29,7 @@ CREATE SCHEMA public;
 ALTER SCHEMA public OWNER TO postgres;
 
 --
--- TOC entry 3275 (class 0 OID 0)
+-- TOC entry 3276 (class 0 OID 0)
 -- Dependencies: 3
 -- Name: SCHEMA public; Type: COMMENT; Schema: -; Owner: postgres
 --
@@ -111,7 +111,7 @@ CREATE SEQUENCE public.approval_approval_id_seq
 ALTER TABLE public.approval_approval_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3276 (class 0 OID 0)
+-- TOC entry 3277 (class 0 OID 0)
 -- Dependencies: 203
 -- Name: approval_approval_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -164,7 +164,7 @@ CREATE SEQUENCE public.approval_flow_approval_flow_id_seq
 ALTER TABLE public.approval_flow_approval_flow_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3277 (class 0 OID 0)
+-- TOC entry 3278 (class 0 OID 0)
 -- Dependencies: 205
 -- Name: approval_flow_approval_flow_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -223,7 +223,7 @@ CREATE SEQUENCE public.audit_log_id_seq
 ALTER TABLE public.audit_log_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3278 (class 0 OID 0)
+-- TOC entry 3279 (class 0 OID 0)
 -- Dependencies: 250
 -- Name: audit_log_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -290,7 +290,7 @@ CREATE SEQUENCE public.mst_customer_mst_customer_id_seq
 ALTER TABLE public.mst_customer_mst_customer_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3279 (class 0 OID 0)
+-- TOC entry 3280 (class 0 OID 0)
 -- Dependencies: 210
 -- Name: mst_customer_mst_customer_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -337,7 +337,7 @@ CREATE SEQUENCE public.mst_item_mst_item_id_seq
 ALTER TABLE public.mst_item_mst_item_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3280 (class 0 OID 0)
+-- TOC entry 3281 (class 0 OID 0)
 -- Dependencies: 212
 -- Name: mst_item_mst_item_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -386,7 +386,7 @@ CREATE SEQUENCE public.mst_item_variant_mst_item_variant_id_seq
 ALTER TABLE public.mst_item_variant_mst_item_variant_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3281 (class 0 OID 0)
+-- TOC entry 3282 (class 0 OID 0)
 -- Dependencies: 214
 -- Name: mst_item_variant_mst_item_variant_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -432,7 +432,7 @@ CREATE SEQUENCE public.mst_packaging_mst_packaging_id_seq
 ALTER TABLE public.mst_packaging_mst_packaging_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3282 (class 0 OID 0)
+-- TOC entry 3283 (class 0 OID 0)
 -- Dependencies: 216
 -- Name: mst_packaging_mst_packaging_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -480,7 +480,7 @@ CREATE SEQUENCE public.mst_supplier_mst_supplier_id_seq
 ALTER TABLE public.mst_supplier_mst_supplier_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3283 (class 0 OID 0)
+-- TOC entry 3284 (class 0 OID 0)
 -- Dependencies: 218
 -- Name: mst_supplier_mst_supplier_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -505,7 +505,8 @@ CREATE TABLE public.pos_branch (
     pos_branch_phone bigint,
     flag_delete integer DEFAULT 0,
     status integer DEFAULT 1,
-    pos_branch_id integer NOT NULL
+    pos_branch_id integer NOT NULL,
+    pos_branch_code character varying NOT NULL
 );
 
 
@@ -528,7 +529,7 @@ CREATE SEQUENCE public.pos_branch_pos_branch_id_seq
 ALTER TABLE public.pos_branch_pos_branch_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3284 (class 0 OID 0)
+-- TOC entry 3285 (class 0 OID 0)
 -- Dependencies: 256
 -- Name: pos_branch_pos_branch_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -576,7 +577,7 @@ CREATE SEQUENCE public.pos_cashier_pos_cashier_id_seq
 ALTER TABLE public.pos_cashier_pos_cashier_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3285 (class 0 OID 0)
+-- TOC entry 3286 (class 0 OID 0)
 -- Dependencies: 220
 -- Name: pos_cashier_pos_cashier_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -605,14 +606,14 @@ CREATE TABLE public.pos_discount (
     discount_free_qty integer,
     pos_discount_code character varying,
     discount_max_qty integer,
-    pos_branch_id integer NOT NULL
+    pos_branch_code character varying NOT NULL
 );
 
 
 ALTER TABLE public.pos_discount OWNER TO postgres;
 
 --
--- TOC entry 3286 (class 0 OID 0)
+-- TOC entry 3287 (class 0 OID 0)
 -- Dependencies: 222
 -- Name: COLUMN pos_discount.discount; Type: COMMENT; Schema: public; Owner: postgres
 --
@@ -637,7 +638,7 @@ CREATE SEQUENCE public.pos_discount_pos_discount_id_seq
 ALTER TABLE public.pos_discount_pos_discount_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3287 (class 0 OID 0)
+-- TOC entry 3288 (class 0 OID 0)
 -- Dependencies: 223
 -- Name: pos_discount_pos_discount_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -682,7 +683,7 @@ CREATE SEQUENCE public.pos_item_stock_pos_item_stock_id_seq
 ALTER TABLE public.pos_item_stock_pos_item_stock_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3288 (class 0 OID 0)
+-- TOC entry 3289 (class 0 OID 0)
 -- Dependencies: 225
 -- Name: pos_item_stock_pos_item_stock_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -752,7 +753,7 @@ CREATE SEQUENCE public.pos_receive_detail_pos_receive_detail_id_seq
 ALTER TABLE public.pos_receive_detail_pos_receive_detail_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3289 (class 0 OID 0)
+-- TOC entry 3290 (class 0 OID 0)
 -- Dependencies: 228
 -- Name: pos_receive_detail_pos_receive_detail_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -806,7 +807,7 @@ CREATE SEQUENCE public.pos_sale_detail_pos_sale_detail_id_seq
 ALTER TABLE public.pos_sale_detail_pos_sale_detail_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3290 (class 0 OID 0)
+-- TOC entry 3291 (class 0 OID 0)
 -- Dependencies: 230
 -- Name: pos_sale_detail_pos_sale_detail_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -855,7 +856,7 @@ CREATE SEQUENCE public.pos_sale_pos_sale_id_seq
 ALTER TABLE public.pos_sale_pos_sale_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3291 (class 0 OID 0)
+-- TOC entry 3292 (class 0 OID 0)
 -- Dependencies: 232
 -- Name: pos_sale_pos_sale_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -947,7 +948,7 @@ CREATE TABLE public.pos_user_branch (
     user_id integer NOT NULL,
     pos_user_branch_id integer NOT NULL,
     is_cashier boolean DEFAULT false,
-    pos_branch_id integer NOT NULL
+    pos_branch_code character varying NOT NULL
 );
 
 
@@ -970,7 +971,7 @@ CREATE SEQUENCE public.pos_user_branch_pos_user_branch_id_seq
 ALTER TABLE public.pos_user_branch_pos_user_branch_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3292 (class 0 OID 0)
+-- TOC entry 3293 (class 0 OID 0)
 -- Dependencies: 254
 -- Name: pos_user_branch_pos_user_branch_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -1050,7 +1051,7 @@ CREATE SEQUENCE public.sys_menu_module_sys_menu_module_id_seq
 ALTER TABLE public.sys_menu_module_sys_menu_module_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3293 (class 0 OID 0)
+-- TOC entry 3294 (class 0 OID 0)
 -- Dependencies: 247
 -- Name: sys_menu_module_sys_menu_module_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -1091,7 +1092,7 @@ CREATE SEQUENCE public.sys_relation_sys_relation_id_seq
 ALTER TABLE public.sys_relation_sys_relation_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3294 (class 0 OID 0)
+-- TOC entry 3295 (class 0 OID 0)
 -- Dependencies: 251
 -- Name: sys_relation_sys_relation_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -1140,7 +1141,7 @@ CREATE SEQUENCE public.sys_role_section_role_section_id_seq
 ALTER TABLE public.sys_role_section_role_section_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3295 (class 0 OID 0)
+-- TOC entry 3296 (class 0 OID 0)
 -- Dependencies: 238
 -- Name: sys_role_section_role_section_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -1224,7 +1225,7 @@ CREATE SEQUENCE public.user_authentication_authentication_id_seq
 ALTER TABLE public.user_authentication_authentication_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3296 (class 0 OID 0)
+-- TOC entry 3297 (class 0 OID 0)
 -- Dependencies: 249
 -- Name: user_authentication_authentication_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -1268,7 +1269,7 @@ CREATE SEQUENCE public.user_department_department_id_seq
 ALTER TABLE public.user_department_department_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3297 (class 0 OID 0)
+-- TOC entry 3298 (class 0 OID 0)
 -- Dependencies: 243
 -- Name: user_department_department_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -1313,7 +1314,7 @@ CREATE SEQUENCE public.user_section_section_id_seq
 ALTER TABLE public.user_section_section_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3298 (class 0 OID 0)
+-- TOC entry 3299 (class 0 OID 0)
 -- Dependencies: 245
 -- Name: user_section_section_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -1337,7 +1338,7 @@ CREATE SEQUENCE public.user_user_id_seq
 ALTER TABLE public.user_user_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3299 (class 0 OID 0)
+-- TOC entry 3300 (class 0 OID 0)
 -- Dependencies: 246
 -- Name: user_user_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -1346,7 +1347,7 @@ ALTER SEQUENCE public.user_user_id_seq OWNED BY public."user".user_id;
 
 
 --
--- TOC entry 2882 (class 2604 OID 31612)
+-- TOC entry 2883 (class 2604 OID 31612)
 -- Name: approval approval_id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -1354,7 +1355,7 @@ ALTER TABLE ONLY public.approval ALTER COLUMN approval_id SET DEFAULT nextval('p
 
 
 --
--- TOC entry 2884 (class 2604 OID 31613)
+-- TOC entry 2885 (class 2604 OID 31613)
 -- Name: approval_flow approval_flow_id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -1362,7 +1363,7 @@ ALTER TABLE ONLY public.approval_flow ALTER COLUMN approval_flow_id SET DEFAULT 
 
 
 --
--- TOC entry 2885 (class 2604 OID 36779)
+-- TOC entry 2886 (class 2604 OID 36779)
 -- Name: audit_log id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -1370,7 +1371,7 @@ ALTER TABLE ONLY public.audit_log ALTER COLUMN id SET DEFAULT nextval('public.au
 
 
 --
--- TOC entry 2890 (class 2604 OID 31614)
+-- TOC entry 2891 (class 2604 OID 31614)
 -- Name: mst_customer mst_customer_id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -1378,7 +1379,7 @@ ALTER TABLE ONLY public.mst_customer ALTER COLUMN mst_customer_id SET DEFAULT ne
 
 
 --
--- TOC entry 2895 (class 2604 OID 31615)
+-- TOC entry 2896 (class 2604 OID 31615)
 -- Name: mst_item_variant mst_item_variant_id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -1386,7 +1387,7 @@ ALTER TABLE ONLY public.mst_item_variant ALTER COLUMN mst_item_variant_id SET DE
 
 
 --
--- TOC entry 2898 (class 2604 OID 31616)
+-- TOC entry 2899 (class 2604 OID 31616)
 -- Name: mst_packaging mst_packaging_id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -1394,7 +1395,7 @@ ALTER TABLE ONLY public.mst_packaging ALTER COLUMN mst_packaging_id SET DEFAULT 
 
 
 --
--- TOC entry 2901 (class 2604 OID 31617)
+-- TOC entry 2902 (class 2604 OID 31617)
 -- Name: mst_supplier mst_supplier_id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -1402,7 +1403,7 @@ ALTER TABLE ONLY public.mst_supplier ALTER COLUMN mst_supplier_id SET DEFAULT ne
 
 
 --
--- TOC entry 2908 (class 2604 OID 37619)
+-- TOC entry 2909 (class 2604 OID 37619)
 -- Name: pos_branch pos_branch_id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -1410,7 +1411,7 @@ ALTER TABLE ONLY public.pos_branch ALTER COLUMN pos_branch_id SET DEFAULT nextva
 
 
 --
--- TOC entry 2905 (class 2604 OID 31619)
+-- TOC entry 2906 (class 2604 OID 31619)
 -- Name: pos_cashier pos_cashier_id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -1418,7 +1419,7 @@ ALTER TABLE ONLY public.pos_cashier ALTER COLUMN pos_cashier_id SET DEFAULT next
 
 
 --
--- TOC entry 2912 (class 2604 OID 31621)
+-- TOC entry 2913 (class 2604 OID 31621)
 -- Name: pos_discount pos_discount_id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -1426,7 +1427,7 @@ ALTER TABLE ONLY public.pos_discount ALTER COLUMN pos_discount_id SET DEFAULT ne
 
 
 --
--- TOC entry 2916 (class 2604 OID 31622)
+-- TOC entry 2917 (class 2604 OID 31622)
 -- Name: pos_item_stock pos_item_stock_id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -1434,7 +1435,7 @@ ALTER TABLE ONLY public.pos_item_stock ALTER COLUMN pos_item_stock_id SET DEFAUL
 
 
 --
--- TOC entry 2921 (class 2604 OID 31623)
+-- TOC entry 2922 (class 2604 OID 31623)
 -- Name: pos_receive_detail pos_receive_detail_id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -1442,7 +1443,7 @@ ALTER TABLE ONLY public.pos_receive_detail ALTER COLUMN pos_receive_detail_id SE
 
 
 --
--- TOC entry 2924 (class 2604 OID 31624)
+-- TOC entry 2925 (class 2604 OID 31624)
 -- Name: pos_trx_detail pos_trx_detail_id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -1450,7 +1451,7 @@ ALTER TABLE ONLY public.pos_trx_detail ALTER COLUMN pos_trx_detail_id SET DEFAUL
 
 
 --
--- TOC entry 2953 (class 2604 OID 37586)
+-- TOC entry 2954 (class 2604 OID 37586)
 -- Name: pos_user_branch pos_user_branch_id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -1458,7 +1459,7 @@ ALTER TABLE ONLY public.pos_user_branch ALTER COLUMN pos_user_branch_id SET DEFA
 
 
 --
--- TOC entry 2946 (class 2604 OID 31884)
+-- TOC entry 2947 (class 2604 OID 31884)
 -- Name: sys_menu_module sys_menu_module_id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -1466,7 +1467,7 @@ ALTER TABLE ONLY public.sys_menu_module ALTER COLUMN sys_menu_module_id SET DEFA
 
 
 --
--- TOC entry 2929 (class 2604 OID 36841)
+-- TOC entry 2930 (class 2604 OID 36841)
 -- Name: sys_relation sys_relation_id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -1474,7 +1475,7 @@ ALTER TABLE ONLY public.sys_relation ALTER COLUMN sys_relation_id SET DEFAULT ne
 
 
 --
--- TOC entry 2931 (class 2604 OID 31626)
+-- TOC entry 2932 (class 2604 OID 31626)
 -- Name: sys_role_section sys_role_section_id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -1482,7 +1483,7 @@ ALTER TABLE ONLY public.sys_role_section ALTER COLUMN sys_role_section_id SET DE
 
 
 --
--- TOC entry 2936 (class 2604 OID 31627)
+-- TOC entry 2937 (class 2604 OID 31627)
 -- Name: user user_id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -1490,7 +1491,7 @@ ALTER TABLE ONLY public."user" ALTER COLUMN user_id SET DEFAULT nextval('public.
 
 
 --
--- TOC entry 2938 (class 2604 OID 36756)
+-- TOC entry 2939 (class 2604 OID 36756)
 -- Name: user_authentication authentication_id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -1498,7 +1499,7 @@ ALTER TABLE ONLY public.user_authentication ALTER COLUMN authentication_id SET D
 
 
 --
--- TOC entry 2941 (class 2604 OID 31628)
+-- TOC entry 2942 (class 2604 OID 31628)
 -- Name: user_department user_department_id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -1506,7 +1507,7 @@ ALTER TABLE ONLY public.user_department ALTER COLUMN user_department_id SET DEFA
 
 
 --
--- TOC entry 2944 (class 2604 OID 31629)
+-- TOC entry 2945 (class 2604 OID 31629)
 -- Name: user_section user_section_id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -1514,7 +1515,7 @@ ALTER TABLE ONLY public.user_section ALTER COLUMN user_section_id SET DEFAULT ne
 
 
 --
--- TOC entry 3215 (class 0 OID 31347)
+-- TOC entry 3216 (class 0 OID 31347)
 -- Dependencies: 202
 -- Data for Name: approval; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1528,7 +1529,7 @@ COPY public.approval (created_at, created_by, updated_at, updated_by, flag_delet
 
 
 --
--- TOC entry 3217 (class 0 OID 31357)
+-- TOC entry 3218 (class 0 OID 31357)
 -- Dependencies: 204
 -- Data for Name: approval_flow; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1539,12 +1540,14 @@ COPY public.approval_flow (created_at, created_by, updated_at, updated_by, flag_
 \N	0	2022-07-27 04:00:40	0	0	user_section	User Section	1	\N	\N	\N	\N	10	ERre	1	37	t
 \N	1	2022-07-27 04:15:45	1	0	user_section	User Section	1	\N	\N	\N	\N	11		1	39	t
 \N	0	2022-08-10 03:09:42	0	0	pos_discount	POS Discount	1	\N	\N	\N	\N	42	5ere	1	40	f
-\N	0	\N	\N	0	pos_discount	POS Discount	1	\N	\N	\N	\N	44	\N	1	41	\N
+\N	0	2022-08-23 09:43:06	0	0	pos_discount	POS Discount	1	\N	\N	\N	\N	44		1	41	t
+\N	0	\N	\N	0	pos_discount	POS Discount	1	\N	\N	\N	\N	46	\N	1	43	\N
+\N	0	2022-08-23 03:53:22	0	0	pos_discount	POS Discount	1	\N	\N	\N	\N	45		1	42	t
 \.
 
 
 --
--- TOC entry 3220 (class 0 OID 31368)
+-- TOC entry 3221 (class 0 OID 31368)
 -- Dependencies: 207
 -- Data for Name: audit_log; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1552,11 +1555,20 @@ COPY public.approval_flow (created_at, created_by, updated_at, updated_by, flag_
 COPY public.audit_log (created_at, created_by, user_id, path, type, data, user_agent, ip_address, id) FROM stdin;
 2022-07-27 16:24:46	\N	1	/api/master/user	POST	{"user_name":"sada","user_email":"asda@gmail.com","user_department_id":1,"user_section_id":1,"status":1,"user_id":"32","updated_by":1,"updated_at":"2022-07-27 16:24:46"}	Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36	::ffff:127.0.0.1	6
 2022-07-27 16:25:12	\N	1	/api/master/user	POST	{"user_name":"sada","user_email":"asda@gmail.com","user_department_id":1,"user_section_id":1,"status":1,"user_id":"32","updated_by":1,"updated_at":"2022-07-27 16:25:12"}	Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36	::ffff:127.0.0.1	7
+2022-08-23 09:52:05	\N	32	/api/master/pos/discount	PUT	{"discount_free_qty":0,"discount_max_qty":0,"discount_min_qty":1,"discount":13,"status":1,"pos_branch_id":5,"mst_item_variant_id":29,"date_time":["2022-08-02T02:51:52.724Z","2022-08-31T02:51:55.724Z"],"pos_discount_starttime":"2022-08-02 09:51:52","pos_discount_endtime":"2022-08-31 09:51:55","created_by":32,"created_at":"2022-08-23 09:52:05"}	Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36	::ffff:127.0.0.1	8
+2022-08-23 14:06:29	\N	32	/api/master/pos/user-branch	PUT	{"pos_branch_id":1,"user_id":1,"status":1,"is_cashier":true,"created_by":32,"created_at":"2022-08-23 14:06:29"}	Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36	::ffff:127.0.0.1	9
+2022-08-23 14:06:51	\N	32	/api/master/pos/user-branch	PUT	{"pos_branch_id":1,"user_id":1,"status":1,"is_cashier":true,"created_by":32,"created_at":"2022-08-23 14:06:51"}	Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36	::ffff:127.0.0.1	10
+2022-08-23 14:07:15	\N	32	/api/master/pos/user-branch	PUT	{"pos_branch_id":1,"user_id":1,"status":1,"is_cashier":true,"pos_branch_code":"AMD2","created_by":32,"created_at":"2022-08-23 14:07:15"}	Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36	::ffff:127.0.0.1	11
+2022-08-23 14:08:29	\N	32	/api/master/pos/user-branch	POST	{"created_at":"2022-06-15T02:00:36.000Z","created_by":0,"updated_at":"2022-08-23 14:08:29","updated_by":32,"flag_delete":0,"status":1,"user_id":1,"pos_user_branch_id":21,"is_cashier":false,"pos_branch_code":"AMD2","user_name":"gesang","user_email":"gesangseto@gmail.com","user_password":"8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92","user_section_id":1,"approval":null}	Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36	::ffff:127.0.0.1	12
+2022-08-23 14:08:58	\N	32	/api/master/pos/user-branch	PUT	{"pos_branch_id":3,"user_id":32,"status":1,"is_cashier":true,"pos_branch_code":"AMD3","created_by":32,"created_at":"2022-08-23 14:08:58"}	Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36	::ffff:127.0.0.1	13
+2022-08-23 14:10:19	\N	32	/api/master/pos/user-branch	PUT	{"pos_branch_id":3,"user_id":1,"status":1,"is_cashier":false,"pos_branch_code":"AMD3","created_by":32,"created_at":"2022-08-23 14:10:19"}	Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36	::ffff:127.0.0.1	14
+2022-08-23 15:19:02	\N	32	/api/master/pos/discount	PUT	{"discount_free_qty":0,"discount_max_qty":0,"discount_min_qty":0,"discount":5,"status":1,"pos_branch_id":3,"mst_item_variant_id":29,"date_time":["2022-08-01T08:18:48.932Z","2022-08-31T08:18:51.932Z"],"pos_discount_starttime":"2022-08-01 15:18:48","pos_discount_endtime":"2022-08-31 15:18:51","created_by":32,"created_at":"2022-08-23 15:19:02"}	Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36	::ffff:127.0.0.1	15
+2022-08-23 16:02:44	\N	32	/api/master/pos/discount	POST	{"pos_discount_id":46,"mst_item_variant_id":"29","discount":5,"pos_discount_starttime":"2022-08-01 03:18:48","pos_discount_endtime":"2022-08-31 03:18:51","discount_min_qty":0,"discount_max_qty":0,"discount_free_qty":0,"pos_branch_code":"AMD3","status":0,"flag_delete":0,"mst_item_variant_name":"@1","barcode":"33334","mst_item_name":"Ultramilk Kids Strawbery 120 ML","approval":{"created_at":null,"created_by":0,"updated_at":null,"updated_by":null,"flag_delete":0,"approval_ref_table":"pos_discount","approval_desc":"POS Discount","approval_user_id_1":1,"approval_user_id_2":null,"approval_user_id_3":null,"approval_user_id_4":null,"approval_user_id_5":null,"approval_ref_id":"46","rejected_note":null,"approval_current_user_id":1,"is_approve":null,"approval_user_name":"gesang","approval_user_email":"gesangseto@gmail.com"},"date_time":["2022-07-31T20:18:48.000Z","2022-08-30T20:18:51.000Z"],"updated_by":32,"updated_at":"2022-08-23 16:02:44"}	Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36	::ffff:127.0.0.1	16
 \.
 
 
 --
--- TOC entry 3221 (class 0 OID 31376)
+-- TOC entry 3222 (class 0 OID 31376)
 -- Dependencies: 208
 -- Data for Name: base_table; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1566,7 +1578,7 @@ COPY public.base_table (created_at, created_by, updated_at, updated_by, flag_del
 
 
 --
--- TOC entry 3222 (class 0 OID 31381)
+-- TOC entry 3223 (class 0 OID 31381)
 -- Dependencies: 209
 -- Data for Name: mst_customer; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1579,7 +1591,7 @@ COPY public.mst_customer (created_at, created_by, updated_at, updated_by, flag_d
 
 
 --
--- TOC entry 3224 (class 0 OID 31391)
+-- TOC entry 3225 (class 0 OID 31391)
 -- Dependencies: 211
 -- Data for Name: mst_item; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1593,7 +1605,7 @@ COPY public.mst_item (created_at, created_by, updated_at, updated_by, flag_delet
 
 
 --
--- TOC entry 3226 (class 0 OID 31401)
+-- TOC entry 3227 (class 0 OID 31401)
 -- Dependencies: 213
 -- Data for Name: mst_item_variant; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1611,7 +1623,7 @@ COPY public.mst_item_variant (created_at, created_by, updated_at, updated_by, fl
 
 
 --
--- TOC entry 3228 (class 0 OID 31411)
+-- TOC entry 3229 (class 0 OID 31411)
 -- Dependencies: 215
 -- Data for Name: mst_packaging; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1624,7 +1636,7 @@ COPY public.mst_packaging (created_at, created_by, updated_at, updated_by, flag_
 
 
 --
--- TOC entry 3230 (class 0 OID 31421)
+-- TOC entry 3231 (class 0 OID 31421)
 -- Dependencies: 217
 -- Data for Name: mst_supplier; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1635,20 +1647,21 @@ COPY public.mst_supplier (created_at, created_by, updated_at, updated_by, flag_d
 
 
 --
--- TOC entry 3234 (class 0 OID 31452)
+-- TOC entry 3235 (class 0 OID 31452)
 -- Dependencies: 221
 -- Data for Name: pos_branch; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.pos_branch (created_at, created_by, updated_at, updated_by, allow_return_day, pos_branch_name, pos_branch_desc, pos_branch_address, pos_branch_phone, flag_delete, status, pos_branch_id) FROM stdin;
-2022-08-22 10:18:49+07	0	\N	\N	1	Bambu 	No 53 my home	JL Bambu	82122222657	0	1	5
-2022-08-19 01:36:46+07	0	2022-08-22 10:19:59+07	0	1	AMD - 2	Test	JL.Bambu	82122222657	0	1	1
-2022-08-19 04:08:55+07	0	2022-08-22 10:21:02+07	0	1	AMD - 1	Cabang tangerang	JL.Bambu	895545646	0	1	3
+COPY public.pos_branch (created_at, created_by, updated_at, updated_by, allow_return_day, pos_branch_name, pos_branch_desc, pos_branch_address, pos_branch_phone, flag_delete, status, pos_branch_id, pos_branch_code) FROM stdin;
+2022-08-19 01:36:46+07	0	2022-08-22 10:19:59+07	0	1	AMD - 2	Test	JL.Bambu	82122222657	0	1	1	AMD2
+2022-08-23 09:40:04+07	0	\N	\N	0	Tes2	123	kljljasfd	854541212	0	1	8	ASC
+2022-08-22 10:18:49+07	0	2022-08-23 03:56:07+07	0	1	Bambu 	No 53 my home	JL Bambu	82122222657	0	1	5	AMD1
+2022-08-19 04:08:55+07	0	2022-08-23 03:56:15+07	0	1	AMD - 1	Cabang tangerang	JL.Bambu	895545646	0	0	3	AMD3
 \.
 
 
 --
--- TOC entry 3232 (class 0 OID 31441)
+-- TOC entry 3233 (class 0 OID 31441)
 -- Dependencies: 219
 -- Data for Name: pos_cashier; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1658,18 +1671,20 @@ COPY public.pos_cashier (created_at, created_by, updated_at, updated_by, flag_de
 
 
 --
--- TOC entry 3235 (class 0 OID 31461)
+-- TOC entry 3236 (class 0 OID 31461)
 -- Dependencies: 222
 -- Data for Name: pos_discount; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.pos_discount (created_at, created_by, updated_at, updated_by, flag_delete, status, pos_discount_id, mst_item_variant_id, discount, pos_discount_starttime, pos_discount_endtime, discount_min_qty, discount_free_qty, pos_discount_code, discount_max_qty, pos_branch_id) FROM stdin;
-2022-08-22 09:45:03+07	0	\N	\N	0	0	44	20	12	2022-01-02 12:00:00	2022-10-03 12:00:00	1	\N	\N	\N	1
+COPY public.pos_discount (created_at, created_by, updated_at, updated_by, flag_delete, status, pos_discount_id, mst_item_variant_id, discount, pos_discount_starttime, pos_discount_endtime, discount_min_qty, discount_free_qty, pos_discount_code, discount_max_qty, pos_branch_code) FROM stdin;
+2022-08-19 01:36:46+07	0	2022-08-23 09:44:52+07	0	0	1	44	20	12	2022-01-02 12:00:00	2022-10-03 12:00:00	1	\N	null	\N	AMD2
+2022-08-23 15:19:02+07	32	\N	\N	0	0	46	29	5	2022-08-01 03:18:48	2022-08-31 03:18:51	0	0	\N	0	AMD3
+2022-08-23 09:52:05+07	32	2022-08-23 03:53:24+07	0	0	1	45	29	13	2022-08-02 09:51:52	2022-08-31 09:51:55	1	0	\N	0	AMD2
 \.
 
 
 --
--- TOC entry 3237 (class 0 OID 31471)
+-- TOC entry 3238 (class 0 OID 31471)
 -- Dependencies: 224
 -- Data for Name: pos_item_stock; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1681,7 +1696,7 @@ COPY public.pos_item_stock (created_at, created_by, updated_at, updated_by, flag
 
 
 --
--- TOC entry 3239 (class 0 OID 31478)
+-- TOC entry 3240 (class 0 OID 31478)
 -- Dependencies: 226
 -- Data for Name: pos_receive; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1693,7 +1708,7 @@ COPY public.pos_receive (created_at, created_by, updated_at, updated_by, flag_de
 
 
 --
--- TOC entry 3240 (class 0 OID 31486)
+-- TOC entry 3241 (class 0 OID 31486)
 -- Dependencies: 227
 -- Data for Name: pos_receive_detail; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1706,7 +1721,7 @@ COPY public.pos_receive_detail (flag_delete, status, pos_receive_detail_id, pos_
 
 
 --
--- TOC entry 3266 (class 0 OID 37254)
+-- TOC entry 3267 (class 0 OID 37254)
 -- Dependencies: 253
 -- Data for Name: pos_trx_destroy; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1716,7 +1731,7 @@ COPY public.pos_trx_destroy (created_at, created_by, updated_at, updated_by, fla
 
 
 --
--- TOC entry 3242 (class 0 OID 31496)
+-- TOC entry 3243 (class 0 OID 31496)
 -- Dependencies: 229
 -- Data for Name: pos_trx_detail; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1726,7 +1741,7 @@ COPY public.pos_trx_detail (updated_at, updated_by, flag_delete, status, pos_trx
 
 
 --
--- TOC entry 3246 (class 0 OID 31514)
+-- TOC entry 3247 (class 0 OID 31514)
 -- Dependencies: 233
 -- Data for Name: pos_trx_inbound; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1738,7 +1753,7 @@ COPY public.pos_trx_inbound (created_at, created_by, pos_trx_inbound_id, pos_trx
 
 
 --
--- TOC entry 3265 (class 0 OID 37098)
+-- TOC entry 3266 (class 0 OID 37098)
 -- Dependencies: 252
 -- Data for Name: pos_trx_return; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1748,7 +1763,7 @@ COPY public.pos_trx_return (created_at, created_by, updated_at, updated_by, flag
 
 
 --
--- TOC entry 3244 (class 0 OID 31503)
+-- TOC entry 3245 (class 0 OID 31503)
 -- Dependencies: 231
 -- Data for Name: pos_trx_sale; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1758,21 +1773,20 @@ COPY public.pos_trx_sale (created_at, created_by, updated_at, updated_by, flag_d
 
 
 --
--- TOC entry 3268 (class 0 OID 37581)
+-- TOC entry 3269 (class 0 OID 37581)
 -- Dependencies: 255
 -- Data for Name: pos_user_branch; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.pos_user_branch (created_at, created_by, updated_at, updated_by, flag_delete, status, user_id, pos_user_branch_id, is_cashier, pos_branch_id) FROM stdin;
-2022-06-15 09:00:36+07	0	2022-08-22 09:35:46+07	0	0	0	1	2	f	1
-2022-08-22 16:12:11+07	0	\N	\N	0	1	32	18	t	5
-2022-06-15 09:00:36+07	0	2022-08-22 04:17:19+07	0	0	0	1	20	f	3
-2022-06-15 09:00:36+07	0	2022-08-22 04:17:26+07	0	0	1	1	17	t	5
+COPY public.pos_user_branch (created_at, created_by, updated_at, updated_by, flag_delete, status, user_id, pos_user_branch_id, is_cashier, pos_branch_code) FROM stdin;
+2022-06-15 09:00:36+07	0	2022-08-23 02:08:29+07	32	0	1	1	21	f	AMD2
+2022-08-23 14:10:19+07	32	\N	\N	0	1	1	23	f	AMD3
+2022-07-19 03:20:23+07	0	2022-08-23 04:00:23+07	0	0	0	32	22	t	AMD3
 \.
 
 
 --
--- TOC entry 3247 (class 0 OID 31539)
+-- TOC entry 3248 (class 0 OID 31539)
 -- Dependencies: 234
 -- Data for Name: sys_configuration; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1783,7 +1797,7 @@ COPY public.sys_configuration (updated_at, id, app_name, app_logo, user_name, us
 
 
 --
--- TOC entry 3248 (class 0 OID 31547)
+-- TOC entry 3249 (class 0 OID 31547)
 -- Dependencies: 235
 -- Data for Name: sys_menu; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1821,7 +1835,7 @@ COPY public.sys_menu (status, sys_menu_id, sys_menu_name, sys_menu_url, sys_menu
 
 
 --
--- TOC entry 3261 (class 0 OID 31880)
+-- TOC entry 3262 (class 0 OID 31880)
 -- Dependencies: 248
 -- Data for Name: sys_menu_module; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1833,7 +1847,7 @@ COPY public.sys_menu_module (status, sys_menu_module_id, sys_menu_module_name, s
 
 
 --
--- TOC entry 3249 (class 0 OID 31554)
+-- TOC entry 3250 (class 0 OID 31554)
 -- Dependencies: 236
 -- Data for Name: sys_relation; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1844,12 +1858,14 @@ mst_customer_default	1	Default Customer Point Of Sales	Customer Default	2
 
 
 --
--- TOC entry 3250 (class 0 OID 31560)
+-- TOC entry 3251 (class 0 OID 31560)
 -- Dependencies: 237
 -- Data for Name: sys_role_section; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.sys_role_section (created_at, created_by, updated_at, updated_by, status, sys_menu_id, user_section_id, flag_read, flag_create, flag_update, flag_delete, flag_print, flag_download, sys_role_section_id) FROM stdin;
+\N	\N	\N	\N	1	104	1	1	0	0	0	0	0	107
+\N	\N	\N	\N	1	105	1	1	0	0	0	0	0	108
 \N	\N	\N	\N	1	1	1	1	1	1	1	0	0	37
 \N	\N	\N	\N	1	2	1	0	0	0	0	0	0	36
 \N	\N	\N	\N	1	5	1	1	1	1	1	0	0	32
@@ -1857,10 +1873,6 @@ COPY public.sys_role_section (created_at, created_by, updated_at, updated_by, st
 \N	\N	\N	\N	1	3	1	1	1	1	1	0	0	34
 \N	\N	\N	\N	1	6	1	1	1	1	1	0	0	33
 \N	\N	\N	\N	1	9	1	0	0	0	0	0	0	91
-\N	\N	\N	\N	1	10	1	0	0	0	0	0	0	92
-\N	\N	\N	\N	1	11	1	0	0	0	0	0	0	93
-\N	\N	\N	\N	1	12	1	0	0	0	0	0	0	94
-\N	\N	\N	\N	1	13	1	0	0	0	0	0	0	95
 \N	\N	\N	\N	1	7	1	0	0	0	0	0	0	96
 \N	\N	\N	\N	1	8	1	0	0	0	0	0	0	97
 \N	\N	\N	\N	1	14	1	0	0	0	0	0	0	98
@@ -1868,18 +1880,24 @@ COPY public.sys_role_section (created_at, created_by, updated_at, updated_by, st
 \N	\N	\N	\N	1	100	1	0	0	0	0	0	0	100
 \N	\N	\N	\N	1	110	1	0	0	0	0	0	0	101
 \N	\N	\N	\N	1	130	1	0	0	0	0	0	0	102
-\N	\N	\N	\N	1	131	1	0	0	0	0	0	0	103
-\N	\N	\N	\N	1	101	1	1	0	0	0	0	0	104
-\N	\N	\N	\N	1	102	1	1	0	0	0	0	0	105
-\N	\N	\N	\N	1	103	1	1	0	0	0	0	0	106
-\N	\N	\N	\N	1	104	1	1	0	0	0	0	0	107
-\N	\N	\N	\N	1	105	1	1	0	0	0	0	0	108
-\N	\N	\N	\N	1	113	1	1	0	0	0	0	0	109
-\N	\N	\N	\N	1	120	1	1	0	0	0	0	0	110
+\N	\N	\N	\N	1	10	1	1	1	1	1	0	0	92
+\N	\N	\N	\N	1	11	1	1	1	1	1	0	0	93
+\N	\N	\N	\N	1	12	1	1	1	1	1	0	0	94
+\N	\N	\N	\N	1	13	1	1	1	1	1	0	0	95
+\N	\N	\N	\N	1	101	1	1	1	1	1	0	0	104
+\N	\N	\N	\N	1	102	1	1	1	1	1	0	0	105
+\N	\N	\N	\N	1	103	1	1	1	1	1	0	0	106
+\N	\N	\N	\N	1	111	1	1	1	1	1	0	0	111
 \N	\N	\N	\N	1	1	7	0	0	0	0	0	0	39
 \N	\N	\N	\N	1	2	7	0	0	0	0	0	0	40
 \N	\N	\N	\N	1	5	7	0	0	0	0	0	0	41
 \N	\N	\N	\N	1	4	7	0	0	0	0	0	0	42
+\N	\N	\N	\N	1	112	1	1	1	1	1	0	0	112
+\N	\N	\N	\N	1	113	1	1	1	1	1	0	0	109
+\N	\N	\N	\N	1	114	1	1	1	1	1	0	0	113
+\N	\N	\N	\N	1	115	1	1	1	1	1	0	0	114
+\N	\N	\N	\N	1	120	1	1	1	1	1	0	0	110
+\N	\N	\N	\N	1	131	1	1	1	1	1	0	0	103
 \N	\N	\N	\N	1	3	7	0	0	0	0	0	0	43
 \N	\N	\N	\N	1	6	7	0	0	0	0	0	0	44
 \N	\N	\N	\N	1	9	7	0	0	0	0	0	0	45
@@ -1932,7 +1950,7 @@ COPY public.sys_role_section (created_at, created_by, updated_at, updated_by, st
 
 
 --
--- TOC entry 3252 (class 0 OID 31566)
+-- TOC entry 3253 (class 0 OID 31566)
 -- Dependencies: 239
 -- Data for Name: sys_status_information; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1947,21 +1965,21 @@ COPY public.sys_status_information (created_at, created_by, updated_at, updated_
 
 
 --
--- TOC entry 3253 (class 0 OID 31574)
+-- TOC entry 3254 (class 0 OID 31574)
 -- Dependencies: 240
 -- Data for Name: user; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public."user" (user_id, user_name, user_email, user_password, user_section_id, created_at, created_by, updated_at, updated_by, flag_delete, status) FROM stdin;
 29	Admin Utama	gesang@gmail.com	15e2b0d3c33891ebb0f1ef609ec419420c20e320ce94c65fbc8c3312448eb225	1	2022-07-18 10:59:23	0	2022-07-18 11:38:36	0	1	0
-32	sada	asda@gmail.com	8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92	1	2022-07-19 15:20:23	0	2022-07-27 16:25:12	1	0	1
 1	gesang	gesangseto@gmail.com	8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92	1	2022-06-15 09:00:36	0	2022-08-12 11:10:02	0	0	1
 31	admins	johnsmith@doctor.co.id	8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92	1	2022-07-18 11:01:10	0	2022-08-12 11:10:10	0	0	1
+32	admin	admin@gmail.com	8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92	1	2022-07-19 15:20:23	0	2022-08-23 09:48:34	0	0	1
 \.
 
 
 --
--- TOC entry 3254 (class 0 OID 31582)
+-- TOC entry 3255 (class 0 OID 31582)
 -- Dependencies: 241
 -- Data for Name: user_authentication; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1994,15 +2012,17 @@ COPY public.user_authentication (created_at, status, user_id, token, expired_at,
 2022-07-21 15:53:16	1	1	6fdd4a897c2bc211f3b0ea80ec385338612512222f49a6bebeaa9577868c17bc	2022-08-20 15:53:40	\N	11
 2022-07-22 10:55:58	1	1	2c48e835b4affb53955688c5a20a436656d6546c9a98214b1c99abe29a2916b8	2022-08-21 10:56:18	\N	19
 2022-07-22 14:04:53	1	31	21ba2ea7c51848ec908a75d6855c7dc0fef64e7ba280b32c0b878afa292b51b9	2022-08-21 14:05:23	\N	23
+2022-08-23 09:48:41	1	32	340d898553b19bccf391e88c149bca71ab2efc7ca0e30d438dd69bdf089eae7b	2022-09-22 03:34:00	\N	32
 2022-07-22 11:15:01	1	1	7929b6842e222c95c5ab49345ad0f9759db8504eb789b54bea9abf25fe9fd746	2022-08-21 11:15:09	\N	20
 2022-07-22 14:03:18	1	1	ac0932e9abff936113399da9e9c82bc8c7257967850478c472a15373cd3a0986	2022-08-21 14:03:18	\N	21
 2022-07-27 16:15:22	1	1	e396dc4fa7e30af9e522fb928e33472de5c8dbc5d6a3150e4e99a97f2f20ba05	2022-08-26 16:15:50	\N	28
 2022-07-26 14:44:23	1	31	48f832ad361abe28fa732f95f58e9a599c6678b99e846dfc2fe0aa4b6001e981	2022-08-25 14:44:33	\N	25
+2022-08-23 16:02:37	1	32	fb5ec4dc6501eb64567ab7e48aa1e8d9cc5502a0c97959e05f244faf44e8e469	2022-09-22 04:03:00	\N	33
 \.
 
 
 --
--- TOC entry 3255 (class 0 OID 31590)
+-- TOC entry 3256 (class 0 OID 31590)
 -- Dependencies: 242
 -- Data for Name: user_department; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -2016,7 +2036,7 @@ COPY public.user_department (created_at, created_by, updated_at, updated_by, fla
 
 
 --
--- TOC entry 3257 (class 0 OID 31600)
+-- TOC entry 3258 (class 0 OID 31600)
 -- Dependencies: 244
 -- Data for Name: user_section; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -2032,7 +2052,7 @@ COPY public.user_section (created_at, created_by, updated_at, updated_by, flag_d
 
 
 --
--- TOC entry 3300 (class 0 OID 0)
+-- TOC entry 3301 (class 0 OID 0)
 -- Dependencies: 203
 -- Name: approval_approval_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -2041,16 +2061,16 @@ SELECT pg_catalog.setval('public.approval_approval_id_seq', 28, true);
 
 
 --
--- TOC entry 3301 (class 0 OID 0)
+-- TOC entry 3302 (class 0 OID 0)
 -- Dependencies: 205
 -- Name: approval_flow_approval_flow_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.approval_flow_approval_flow_id_seq', 41, true);
+SELECT pg_catalog.setval('public.approval_flow_approval_flow_id_seq', 43, true);
 
 
 --
--- TOC entry 3302 (class 0 OID 0)
+-- TOC entry 3303 (class 0 OID 0)
 -- Dependencies: 206
 -- Name: approval_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -2059,16 +2079,16 @@ SELECT pg_catalog.setval('public.approval_seq', 1, false);
 
 
 --
--- TOC entry 3303 (class 0 OID 0)
+-- TOC entry 3304 (class 0 OID 0)
 -- Dependencies: 250
 -- Name: audit_log_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.audit_log_id_seq', 7, true);
+SELECT pg_catalog.setval('public.audit_log_id_seq', 16, true);
 
 
 --
--- TOC entry 3304 (class 0 OID 0)
+-- TOC entry 3305 (class 0 OID 0)
 -- Dependencies: 210
 -- Name: mst_customer_mst_customer_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -2077,7 +2097,7 @@ SELECT pg_catalog.setval('public.mst_customer_mst_customer_id_seq', 3, true);
 
 
 --
--- TOC entry 3305 (class 0 OID 0)
+-- TOC entry 3306 (class 0 OID 0)
 -- Dependencies: 212
 -- Name: mst_item_mst_item_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -2086,7 +2106,7 @@ SELECT pg_catalog.setval('public.mst_item_mst_item_id_seq', 11, true);
 
 
 --
--- TOC entry 3306 (class 0 OID 0)
+-- TOC entry 3307 (class 0 OID 0)
 -- Dependencies: 214
 -- Name: mst_item_variant_mst_item_variant_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -2095,7 +2115,7 @@ SELECT pg_catalog.setval('public.mst_item_variant_mst_item_variant_id_seq', 30, 
 
 
 --
--- TOC entry 3307 (class 0 OID 0)
+-- TOC entry 3308 (class 0 OID 0)
 -- Dependencies: 216
 -- Name: mst_packaging_mst_packaging_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -2104,7 +2124,7 @@ SELECT pg_catalog.setval('public.mst_packaging_mst_packaging_id_seq', 9, true);
 
 
 --
--- TOC entry 3308 (class 0 OID 0)
+-- TOC entry 3309 (class 0 OID 0)
 -- Dependencies: 218
 -- Name: mst_supplier_mst_supplier_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -2113,16 +2133,16 @@ SELECT pg_catalog.setval('public.mst_supplier_mst_supplier_id_seq', 2, true);
 
 
 --
--- TOC entry 3309 (class 0 OID 0)
+-- TOC entry 3310 (class 0 OID 0)
 -- Dependencies: 256
 -- Name: pos_branch_pos_branch_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.pos_branch_pos_branch_id_seq', 6, true);
+SELECT pg_catalog.setval('public.pos_branch_pos_branch_id_seq', 8, true);
 
 
 --
--- TOC entry 3310 (class 0 OID 0)
+-- TOC entry 3311 (class 0 OID 0)
 -- Dependencies: 220
 -- Name: pos_cashier_pos_cashier_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -2131,16 +2151,16 @@ SELECT pg_catalog.setval('public.pos_cashier_pos_cashier_id_seq', 17, true);
 
 
 --
--- TOC entry 3311 (class 0 OID 0)
+-- TOC entry 3312 (class 0 OID 0)
 -- Dependencies: 223
 -- Name: pos_discount_pos_discount_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.pos_discount_pos_discount_id_seq', 44, true);
+SELECT pg_catalog.setval('public.pos_discount_pos_discount_id_seq', 46, true);
 
 
 --
--- TOC entry 3312 (class 0 OID 0)
+-- TOC entry 3313 (class 0 OID 0)
 -- Dependencies: 225
 -- Name: pos_item_stock_pos_item_stock_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -2149,7 +2169,7 @@ SELECT pg_catalog.setval('public.pos_item_stock_pos_item_stock_id_seq', 56, true
 
 
 --
--- TOC entry 3313 (class 0 OID 0)
+-- TOC entry 3314 (class 0 OID 0)
 -- Dependencies: 228
 -- Name: pos_receive_detail_pos_receive_detail_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -2158,7 +2178,7 @@ SELECT pg_catalog.setval('public.pos_receive_detail_pos_receive_detail_id_seq', 
 
 
 --
--- TOC entry 3314 (class 0 OID 0)
+-- TOC entry 3315 (class 0 OID 0)
 -- Dependencies: 230
 -- Name: pos_sale_detail_pos_sale_detail_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -2167,7 +2187,7 @@ SELECT pg_catalog.setval('public.pos_sale_detail_pos_sale_detail_id_seq', 165, t
 
 
 --
--- TOC entry 3315 (class 0 OID 0)
+-- TOC entry 3316 (class 0 OID 0)
 -- Dependencies: 232
 -- Name: pos_sale_pos_sale_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -2176,16 +2196,16 @@ SELECT pg_catalog.setval('public.pos_sale_pos_sale_id_seq', 1, false);
 
 
 --
--- TOC entry 3316 (class 0 OID 0)
+-- TOC entry 3317 (class 0 OID 0)
 -- Dependencies: 254
 -- Name: pos_user_branch_pos_user_branch_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.pos_user_branch_pos_user_branch_id_seq', 20, true);
+SELECT pg_catalog.setval('public.pos_user_branch_pos_user_branch_id_seq', 23, true);
 
 
 --
--- TOC entry 3317 (class 0 OID 0)
+-- TOC entry 3318 (class 0 OID 0)
 -- Dependencies: 247
 -- Name: sys_menu_module_sys_menu_module_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -2194,7 +2214,7 @@ SELECT pg_catalog.setval('public.sys_menu_module_sys_menu_module_id_seq', 2, tru
 
 
 --
--- TOC entry 3318 (class 0 OID 0)
+-- TOC entry 3319 (class 0 OID 0)
 -- Dependencies: 251
 -- Name: sys_relation_sys_relation_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -2203,25 +2223,25 @@ SELECT pg_catalog.setval('public.sys_relation_sys_relation_id_seq', 2, true);
 
 
 --
--- TOC entry 3319 (class 0 OID 0)
+-- TOC entry 3320 (class 0 OID 0)
 -- Dependencies: 238
 -- Name: sys_role_section_role_section_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.sys_role_section_role_section_id_seq', 110, true);
-
-
---
--- TOC entry 3320 (class 0 OID 0)
--- Dependencies: 249
--- Name: user_authentication_authentication_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
---
-
-SELECT pg_catalog.setval('public.user_authentication_authentication_id_seq', 31, true);
+SELECT pg_catalog.setval('public.sys_role_section_role_section_id_seq', 114, true);
 
 
 --
 -- TOC entry 3321 (class 0 OID 0)
+-- Dependencies: 249
+-- Name: user_authentication_authentication_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.user_authentication_authentication_id_seq', 33, true);
+
+
+--
+-- TOC entry 3322 (class 0 OID 0)
 -- Dependencies: 243
 -- Name: user_department_department_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -2230,7 +2250,7 @@ SELECT pg_catalog.setval('public.user_department_department_id_seq', 16, true);
 
 
 --
--- TOC entry 3322 (class 0 OID 0)
+-- TOC entry 3323 (class 0 OID 0)
 -- Dependencies: 245
 -- Name: user_section_section_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -2239,7 +2259,7 @@ SELECT pg_catalog.setval('public.user_section_section_id_seq', 11, true);
 
 
 --
--- TOC entry 3323 (class 0 OID 0)
+-- TOC entry 3324 (class 0 OID 0)
 -- Dependencies: 246
 -- Name: user_user_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -2248,7 +2268,7 @@ SELECT pg_catalog.setval('public.user_user_id_seq', 32, true);
 
 
 --
--- TOC entry 2956 (class 2606 OID 31632)
+-- TOC entry 2957 (class 2606 OID 31632)
 -- Name: approval Approval Primary Key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2257,7 +2277,7 @@ ALTER TABLE ONLY public.approval
 
 
 --
--- TOC entry 2960 (class 2606 OID 31634)
+-- TOC entry 2961 (class 2606 OID 31634)
 -- Name: approval_flow Approval Table - ID; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2266,7 +2286,7 @@ ALTER TABLE ONLY public.approval_flow
 
 
 --
--- TOC entry 2976 (class 2606 OID 31638)
+-- TOC entry 2977 (class 2606 OID 31638)
 -- Name: mst_item_variant Barcode; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2275,7 +2295,16 @@ ALTER TABLE ONLY public.mst_item_variant
 
 
 --
--- TOC entry 2966 (class 2606 OID 31640)
+-- TOC entry 2993 (class 2606 OID 37644)
+-- Name: pos_branch Branch Code Pos; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.pos_branch
+    ADD CONSTRAINT "Branch Code Pos" UNIQUE (pos_branch_code);
+
+
+--
+-- TOC entry 2967 (class 2606 OID 31640)
 -- Name: mst_customer Customer PK; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2284,7 +2313,7 @@ ALTER TABLE ONLY public.mst_customer
 
 
 --
--- TOC entry 3038 (class 2606 OID 31642)
+-- TOC entry 3039 (class 2606 OID 31642)
 -- Name: user_department Department Code; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2293,7 +2322,7 @@ ALTER TABLE ONLY public.user_department
 
 
 --
--- TOC entry 3040 (class 2606 OID 31644)
+-- TOC entry 3041 (class 2606 OID 31644)
 -- Name: user_department Department Primary Key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2302,16 +2331,16 @@ ALTER TABLE ONLY public.user_department
 
 
 --
--- TOC entry 3054 (class 2606 OID 37636)
+-- TOC entry 3055 (class 2606 OID 37653)
 -- Name: pos_user_branch Duplicate User On Branch; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.pos_user_branch
-    ADD CONSTRAINT "Duplicate User On Branch" UNIQUE (pos_branch_id, user_id);
+    ADD CONSTRAINT "Duplicate User On Branch" UNIQUE (pos_branch_code, user_id);
 
 
 --
--- TOC entry 2968 (class 2606 OID 31646)
+-- TOC entry 2969 (class 2606 OID 31646)
 -- Name: mst_customer Email; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2320,7 +2349,7 @@ ALTER TABLE ONLY public.mst_customer
 
 
 --
--- TOC entry 3008 (class 2606 OID 31648)
+-- TOC entry 3009 (class 2606 OID 31648)
 -- Name: pos_trx_detail FK Item; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2329,7 +2358,7 @@ ALTER TABLE ONLY public.pos_trx_detail
 
 
 --
--- TOC entry 3000 (class 2606 OID 31650)
+-- TOC entry 3001 (class 2606 OID 31650)
 -- Name: pos_item_stock Item ID; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2338,7 +2367,7 @@ ALTER TABLE ONLY public.pos_item_stock
 
 
 --
--- TOC entry 2972 (class 2606 OID 31652)
+-- TOC entry 2973 (class 2606 OID 31652)
 -- Name: mst_item Item Primary Key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2347,7 +2376,7 @@ ALTER TABLE ONLY public.mst_item
 
 
 --
--- TOC entry 2974 (class 2606 OID 31654)
+-- TOC entry 2975 (class 2606 OID 31654)
 -- Name: mst_item Item Unique; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2356,7 +2385,7 @@ ALTER TABLE ONLY public.mst_item
 
 
 --
--- TOC entry 3024 (class 2606 OID 31656)
+-- TOC entry 3025 (class 2606 OID 31656)
 -- Name: sys_role_section Menu - Section; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2365,7 +2394,7 @@ ALTER TABLE ONLY public.sys_role_section
 
 
 --
--- TOC entry 2996 (class 2606 OID 31660)
+-- TOC entry 2997 (class 2606 OID 31660)
 -- Name: pos_discount PK Discount; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2374,7 +2403,7 @@ ALTER TABLE ONLY public.pos_discount
 
 
 --
--- TOC entry 3004 (class 2606 OID 31664)
+-- TOC entry 3005 (class 2606 OID 31664)
 -- Name: pos_receive PK Receive; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2383,7 +2412,7 @@ ALTER TABLE ONLY public.pos_receive
 
 
 --
--- TOC entry 3006 (class 2606 OID 31666)
+-- TOC entry 3007 (class 2606 OID 31666)
 -- Name: pos_receive_detail PK Receive Detail; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2392,7 +2421,7 @@ ALTER TABLE ONLY public.pos_receive_detail
 
 
 --
--- TOC entry 3010 (class 2606 OID 31668)
+-- TOC entry 3011 (class 2606 OID 31668)
 -- Name: pos_trx_detail PK Trx Detail; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2401,7 +2430,7 @@ ALTER TABLE ONLY public.pos_trx_detail
 
 
 --
--- TOC entry 2980 (class 2606 OID 31670)
+-- TOC entry 2981 (class 2606 OID 31670)
 -- Name: mst_packaging Packaging Code; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2410,7 +2439,7 @@ ALTER TABLE ONLY public.mst_packaging
 
 
 --
--- TOC entry 2982 (class 2606 OID 31672)
+-- TOC entry 2983 (class 2606 OID 31672)
 -- Name: mst_packaging Packaging PK; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2419,7 +2448,7 @@ ALTER TABLE ONLY public.mst_packaging
 
 
 --
--- TOC entry 2970 (class 2606 OID 31674)
+-- TOC entry 2971 (class 2606 OID 31674)
 -- Name: mst_customer Phone; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2428,16 +2457,7 @@ ALTER TABLE ONLY public.mst_customer
 
 
 --
--- TOC entry 2992 (class 2606 OID 37616)
--- Name: pos_branch Pos Branch Name; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.pos_branch
-    ADD CONSTRAINT "Pos Branch Name" UNIQUE (pos_branch_name);
-
-
---
--- TOC entry 2994 (class 2606 OID 37628)
+-- TOC entry 2995 (class 2606 OID 37628)
 -- Name: pos_branch Pos Branch PK; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2446,7 +2466,7 @@ ALTER TABLE ONLY public.pos_branch
 
 
 --
--- TOC entry 3014 (class 2606 OID 31676)
+-- TOC entry 3015 (class 2606 OID 31676)
 -- Name: pos_trx_inbound Pos Trx Inbound; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2455,7 +2475,7 @@ ALTER TABLE ONLY public.pos_trx_inbound
 
 
 --
--- TOC entry 3026 (class 2606 OID 31678)
+-- TOC entry 3027 (class 2606 OID 31678)
 -- Name: sys_role_section Role Section Primary Key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2464,7 +2484,7 @@ ALTER TABLE ONLY public.sys_role_section
 
 
 --
--- TOC entry 3042 (class 2606 OID 31680)
+-- TOC entry 3043 (class 2606 OID 31680)
 -- Name: user_section Section Code; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2473,7 +2493,7 @@ ALTER TABLE ONLY public.user_section
 
 
 --
--- TOC entry 3044 (class 2606 OID 31682)
+-- TOC entry 3045 (class 2606 OID 31682)
 -- Name: user_section Section Primary Key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2482,7 +2502,7 @@ ALTER TABLE ONLY public.user_section
 
 
 --
--- TOC entry 3028 (class 2606 OID 31684)
+-- TOC entry 3029 (class 2606 OID 31684)
 -- Name: sys_status_information Status; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2491,7 +2511,7 @@ ALTER TABLE ONLY public.sys_status_information
 
 
 --
--- TOC entry 2984 (class 2606 OID 31686)
+-- TOC entry 2985 (class 2606 OID 31686)
 -- Name: mst_supplier Supplier ID; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2500,7 +2520,7 @@ ALTER TABLE ONLY public.mst_supplier
 
 
 --
--- TOC entry 3046 (class 2606 OID 31889)
+-- TOC entry 3047 (class 2606 OID 31889)
 -- Name: sys_menu_module Sys Menu Module PK; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2509,7 +2529,7 @@ ALTER TABLE ONLY public.sys_menu_module
 
 
 --
--- TOC entry 3048 (class 2606 OID 31891)
+-- TOC entry 3049 (class 2606 OID 31891)
 -- Name: sys_menu_module Sys Menu Module UN; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2518,7 +2538,7 @@ ALTER TABLE ONLY public.sys_menu_module
 
 
 --
--- TOC entry 3018 (class 2606 OID 31724)
+-- TOC entry 3019 (class 2606 OID 31724)
 -- Name: sys_menu Sys Menu PK; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2527,7 +2547,7 @@ ALTER TABLE ONLY public.sys_menu
 
 
 --
--- TOC entry 3020 (class 2606 OID 31692)
+-- TOC entry 3021 (class 2606 OID 31692)
 -- Name: sys_relation Unique Code; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2536,7 +2556,7 @@ ALTER TABLE ONLY public.sys_relation
 
 
 --
--- TOC entry 2998 (class 2606 OID 31694)
+-- TOC entry 2999 (class 2606 OID 31694)
 -- Name: pos_discount Unique Code Discount; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2545,7 +2565,7 @@ ALTER TABLE ONLY public.pos_discount
 
 
 --
--- TOC entry 2958 (class 2606 OID 31696)
+-- TOC entry 2959 (class 2606 OID 31696)
 -- Name: approval Unique Key Table; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2554,7 +2574,7 @@ ALTER TABLE ONLY public.approval
 
 
 --
--- TOC entry 3032 (class 2606 OID 31700)
+-- TOC entry 3033 (class 2606 OID 31700)
 -- Name: user User Email; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2563,7 +2583,7 @@ ALTER TABLE ONLY public."user"
 
 
 --
--- TOC entry 2962 (class 2606 OID 31702)
+-- TOC entry 2963 (class 2606 OID 31702)
 -- Name: approval_flow User ID Unique; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2572,7 +2592,7 @@ ALTER TABLE ONLY public.approval_flow
 
 
 --
--- TOC entry 3034 (class 2606 OID 31704)
+-- TOC entry 3035 (class 2606 OID 31704)
 -- Name: user User Primary Key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2581,7 +2601,7 @@ ALTER TABLE ONLY public."user"
 
 
 --
--- TOC entry 2964 (class 2606 OID 36787)
+-- TOC entry 2965 (class 2606 OID 36787)
 -- Name: audit_log audit_log_pk; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2590,7 +2610,7 @@ ALTER TABLE ONLY public.audit_log
 
 
 --
--- TOC entry 2986 (class 2606 OID 31708)
+-- TOC entry 2987 (class 2606 OID 31708)
 -- Name: mst_supplier email; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2599,7 +2619,7 @@ ALTER TABLE ONLY public.mst_supplier
 
 
 --
--- TOC entry 2978 (class 2606 OID 31710)
+-- TOC entry 2979 (class 2606 OID 31710)
 -- Name: mst_item_variant item_variant_pk; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2608,7 +2628,7 @@ ALTER TABLE ONLY public.mst_item_variant
 
 
 --
--- TOC entry 2988 (class 2606 OID 31712)
+-- TOC entry 2989 (class 2606 OID 31712)
 -- Name: mst_supplier phone; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2617,7 +2637,7 @@ ALTER TABLE ONLY public.mst_supplier
 
 
 --
--- TOC entry 2990 (class 2606 OID 31714)
+-- TOC entry 2991 (class 2606 OID 31714)
 -- Name: pos_cashier pos_cashier_pk; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2626,7 +2646,7 @@ ALTER TABLE ONLY public.pos_cashier
 
 
 --
--- TOC entry 3002 (class 2606 OID 31716)
+-- TOC entry 3003 (class 2606 OID 31716)
 -- Name: pos_item_stock pos_item_stock_pk; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2635,7 +2655,7 @@ ALTER TABLE ONLY public.pos_item_stock
 
 
 --
--- TOC entry 3012 (class 2606 OID 31718)
+-- TOC entry 3013 (class 2606 OID 31718)
 -- Name: pos_trx_sale pos_sale_pk; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2644,7 +2664,7 @@ ALTER TABLE ONLY public.pos_trx_sale
 
 
 --
--- TOC entry 3052 (class 2606 OID 37263)
+-- TOC entry 3053 (class 2606 OID 37263)
 -- Name: pos_trx_destroy pos_trx_destroy_pk_1; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2653,7 +2673,7 @@ ALTER TABLE ONLY public.pos_trx_destroy
 
 
 --
--- TOC entry 3050 (class 2606 OID 37110)
+-- TOC entry 3051 (class 2606 OID 37110)
 -- Name: pos_trx_return pos_trx_return_pk; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2662,7 +2682,7 @@ ALTER TABLE ONLY public.pos_trx_return
 
 
 --
--- TOC entry 3056 (class 2606 OID 37588)
+-- TOC entry 3057 (class 2606 OID 37588)
 -- Name: pos_user_branch pos_user_branch_pk; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2671,7 +2691,7 @@ ALTER TABLE ONLY public.pos_user_branch
 
 
 --
--- TOC entry 3016 (class 2606 OID 31722)
+-- TOC entry 3017 (class 2606 OID 31722)
 -- Name: sys_configuration sys_configuration_pk; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2680,7 +2700,7 @@ ALTER TABLE ONLY public.sys_configuration
 
 
 --
--- TOC entry 3022 (class 2606 OID 36850)
+-- TOC entry 3023 (class 2606 OID 36850)
 -- Name: sys_relation sys_relation_pk; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2689,7 +2709,7 @@ ALTER TABLE ONLY public.sys_relation
 
 
 --
--- TOC entry 3030 (class 2606 OID 31726)
+-- TOC entry 3031 (class 2606 OID 31726)
 -- Name: sys_status_information sys_status_information_pk; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2698,7 +2718,7 @@ ALTER TABLE ONLY public.sys_status_information
 
 
 --
--- TOC entry 3036 (class 2606 OID 36764)
+-- TOC entry 3037 (class 2606 OID 36764)
 -- Name: user_authentication user_authentication_pk; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2707,7 +2727,16 @@ ALTER TABLE ONLY public.user_authentication
 
 
 --
--- TOC entry 3075 (class 2606 OID 31732)
+-- TOC entry 3089 (class 2606 OID 37665)
+-- Name: pos_user_branch BRANCH; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.pos_user_branch
+    ADD CONSTRAINT "BRANCH" FOREIGN KEY (pos_branch_code) REFERENCES public.pos_branch(pos_branch_code);
+
+
+--
+-- TOC entry 3076 (class 2606 OID 31732)
 -- Name: pos_receive_detail FK Item; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2716,7 +2745,7 @@ ALTER TABLE ONLY public.pos_receive_detail
 
 
 --
--- TOC entry 3074 (class 2606 OID 31742)
+-- TOC entry 3075 (class 2606 OID 31742)
 -- Name: pos_receive FK Supplier; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2725,7 +2754,7 @@ ALTER TABLE ONLY public.pos_receive
 
 
 --
--- TOC entry 3071 (class 2606 OID 31752)
+-- TOC entry 3072 (class 2606 OID 31752)
 -- Name: pos_discount FK Variant Item; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2734,7 +2763,7 @@ ALTER TABLE ONLY public.pos_discount
 
 
 --
--- TOC entry 3082 (class 2606 OID 31892)
+-- TOC entry 3083 (class 2606 OID 31892)
 -- Name: sys_menu Module FK; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2743,7 +2772,7 @@ ALTER TABLE ONLY public.sys_menu
 
 
 --
--- TOC entry 3080 (class 2606 OID 31757)
+-- TOC entry 3081 (class 2606 OID 31757)
 -- Name: pos_trx_inbound PK Customer; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2752,7 +2781,7 @@ ALTER TABLE ONLY public.pos_trx_inbound
 
 
 --
--- TOC entry 3076 (class 2606 OID 31762)
+-- TOC entry 3077 (class 2606 OID 31762)
 -- Name: pos_trx_detail PK Item; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2761,7 +2790,7 @@ ALTER TABLE ONLY public.pos_trx_detail
 
 
 --
--- TOC entry 3077 (class 2606 OID 31767)
+-- TOC entry 3078 (class 2606 OID 31767)
 -- Name: pos_trx_detail PK Item Variant; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2770,7 +2799,7 @@ ALTER TABLE ONLY public.pos_trx_detail
 
 
 --
--- TOC entry 3081 (class 2606 OID 31772)
+-- TOC entry 3082 (class 2606 OID 31772)
 -- Name: pos_trx_inbound PK Supplier; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2779,7 +2808,7 @@ ALTER TABLE ONLY public.pos_trx_inbound
 
 
 --
--- TOC entry 3068 (class 2606 OID 31777)
+-- TOC entry 3069 (class 2606 OID 31777)
 -- Name: mst_item_variant Packaging ID FK; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2797,7 +2826,7 @@ ALTER TABLE ONLY public.pos_user_branch
 
 
 --
--- TOC entry 3057 (class 2606 OID 31782)
+-- TOC entry 3058 (class 2606 OID 31782)
 -- Name: approval User Approval 1; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2806,7 +2835,7 @@ ALTER TABLE ONLY public.approval
 
 
 --
--- TOC entry 3058 (class 2606 OID 31787)
+-- TOC entry 3059 (class 2606 OID 31787)
 -- Name: approval User Approval 2; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2815,7 +2844,7 @@ ALTER TABLE ONLY public.approval
 
 
 --
--- TOC entry 3059 (class 2606 OID 31792)
+-- TOC entry 3060 (class 2606 OID 31792)
 -- Name: approval User Approval 3; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2824,7 +2853,7 @@ ALTER TABLE ONLY public.approval
 
 
 --
--- TOC entry 3060 (class 2606 OID 31797)
+-- TOC entry 3061 (class 2606 OID 31797)
 -- Name: approval User Approval 4; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2833,7 +2862,7 @@ ALTER TABLE ONLY public.approval
 
 
 --
--- TOC entry 3061 (class 2606 OID 31802)
+-- TOC entry 3062 (class 2606 OID 31802)
 -- Name: approval User Approval 5; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2842,7 +2871,7 @@ ALTER TABLE ONLY public.approval
 
 
 --
--- TOC entry 3062 (class 2606 OID 31807)
+-- TOC entry 3063 (class 2606 OID 31807)
 -- Name: approval_flow User ID 1; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2851,7 +2880,7 @@ ALTER TABLE ONLY public.approval_flow
 
 
 --
--- TOC entry 3063 (class 2606 OID 31812)
+-- TOC entry 3064 (class 2606 OID 31812)
 -- Name: approval_flow User ID 2; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2860,7 +2889,7 @@ ALTER TABLE ONLY public.approval_flow
 
 
 --
--- TOC entry 3064 (class 2606 OID 31817)
+-- TOC entry 3065 (class 2606 OID 31817)
 -- Name: approval_flow User ID 3; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2869,7 +2898,7 @@ ALTER TABLE ONLY public.approval_flow
 
 
 --
--- TOC entry 3065 (class 2606 OID 31822)
+-- TOC entry 3066 (class 2606 OID 31822)
 -- Name: approval_flow User ID 4; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2878,7 +2907,7 @@ ALTER TABLE ONLY public.approval_flow
 
 
 --
--- TOC entry 3066 (class 2606 OID 31827)
+-- TOC entry 3067 (class 2606 OID 31827)
 -- Name: approval_flow User ID 5; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2887,7 +2916,7 @@ ALTER TABLE ONLY public.approval_flow
 
 
 --
--- TOC entry 3067 (class 2606 OID 31832)
+-- TOC entry 3068 (class 2606 OID 31832)
 -- Name: audit_log audit_log_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2896,7 +2925,7 @@ ALTER TABLE ONLY public.audit_log
 
 
 --
--- TOC entry 3069 (class 2606 OID 31837)
+-- TOC entry 3070 (class 2606 OID 31837)
 -- Name: mst_item_variant mst_item_id at mst_item_variant; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2905,7 +2934,7 @@ ALTER TABLE ONLY public.mst_item_variant
 
 
 --
--- TOC entry 3070 (class 2606 OID 37608)
+-- TOC entry 3071 (class 2606 OID 37608)
 -- Name: pos_cashier pos_cashier_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2914,16 +2943,16 @@ ALTER TABLE ONLY public.pos_cashier
 
 
 --
--- TOC entry 3072 (class 2606 OID 37637)
+-- TOC entry 3073 (class 2606 OID 37671)
 -- Name: pos_discount pos_discount_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.pos_discount
-    ADD CONSTRAINT pos_discount_fk FOREIGN KEY (pos_branch_id) REFERENCES public.pos_branch(pos_branch_id);
+    ADD CONSTRAINT pos_discount_fk FOREIGN KEY (pos_branch_code) REFERENCES public.pos_branch(pos_branch_code);
 
 
 --
--- TOC entry 3073 (class 2606 OID 31842)
+-- TOC entry 3074 (class 2606 OID 31842)
 -- Name: pos_item_stock pos_item_stock_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2932,7 +2961,7 @@ ALTER TABLE ONLY public.pos_item_stock
 
 
 --
--- TOC entry 3079 (class 2606 OID 31847)
+-- TOC entry 3080 (class 2606 OID 31847)
 -- Name: pos_trx_sale pos_sale_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2941,7 +2970,7 @@ ALTER TABLE ONLY public.pos_trx_sale
 
 
 --
--- TOC entry 3078 (class 2606 OID 31852)
+-- TOC entry 3079 (class 2606 OID 31852)
 -- Name: pos_trx_detail pos_trx_detail_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2950,16 +2979,7 @@ ALTER TABLE ONLY public.pos_trx_detail
 
 
 --
--- TOC entry 3087 (class 2606 OID 37629)
--- Name: pos_user_branch pos_user_branch_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.pos_user_branch
-    ADD CONSTRAINT pos_user_branch_fk FOREIGN KEY (pos_branch_id) REFERENCES public.pos_branch(pos_branch_id);
-
-
---
--- TOC entry 3083 (class 2606 OID 31857)
+-- TOC entry 3084 (class 2606 OID 31857)
 -- Name: sys_role_section sys_role_section_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2968,7 +2988,7 @@ ALTER TABLE ONLY public.sys_role_section
 
 
 --
--- TOC entry 3085 (class 2606 OID 31862)
+-- TOC entry 3086 (class 2606 OID 31862)
 -- Name: user_authentication user_authentication_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2977,7 +2997,7 @@ ALTER TABLE ONLY public.user_authentication
 
 
 --
--- TOC entry 3084 (class 2606 OID 31867)
+-- TOC entry 3085 (class 2606 OID 31867)
 -- Name: user user_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2986,7 +3006,7 @@ ALTER TABLE ONLY public."user"
 
 
 --
--- TOC entry 3086 (class 2606 OID 31872)
+-- TOC entry 3087 (class 2606 OID 31872)
 -- Name: user_section user_section_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2994,7 +3014,7 @@ ALTER TABLE ONLY public.user_section
     ADD CONSTRAINT user_section_fk FOREIGN KEY (user_department_id) REFERENCES public.user_department(user_department_id);
 
 
--- Completed on 2022-08-22 16:27:48
+-- Completed on 2022-08-23 16:03:19
 
 --
 -- PostgreSQL database dump complete

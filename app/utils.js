@@ -51,7 +51,6 @@ function treeify(list, idAttr, parentAttr, childrenAttr) {
       if (lookup[obj[parentAttr]] !== undefined) {
         lookup[obj[parentAttr]][childrenAttr].push(obj);
       } else {
-        //console.log('Missing Parent Data: ' + obj[parentAttr]);
         treeList.push(obj);
       }
     } else {
@@ -70,7 +69,6 @@ async function encrypt({ string = null }) {
       .digest("hex");
     return encryptedData;
   } catch (error) {
-    console.log(error);
     return false;
   }
 }
@@ -216,6 +214,13 @@ const strToBool = (str) => {
   }
   return res;
 };
+const strBetween = (string = String, strStart, strEnd) => {
+  string = string.toLowerCase();
+  strStart = strStart.toLowerCase();
+  strEnd = strEnd.toLowerCase();
+
+  return string.substring(string.indexOf(strStart), string.lastIndexOf(strEnd));
+};
 
 const sqlInjectionPrevention = (obj) => {
   let sqlRegex = "/[\t\r\n]|(--[^\r\n]*)|(/*[wW]*?(?=*)*/)/gi";
@@ -249,4 +254,5 @@ module.exports = {
   getOnlyParent,
   haveRole,
   sqlInjectionPrevention,
+  strBetween,
 };

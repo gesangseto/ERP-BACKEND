@@ -28,12 +28,35 @@ exports.get = async function (req, res) {
   }
 };
 
+exports.getByUser = async function (req, res) {
+  var data = { data: req.query };
+  try {
+    // LINE WAJIB DIBAWA
+
+    let user_id = req.headers.user_id;
+    let check = {};
+    if (user_id === 0) {
+      check = await getDiscount({ ...req.query });
+    } else {
+      check = await getDiscount({ ...req.query, user_id: user_id });
+    }
+    let upd = `UPDATE pos_discount set status = '0' WHERE pos_discount_endtime < now(); `;
+    await models.exec_query(upd);
+    // const check = await getDiscount(req.query);
+    return response.response(check, res);
+  } catch (error) {
+    data.error = true;
+    data.message = `${error}`;
+    return response.response(data, res);
+  }
+};
+
 exports.insert = async function (req, res) {
   var data = { data: req.body };
   try {
     let body = req.body;
     var require_data = [
-      "pos_branch_id",
+      "pos_branch_code",
       "mst_item_variant_id",
       "pos_discount_starttime",
       "pos_discount_endtime",

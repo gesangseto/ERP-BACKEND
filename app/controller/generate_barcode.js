@@ -9,8 +9,6 @@ exports.generateBarcode = async function (req, res) {
   try {
     let body = req.query || req.body;
     const { text, bcid, scale, height, includetext, textxalign } = body;
-
-    console.log(body);
     let configuration = await get_configuration({});
     let conf = configuration.barcode_config;
     if (isJsonString(conf)) {

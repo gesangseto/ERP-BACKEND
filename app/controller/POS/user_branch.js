@@ -2,25 +2,16 @@
 const response = require("../../response");
 const models = require("../../models");
 const { strToBool } = require("../../utils");
-const { getPosBranch, getPosUserBranch, getPosUser } = require("./get_data");
+const { getPosUserBranch, getPosUser } = require("./get_data");
 
 exports.get = async function (req, res) {
   var data = { data: req.query };
   try {
-    // LINE WAJIB DIBAWA
-
-    const require_data = [];
-    for (const row of require_data) {
-      if (!req.query[`${row}`]) {
-        throw new Error(`${row} is required!`);
-      }
-    }
-    // LINE WAJIB DIBAWA
     const check = await getPosUserBranch(req.query);
     if (req.query.pos_branch_id) {
       let newData = [];
       for (const it of check.data) {
-        let sql = await getPosUser({ pos_branch_id: it.pos_branch_id });
+        let sql = await getPosUser({ pos_branch_code: it.pos_branch_code });
         it.detail = sql.data;
         newData.push(it);
       }
@@ -38,7 +29,7 @@ exports.insert = async function (req, res) {
   var data = { data: req.body };
   try {
     let body = req.body;
-    var req_data = ["user_id", "pos_branch_id"];
+    var req_data = ["user_id", "pos_branch_code"];
     for (const row of req_data) {
       if (!body[`${row}`]) {
         throw new Error(`${row} is required!`);
@@ -80,7 +71,7 @@ exports.update = async function (req, res) {
     }
     let check = await getPosUser({ user_id: body.user_id, status: 1 });
     for (const it of check.data) {
-      if (body.pos_user_branch_id != it.pos_user_branch_id) {
+      if (body.pos_branch_code != it.pos_branch_code) {
         if (strToBool(it.is_cashier)) {
           throw new Error(
             `Cannot change user cause the user is cashier on other branch!`

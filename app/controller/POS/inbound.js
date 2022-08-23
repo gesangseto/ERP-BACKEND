@@ -35,7 +35,6 @@ exports.getInbound = async function (req, res) {
       }
       newData.push(_data);
     }
-    // console.log(newData);
     check.data = newData;
     return response.response(check, res, false);
   } catch (error) {

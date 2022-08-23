@@ -45,7 +45,7 @@ exports.insert = async function (req, res) {
   try {
     let body = req.body;
     body.pos_receive_id = utils.generateId();
-    var req_data = ["pos_branch_name", "pos_branch_address"];
+    var req_data = ["pos_branch_name", "pos_branch_code", "pos_branch_address"];
     for (const row of req_data) {
       if (!body[`${row}`]) {
         throw new Error(`${row} is required!`);
@@ -72,7 +72,7 @@ exports.update = async function (req, res) {
     let body = req.body;
     body.pos_receive_id = utils.generateId();
     let items = [];
-    var req_data = ["pos_branch_id", "pos_branch_name", "pos_branch_address"];
+    var req_data = ["pos_branch_id"];
     for (const row of req_data) {
       if (!body[`${row}`]) {
         throw new Error(`${row} is required!`);

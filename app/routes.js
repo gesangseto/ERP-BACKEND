@@ -107,6 +107,7 @@ module.exports = function (app) {
   // DISCOUNT
   var _pos_dis = require("./controller/POS/discount");
   app.route("/api/master/pos/discount").get(_pos_dis.get);
+  app.route("/api/master/pos/discount/by-user").get(_pos_dis.getByUser);
   app.route("/api/master/pos/discount").put(_pos_dis.insert);
   app.route("/api/master/pos/discount").post(_pos_dis.update);
   app.route("/api/master/pos/discount").delete(_pos_dis.delete);

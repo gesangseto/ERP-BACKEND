@@ -25,7 +25,6 @@ exports.get = async function (req, res) {
     if (check.data.length == 1 && req.query.pos_item_stock_id) {
       let it = check.data[0];
       let _variant = await getVariantItem({ mst_item_id: it.mst_item_id });
-      console.log(_variant);
       // _variant = await models.exec_query(_variant);
       check.data[0].variant = _variant.data;
     }

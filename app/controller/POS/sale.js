@@ -259,7 +259,6 @@ exports.payment = async function (req, res) {
       }
     }
     let sale = await getSale(body);
-    console.log(sale);
     if (sale.error || sale.data.length == 0) {
       throw new Error(`Sale not found!`);
     }

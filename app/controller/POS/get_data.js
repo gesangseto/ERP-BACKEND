@@ -415,11 +415,34 @@ async function getCustomer(data = Object) {
 }
 
 async function getDiscount(data = Object) {
-  let _sql = `SELECT *, a.status AS status, a.flag_delete AS flag_delete
+  const genSearch = (search) => {
+    return ` 
+  AND (LOWER(a.pos_branch_code) LIKE LOWER('%${search}%')
+  OR  LOWER(b.mst_item_variant_name) LIKE LOWER('%${search}%')
+  OR  LOWER(c.mst_item_name) LIKE LOWER('%${search}%')
+  OR  LOWER(b.barcode) LIKE LOWER('%${search}%')  
+  OR  LOWER(CASE WHEN a.status=1 THEN 'Active' ELSE 'Inactive' end) LIKE LOWER('%${search}%') ) `;
+  };
+  let _sql = `SELECT 
+    MAX(a.pos_discount_id) as pos_discount_id ,
+    MAX(a.mst_item_variant_id) as mst_item_variant_id ,
+    MAX(a.discount) as discount ,
+    MAX(a.pos_discount_starttime) as pos_discount_starttime ,
+    MAX(a.pos_discount_endtime) as pos_discount_endtime ,
+    MAX(a.discount_min_qty) as discount_min_qty ,
+    MAX(a.discount_max_qty) as discount_max_qty ,
+    MAX(a.discount_free_qty) as discount_free_qty ,
+    MAX(a.pos_branch_code) as pos_branch_code ,
+    MAX(a.status) as status ,
+    MAX(a.flag_delete) as flag_delete,
+    MAX(b.mst_item_variant_name) as mst_item_variant_name,
+    MAX(b.barcode) as barcode,
+    MAX(c.mst_item_name) as mst_item_name
   FROM pos_discount AS a 
   LEFT JOIN mst_item_variant AS b ON a.mst_item_variant_id = b.mst_item_variant_id
   LEFT JOIN mst_item AS c ON b.mst_item_id = c.mst_item_id
-  LEFT JOIN pos_branch AS br ON a.pos_branch_id = br.pos_branch_id
+  LEFT JOIN pos_user_branch AS pub ON pub.pos_branch_code = a.pos_branch_code
+  
   WHERE a.flag_delete='0' `;
   if (data.hasOwnProperty("pos_discount_id")) {
     _sql += ` AND a.pos_discount_id = '${data.pos_discount_id}'`;
@@ -435,6 +458,25 @@ async function getDiscount(data = Object) {
   }
   if (data.hasOwnProperty("status")) {
     _sql += ` AND a.status = '${data.status}'`;
+  }
+  if (data.hasOwnProperty("pos_branch_code")) {
+    _sql += ` AND pub.pos_branch_code = '${data.pos_branch_code}'`;
+  }
+  if (data.hasOwnProperty("user_id")) {
+    _sql += ` AND pub.user_id = '${data.user_id}'`;
+  }
+  if (data.hasOwnProperty("search")) {
+    if (isJsonString(data.search)) {
+      for (const it of JSON.parse(data.search)) {
+        _sql += genSearch(it);
+      }
+    } else {
+      _sql += genSearch(data.search);
+    }
+  }
+  _sql += `GROUP BY a.pos_discount_id`;
+  if (data.hasOwnProperty("page") && data.hasOwnProperty("limit")) {
+    _sql += getLimitOffset(data.page, data.limit);
   }
   let _data = await get_query(_sql);
   return _data;
@@ -643,12 +685,14 @@ async function getTrxDetailItem(data = Object) {
   let _data = await exec_query(_sql);
   return _data;
 }
+
 async function getPosBranch(data = Object) {
   const genSearch = (search) => {
     return ` 
   AND (CAST(a.pos_branch_id AS TEXT) LIKE LOWER('%${search}%')
   OR  CAST(a.created_at AS TEXT) LIKE LOWER('%${search}%')
   OR  LOWER(a.pos_branch_name) LIKE LOWER('%${search}%')
+  OR  LOWER(a.pos_branch_code) LIKE LOWER('%${search}%')
   OR  LOWER(a.pos_branch_desc) LIKE LOWER('%${search}%')
   OR  LOWER(a.pos_branch_address) LIKE LOWER('%${search}%')
   OR  CAST(a.pos_branch_phone AS TEXT) LIKE LOWER('%${search}%')
@@ -667,7 +711,6 @@ async function getPosBranch(data = Object) {
       _sql += genSearch(data.search);
     }
   }
-  console.log(_sql);
   let _data = await get_query(_sql);
   return _data;
 }
@@ -678,12 +721,12 @@ async function getPosUserBranch(data = Object) {
   AND (CAST(a.pos_branch_id AS TEXT) LIKE LOWER('%${search}%')
   OR  CAST(a.created_at AS TEXT) LIKE LOWER('%${search}%')
   OR  LOWER(a.pos_branch_name) LIKE LOWER('%${search}%')
+  OR  LOWER(a.pos_branch_code) LIKE LOWER('%${search}%')
   OR  LOWER(a.pos_branch_desc) LIKE LOWER('%${search}%')
   OR  LOWER(a.pos_branch_address) LIKE LOWER('%${search}%')
   OR  CAST(a.pos_branch_phone AS TEXT) LIKE LOWER('%${search}%')
   OR  LOWER(c.user_name) LIKE LOWER('%${search}%')
-  OR  LOWER(c.user_email) LIKE LOWER('%${search}%')
-  OR  LOWER(CASE WHEN a.status=1 THEN 'Active' ELSE 'Inactive' end) LIKE LOWER('%${search}%') ) `;
+  OR  LOWER(c.user_email) LIKE LOWER('%${search}%')) `;
   };
   let _sql = `SELECT 
   MAX(a.pos_branch_id) AS pos_branch_id,
@@ -694,6 +737,7 @@ async function getPosUserBranch(data = Object) {
   STRING_AGG(coalesce(b.pos_user_branch_id::character varying,''), ';') as pos_user_branch_id,
   MAX(a.pos_branch_name) AS pos_branch_name, 
   MAX(a.pos_branch_desc) AS pos_branch_desc,
+  MAX(a.pos_branch_code) AS pos_branch_code,
   MAX(a.pos_branch_phone) AS pos_branch_phone,
   MAX(a.pos_branch_address) AS pos_branch_address,
   COUNT(*) FILTER (WHERE b.is_cashier IS TRUE) AS total_cashier,
@@ -702,7 +746,7 @@ async function getPosUserBranch(data = Object) {
   STRING_AGG(c.user_email,',') AS user_email
   FROM pos_branch AS a 
   LEFT JOIN pos_user_branch AS b 
-    ON b.pos_branch_id = a.pos_branch_id 
+    ON b.pos_branch_code = a.pos_branch_code 
     AND b.flag_delete = 0
     -- AND b.status = 1
   LEFT JOIN "user" AS c ON b.user_id =c.user_id 
@@ -713,8 +757,14 @@ async function getPosUserBranch(data = Object) {
   if (data.hasOwnProperty("pos_user_branch_id")) {
     _sql += ` AND a.pos_user_branch_id = '${data.pos_user_branch_id}'`;
   }
+  if (data.hasOwnProperty("pos_branch_code")) {
+    _sql += ` AND a.pos_branch_code = '${data.pos_branch_code}'`;
+  }
   if (data.hasOwnProperty("user_id")) {
     _sql += ` AND b.user_id = '${data.user_id}'`;
+  }
+  if (data.hasOwnProperty("status")) {
+    _sql += ` AND a.status = '${data.status}'`;
   }
   if (data.hasOwnProperty("search")) {
     if (isJsonString(data.search)) {
@@ -729,13 +779,14 @@ async function getPosUserBranch(data = Object) {
   let _data = await get_query(_sql);
   return _data;
 }
+
 async function getPosUser(data = Object) {
   let _sql = `SELECT  * , a.status AS status, a.flag_delete AS flag_delete
   FROM pos_user_branch AS a
   LEFT JOIN "user" AS b ON b.user_id = a.user_id 
   WHERE a.flag_delete = 0  `;
-  if (data.hasOwnProperty("pos_branch_id")) {
-    _sql += ` AND a.pos_branch_id = '${data.pos_branch_id}'`;
+  if (data.hasOwnProperty("pos_branch_code")) {
+    _sql += ` AND a.pos_branch_code = '${data.pos_branch_code}'`;
   }
   if (data.hasOwnProperty("pos_user_branch_id")) {
     _sql += ` AND a.pos_user_branch_id = '${data.pos_user_branch_id}'`;
