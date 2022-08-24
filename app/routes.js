@@ -84,9 +84,11 @@ module.exports = function (app) {
   var _pos_utils = require("./controller/POS/utils");
   app.route("/api/transaction/pos/cleanup").post(_pos_utils.cleanup);
   var _pos_in = require("./controller/POS/inbound");
-  app.route("/api/transaction/pos/inbound").get(_pos_in.getInbound);
+  app.route("/api/transaction/pos/inbound").get(_pos_in.get);
+  app.route("/api/transaction/pos/inbound/by-user").get(_pos_in.getByUser);
   var _pos_stock = require("./controller/POS/stock");
   app.route("/api/transaction/pos/stock").get(_pos_stock.get);
+  app.route("/api/transaction/pos/stock/by-user").get(_pos_stock.getByUser);
 
   /*
   MASTER
@@ -122,6 +124,7 @@ module.exports = function (app) {
   // RECEIVE
   var _pos_rec = require("./controller/POS/receive");
   app.route("/api/transaction/pos/receive").get(_pos_rec.get);
+  app.route("/api/transaction/pos/receive/by-user").get(_pos_rec.getByUser);
   app.route("/api/transaction/pos/receive").put(_pos_rec.insert);
   app.route("/api/transaction/pos/receive").post(_pos_rec.approve);
   // SALE

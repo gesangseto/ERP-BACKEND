@@ -139,6 +139,22 @@ function isInt(value) {
   );
 }
 
+function isArray(value) {
+  if (value === undefined || value.length == 0) {
+    return false;
+  } else {
+    return true;
+  }
+}
+
+function isString(value) {
+  if (typeof value === "string" || value instanceof String) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
 function generateId() {
   return moment().format("x");
 }
@@ -245,6 +261,8 @@ module.exports = {
   encrypt,
   super_menu,
   isInt,
+  isArray,
+  isString,
   treeify,
   hasDuplicatesArray,
   getFirstWord,

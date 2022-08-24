@@ -3,7 +3,7 @@ const response = require("../../response");
 const models = require("../../models");
 const { isDate, diffDate } = require("../../utils");
 const moment = require("moment");
-const { getDiscount } = require("./get_data");
+const { getDiscount, getPosUserBranchCode } = require("./get_data");
 
 exports.get = async function (req, res) {
   var data = { data: req.query };
@@ -34,12 +34,16 @@ exports.getByUser = async function (req, res) {
     // LINE WAJIB DIBAWA
 
     let user_id = req.headers.user_id;
-    let check = {};
-    if (user_id === 0) {
-      check = await getDiscount({ ...req.query });
-    } else {
-      check = await getDiscount({ ...req.query, user_id: user_id });
-    }
+    let branch = await getPosUserBranchCode({ user_id: user_id });
+    let check = await getDiscount({ ...req.query, pos_branch_code: branch });
+
+    // let user_id = req.headers.user_id;
+    // let check = {};
+    // if (user_id === 0) {
+    //   check = await getDiscount({ ...req.query });
+    // } else {
+    //   check = await getDiscount({ ...req.query, user_id: user_id });
+    // }
     let upd = `UPDATE pos_discount set status = '0' WHERE pos_discount_endtime < now(); `;
     await models.exec_query(upd);
     // const check = await getDiscount(req.query);
@@ -87,6 +91,7 @@ exports.insert = async function (req, res) {
     }
     let check = await getDiscount({
       mst_item_variant_id: body.mst_item_variant_id,
+      pos_branch_code: body.pos_branch_code,
       status: 1,
     });
     if (check.data.length == 1) {

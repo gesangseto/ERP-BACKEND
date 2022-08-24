@@ -8,21 +8,33 @@ const {
   proccessToStock,
   getReceive,
   getDetailReceive,
+  getPosUserBranchCode,
 } = require("./get_data");
 
 exports.get = async function (req, res) {
   var data = { data: req.query };
   try {
-    // LINE WAJIB DIBAWA
-
-    const require_data = [];
-    for (const row of require_data) {
-      if (!req.query[`${row}`]) {
-        throw new Error(`${row} is required!`);
-      }
-    }
-    // LINE WAJIB DIBAWA
     const check = await getReceive(req.query);
+    if (check.data.length > 0 && req.query.hasOwnProperty("pos_receive_id")) {
+      let child = await getDetailReceive({
+        pos_receive_id: req.query.pos_receive_id,
+      });
+      check.data[0].detail = child.data;
+    }
+    return response.response(check, res);
+  } catch (error) {
+    data.error = true;
+    data.message = `${error}`;
+    return response.response(data, res);
+  }
+};
+
+exports.getByUser = async function (req, res) {
+  var data = { data: req.query };
+  try {
+    let user_id = req.headers.user_id;
+    let branch = await getPosUserBranchCode({ user_id: user_id });
+    let check = await getReceive({ ...req.query, pos_branch_code: branch });
     if (check.data.length > 0 && req.query.hasOwnProperty("pos_receive_id")) {
       let child = await getDetailReceive({
         pos_receive_id: req.query.pos_receive_id,
@@ -44,7 +56,7 @@ exports.insert = async function (req, res) {
     body.pos_receive_id = utils.generateId();
     body.status = 0;
     let items = [];
-    var req_data = ["mst_supplier_id", "item"];
+    var req_data = ["mst_supplier_id", "pos_branch_code", "item"];
     for (const row of req_data) {
       if (!body[`${row}`]) {
         throw new Error(`${row} is required!`);
