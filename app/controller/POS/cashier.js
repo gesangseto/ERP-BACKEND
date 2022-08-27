@@ -1,23 +1,16 @@
 "use strict";
 const response = require("../../response");
 const models = require("../../models");
-const { generateId } = require("../../utils");
-const { getCashier, getSaleByCashier } = require("./get_data");
+const { generateId, isArray } = require("../../utils");
+const {
+  getCashier,
+  getSaleByCashier,
+  getPosUserBranchCode,
+} = require("./get_data");
 
 exports.get = async function (req, res) {
   var data = { data: req.query };
   try {
-    // LINE WAJIB DIBAWA
-
-    const require_data = [];
-    for (const row of require_data) {
-      if (!req.query[`${row}`]) {
-        data.error = true;
-        data.message = `${row} is required!`;
-        return response.response(data, res);
-      }
-    }
-    // LINE WAJIB DIBAWA
     let check = await getCashier(req.query);
     return response.response(check, res);
   } catch (error) {
@@ -30,25 +23,34 @@ exports.get = async function (req, res) {
 exports.openCashier = async function (req, res) {
   var data = { data: req.body };
   try {
-    let pos_trx_sale_id = generateId();
     req.body.created_by = req.headers.user_id;
 
     var require_data = ["pos_cashier_capital_cash", "pos_cashier_shift"];
     for (const row of require_data) {
       if (!req.body[`${row}`]) {
-        data.error = true;
-        data.message = `${row} is required!`;
-        return response.response(data, res);
+        throw new Error(`${row} is required!`);
       }
     }
     let body = req.body;
+
+    let user_id = req.headers.user_id;
+    let branch = await getPosUserBranchCode({
+      user_id: user_id,
+      status: 1,
+      is_cashier: true,
+    });
+    if (!isArray(branch)) {
+      throw new Error(`User is not cashier`);
+    }
+    branch = branch[0];
+    body = { ...body, pos_branch_code: branch };
     let _check = await models.exec_query(
       `SELECT * FROM pos_cashier WHERE created_by ='${req.body.created_by}' AND is_cashier_open IS TRUE`
     );
     if (_check.data.length > 0) {
-      data.error = true;
-      data.message = `Cashier is already open at ${_check.data[0].created_at}`;
-      return response.response(data, res);
+      throw new Error(
+        `Cashier is already open at ${_check.data[0].created_at}`
+      );
     }
     let _res = await models.insert_query({ data: body, table: "pos_cashier" });
     return response.response(_res, res);

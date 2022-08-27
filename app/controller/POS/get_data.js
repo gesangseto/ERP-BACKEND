@@ -963,6 +963,9 @@ async function getPosUserBranchCode(data = Object) {
   if (data.hasOwnProperty("status")) {
     _sql += ` AND a.status = '${data.status}'`;
   }
+  if (data.hasOwnProperty("is_cashier")) {
+    _sql += ` AND a.is_cashier IS ${data.is_cashier}`;
+  }
   _sql += ` GROUP BY a.pos_branch_code ; `;
   let _data = await get_query(_sql);
   if (_data.total == 1) {
