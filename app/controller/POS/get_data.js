@@ -53,14 +53,8 @@ async function getReceive(data = Object, onlyQuery = false) {
   LEFT JOIN "user" AS e ON a.created_by = e.user_id
   WHERE 1+1=2 `;
 
-  // GET BRANCH CODE
   if (data.hasOwnProperty("pos_branch_code")) {
-    if (isArray(data.pos_branch_code)) {
-      let str = JSON.stringify(data.pos_branch_code).replace(/"/g, "'");
-      _sql += ` AND a.pos_branch_code = ANY(ARRAY${str})`;
-    } else if (isString(data.pos_branch_code)) {
-      _sql += ` AND a.pos_branch_code = '${data.pos_branch_code}'`;
-    }
+    _sql += genFilterBranch(data.pos_branch_code);
   }
 
   if (data.hasOwnProperty("pos_receive_id")) {
@@ -184,6 +178,7 @@ async function getDestroy(data = Object, onlyQuery = false) {
   let _sql = `
   SELECT 
   MAX(a.pos_trx_destroy_id) as pos_trx_destroy_id,
+  MAX(a.pos_branch_code) as pos_branch_code,
   MAX(a.created_at) as created_at,
   MAX(a.created_by) as created_by,
   MAX(d.user_name) as user_name,
@@ -199,6 +194,10 @@ async function getDestroy(data = Object, onlyQuery = false) {
   LEFT JOIN mst_item AS c ON b.mst_item_id = c.mst_item_id
   LEFT JOIN "user" AS d ON a.created_by = d.user_id
   WHERE 1+1=2 `;
+  // GET BRANCH CODE
+  if (data.hasOwnProperty("pos_branch_code")) {
+    _sql += genFilterBranch(data.pos_branch_code);
+  }
   if (data.hasOwnProperty("pos_trx_destroy_id")) {
     _sql += ` AND a.pos_trx_destroy_id = '${data.pos_trx_destroy_id}'`;
   }
@@ -271,12 +270,7 @@ async function getInbound(data = Object, onlyQuery = false) {
 
   // GET BRANCH CODE
   if (data.hasOwnProperty("pos_branch_code")) {
-    if (isArray(data.pos_branch_code)) {
-      let str = JSON.stringify(data.pos_branch_code).replace(/"/g, "'");
-      _sql += ` AND a.pos_branch_code = ANY(ARRAY${str})`;
-    } else if (isString(data.pos_branch_code)) {
-      _sql += ` AND a.pos_branch_code = '${data.pos_branch_code}'`;
-    }
+    _sql += genFilterBranch(data.pos_branch_code);
   }
 
   if (data.hasOwnProperty("pos_trx_inbound_id")) {
@@ -390,6 +384,7 @@ async function getSale(data = Object) {
   const genSearch = (search) => {
     return ` 
   AND (CAST(a.pos_trx_sale_id AS TEXT) LIKE LOWER('%${search}%')
+  OR  LOWER(a.pos_branch_code) LIKE LOWER('%${search}%')
   OR  LOWER(b.mst_customer_name) LIKE LOWER('%${search}%')
   OR  LOWER(b.mst_customer_phone) LIKE LOWER('%${search}%') 
   OR  LOWER(b.mst_customer_email) LIKE LOWER('%${search}%') ) `;
@@ -406,12 +401,25 @@ async function getSale(data = Object) {
   if (data.hasOwnProperty("pos_trx_sale_id")) {
     _sql += ` AND a.pos_trx_sale_id = '${data.pos_trx_sale_id}'`;
   }
+  if (data.hasOwnProperty("created_by")) {
+    _sql += ` AND a.created_by = '${data.created_by}'`;
+  }
   if (data.hasOwnProperty("mst_customer_id")) {
     _sql += ` AND b.mst_customer_id = '${data.mst_customer_id}'`;
   }
   if (data.hasOwnProperty("is_paid")) {
     _sql += ` AND a.is_paid = '${data.is_paid}'`;
   }
+  if (data.hasOwnProperty("between")) {
+    if (isArray(data.between) && data.between.length === 2) {
+      _sql += ` AND a.created_at BETWEEN '${data.between[0]}'::timestamp AND  '${data.between[1]}'::timestamp`;
+    }
+  }
+  // GET BRANCH CODE
+  if (data.hasOwnProperty("pos_branch_code")) {
+    _sql += genFilterBranch(data.pos_branch_code);
+  }
+
   if (data.hasOwnProperty("search")) {
     if (isJsonString(data.search)) {
       for (const it of JSON.parse(data.search)) {
@@ -427,6 +435,7 @@ async function getSale(data = Object) {
   let _data = await get_query(_sql);
   return _data;
 }
+
 async function getReportSale(data = Object) {
   const genSearch = (search) => {
     return ` 
@@ -485,6 +494,7 @@ async function getReportCashierSale(data = Object) {
   };
   let _sql = `SELECT 
   MAX(a.pos_cashier_id) AS pos_cashier_id,
+  MAX(a.pos_branch_code) AS pos_branch_code,
   MAX(a.pos_cashier_shift) AS pos_cashier_shift,
   MAX(a.pos_cashier_capital_cash) AS pos_cashier_capital_cash,
   BOOL_OR(a.is_cashier_open) AS is_cashier_open,
@@ -503,6 +513,10 @@ LEFT JOIN pos_trx_sale as c on a.created_by = c.created_by
   AND c.created_at >=a.created_at AND (CASE WHEN a.updated_at is not null THEN c.created_at <= a.updated_at ELSE 1+1=2 END)
 LEFT JOIN pos_trx_detail AS d ON c.pos_trx_sale_id = d.pos_trx_ref_id 
 WHERE a.flag_delete='0'  `;
+
+  if (data.hasOwnProperty("pos_branch_code")) {
+    _sql += genFilterBranch(data.pos_branch_code);
+  }
   if (data.hasOwnProperty("pos_cashier_id")) {
     _sql += ` AND a.pos_cashier_id = '${data.pos_cashier_id}'`;
   }
@@ -534,6 +548,7 @@ async function getReturn(data = Object) {
   a.created_by AS created_by
       FROM pos_trx_return AS a
       LEFT JOIN mst_customer AS b ON a.mst_customer_id = b.mst_customer_id
+      LEFT JOIN "user" AS usr ON usr.user_id = a.created_by
       WHERE a.flag_delete='0' `;
   if (data.hasOwnProperty("pos_trx_return_id")) {
     _sql += ` AND a.pos_trx_return_id = '${data.pos_trx_return_id}'`;
@@ -546,6 +561,9 @@ async function getReturn(data = Object) {
   }
   if (data.hasOwnProperty("is_returned")) {
     _sql += ` AND a.is_returned = '${data.is_returned}'`;
+  }
+  if (data.hasOwnProperty("pos_branch_code")) {
+    _sql += genFilterBranch(data.pos_branch_code);
   }
   let _data = await exec_query(_sql);
   return _data;
@@ -590,12 +608,7 @@ async function getDiscount(data = Object) {
   WHERE a.flag_delete='0' `;
   // GET BRANCH CODE
   if (data.hasOwnProperty("pos_branch_code")) {
-    if (isArray(data.pos_branch_code)) {
-      let str = JSON.stringify(data.pos_branch_code).replace(/"/g, "'");
-      _sql += ` AND a.pos_branch_code = ANY(ARRAY${str})`;
-    } else if (isString(data.pos_branch_code)) {
-      _sql += ` AND a.pos_branch_code = '${data.pos_branch_code}'`;
-    }
+    _sql += genFilterBranch(data.pos_branch_code);
   }
 
   if (data.hasOwnProperty("pos_discount_id")) {
@@ -715,15 +728,9 @@ async function getStockItem(data = Object) {
       AND (d.pos_discount_starttime <= now() AND pos_discount_endtime >= now())
       AND d.flag_delete = '0'
     WHERE 1+1=2  `;
-
   // GET BRANCH CODE
   if (data.hasOwnProperty("pos_branch_code")) {
-    if (isArray(data.pos_branch_code)) {
-      let str = JSON.stringify(data.pos_branch_code).replace(/"/g, "'");
-      _sql += ` AND a.pos_branch_code = ANY(ARRAY${str})`;
-    } else if (isString(data.pos_branch_code)) {
-      _sql += ` AND a.pos_branch_code = '${data.pos_branch_code}'`;
-    }
+    _sql += genFilterBranch(data.pos_branch_code);
   }
 
   if (data.hasOwnProperty("pos_item_stock_id") && data.pos_item_stock_id) {
@@ -805,10 +812,12 @@ async function proccessToStock(data) {
   });
   let _sql = "";
   for (const it of reduce) {
-    console.log(it);
     let _item = await getStockItem(it);
     it.qty = it.qty_stock ?? it.qty;
     if (_item.data.length == 0) {
+      if (data.hasOwnProperty("pos_trx_destroy_id")) {
+        return { error: true, message: "Stock not found for this branch" };
+      }
       _sql += await generate_query_insert({
         values: it,
         table: "pos_item_stock",
@@ -939,7 +948,6 @@ async function getPosUserBranch(data = Object) {
     }
   }
   _sql += ` GROUP BY a.pos_branch_id ; `;
-  console.log(_sql);
   let _data = await get_query(_sql);
   return _data;
 }
@@ -999,6 +1007,16 @@ async function getPosUser(data = Object) {
   let _data = await get_query(_sql);
   return _data;
 }
+const genFilterBranch = (branch_code) => {
+  let _sql = "";
+  if (isArray(branch_code)) {
+    let str = JSON.stringify(branch_code).replace(/"/g, "'");
+    _sql += ` AND a.pos_branch_code = ANY(ARRAY${str})`;
+  } else if (isString(branch_code)) {
+    _sql += ` AND a.pos_branch_code = '${branch_code}'`;
+  }
+  return _sql;
+};
 
 module.exports = {
   getReceive,

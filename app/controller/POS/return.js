@@ -9,21 +9,13 @@ const {
   getReturn,
   proccessToInbound,
   proccessToStock,
+  getPosUserBranchCode,
 } = require("./get_data");
 const moment = require("moment");
 
-exports.getReturn = async function (req, res) {
+exports.get = async function (req, res) {
   var data = { data: req.query };
   try {
-    // LINE WAJIB DIBAWA
-
-    const require_data = [];
-    for (const row of require_data) {
-      if (!req.query[`${row}`]) {
-        throw new Error(`Please open cashier first!`);
-      }
-    }
-    // LINE WAJIB DIBAWA
     let check = await getReturn(req.query);
     if (check.data.length == 1 && req.query.pos_trx_return_id) {
       let it = check.data[0];
@@ -39,7 +31,33 @@ exports.getReturn = async function (req, res) {
   }
 };
 
-exports.newReturn = async function (req, res) {
+exports.getByBranch = async function (req, res) {
+  var data = { data: req.query };
+  try {
+    // LINE WAJIB DIBAWA
+
+    let user_id = req.headers.user_id;
+    let branch = await getPosUserBranchCode({ user_id: user_id });
+    let check = await getReturn({
+      ...req.query,
+      pos_branch_code: branch.pos_branch_code,
+    });
+    if (check.data.length == 1 && req.query.pos_trx_return_id) {
+      let it = check.data[0];
+      it.pos_trx_ref_id = req.query.pos_trx_return_id;
+      let _detail = await getTrxDetailItem(it);
+      check.data[0].detail = _detail.data;
+    }
+
+    return response.response(check, res, false);
+  } catch (error) {
+    data.error = true;
+    data.message = `${error}`;
+    return response.response(data, res);
+  }
+};
+
+exports.insert = async function (req, res) {
   var data = { data: req.body };
   try {
     let today = moment().format("YYYY-MM-DD");
@@ -123,7 +141,7 @@ exports.newReturn = async function (req, res) {
   }
 };
 
-exports.approveReturn = async function (req, res) {
+exports.approve = async function (req, res) {
   var data = { data: req.body };
   try {
     let body = req.body;
@@ -157,17 +175,8 @@ exports.approveReturn = async function (req, res) {
     if (body.is_approve == "true") {
       _allQuery += await proccessToInbound(_returnHeader);
       _allQuery += await proccessToStock(body);
-      // let param = {
-      //   pos_trx_sale_id: _returnHeader.pos_trx_sale_id,
-      //   status: 0,
-      //   flag_delete: 1,
-      // };
-      // _allQuery += await models.generate_query_update({
-      //   values: param,
-      //   table: "pos_trx_sale",
-      //   key: "pos_trx_sale_id",
-      // });
     }
+
     let _res = await models.exec_query(`${_allQuery}`);
     return response.response(_res, res);
   } catch (error) {

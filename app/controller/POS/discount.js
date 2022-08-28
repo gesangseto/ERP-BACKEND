@@ -28,7 +28,7 @@ exports.get = async function (req, res) {
   }
 };
 
-exports.getByUser = async function (req, res) {
+exports.getByBranch = async function (req, res) {
   var data = { data: req.query };
   try {
     // LINE WAJIB DIBAWA
@@ -37,13 +37,6 @@ exports.getByUser = async function (req, res) {
     let branch = await getPosUserBranchCode({ user_id: user_id });
     let check = await getDiscount({ ...req.query, pos_branch_code: branch });
 
-    // let user_id = req.headers.user_id;
-    // let check = {};
-    // if (user_id === 0) {
-    //   check = await getDiscount({ ...req.query });
-    // } else {
-    //   check = await getDiscount({ ...req.query, user_id: user_id });
-    // }
     let upd = `UPDATE pos_discount set status = '0' WHERE pos_discount_endtime < now(); `;
     await models.exec_query(upd);
     // const check = await getDiscount(req.query);

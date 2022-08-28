@@ -140,7 +140,7 @@ function isInt(value) {
 }
 
 function isArray(value) {
-  if (value === undefined || value.length == 0) {
+  if (value === undefined || value.length == 0 || !Array.isArray(value)) {
     return false;
   } else {
     return true;

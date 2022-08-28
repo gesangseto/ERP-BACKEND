@@ -29,7 +29,7 @@ exports.get = async function (req, res) {
   }
 };
 
-exports.getByUser = async function (req, res) {
+exports.getByBranch = async function (req, res) {
   var data = { data: req.query };
   try {
     let user_id = req.headers.user_id;
