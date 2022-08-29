@@ -70,7 +70,6 @@ exports.update = async function (req, res) {
       data.message = `is_approve must boolean!`;
       return response.response(data, res);
     }
-    console.log(req.body);
     if (req.body.is_approve == false && !req.body.rejected_note) {
       data.error = true;
       data.message = `rejected_note is required!`;

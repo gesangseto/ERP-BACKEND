@@ -57,7 +57,6 @@ exports.user_login = async function (req, res) {
       check.message = "Wrong Username Or Password !";
       return response.response(check, res);
     }
-    // console.log(configuration);
     if (check.data[0]) {
       var _temp = {
         user_id: check.data[0].user_id,

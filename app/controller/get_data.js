@@ -52,7 +52,6 @@ async function getVariantItem(data = Object, onlyQuery = false) {
   if (data.hasOwnProperty("page") && data.hasOwnProperty("limit")) {
     _sql += getLimitOffset(data.page, data.limit);
   }
-  console.log(_sql);
   if (onlyQuery) {
     return _sql;
   }

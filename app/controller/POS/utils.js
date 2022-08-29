@@ -37,7 +37,6 @@ const generateTotalDiscount = (buyQty, item) => {
   let disc_price = numberPercent(item.mst_item_variant_price, -Math.abs(disc));
   let price = item.mst_item_variant_price;
   let total = 0;
-  console.log(item);
   if (buyQty >= min_qty) {
     // DISCOUNT
     if (disc && disc !== "0") {
@@ -63,7 +62,6 @@ const generateTotalDiscount = (buyQty, item) => {
   if (total == 0) {
     total = price * buyQty;
   }
-  console.log(total);
   return total;
 };
 

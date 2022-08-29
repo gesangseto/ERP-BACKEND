@@ -1,13 +1,64 @@
 "use strict";
 const response = require("../../response");
 const models = require("../../models");
+const moment = require("moment-timezone");
 const utils = require("../../utils");
-const { getReportSale, getReportCashierSale } = require("./get_data");
+const {
+  getReportCashierSale,
+  getPosUserBranchCode,
+  getSale,
+} = require("./get_data");
 
-exports.reportSale = async function (req, res) {
+exports.get = async function (req, res) {
   var data = { data: req.query };
   try {
-    let check = await getReportSale(req.query);
+    let check = await getReportCashierSale({
+      ...req.query,
+    });
+    if (req.query.pos_cashier_id) {
+      let newData = [];
+      for (const it of check.data) {
+        it.created_at = moment(it.created_at).format("YYYY-MM-DD hh:mm:ss");
+        it.updated_at = moment(it.updated_at).format("YYYY-MM-DD hh:mm:ss");
+        it.updated_at =
+          it.updated_at === "Invalid date"
+            ? moment(new Date()).format("YYYY-MM-DD hh:mm:ss")
+            : it.updated_at;
+        let sale = await getSale({
+          between: [it.created_at, it.updated_at],
+          created_by: it.user_id,
+        });
+        it.detail = sale.data;
+        newData.push(it);
+      }
+      check.data = newData;
+    }
+    // console.log(check);
+    return response.response(check, res, false);
+  } catch (error) {
+    data.error = true;
+    data.message = `${error}`;
+    return response.response(data, res);
+  }
+};
+
+exports.getByBranch = async function (req, res) {
+  var data = { data: req.query };
+  try {
+    let user_id = req.headers.user_id;
+    let branch = await getPosUserBranchCode({ user_id: user_id });
+    let check = await getReportCashierSale({
+      ...req.query,
+      pos_branch_code: branch,
+    });
+
+    if (req.query.pos_cashier_id) {
+      console.log(req.query);
+      let newData = [];
+      for (const it of check.data) {
+      }
+      check.data = newData;
+    }
     return response.response(check, res, false);
   } catch (error) {
     data.error = true;

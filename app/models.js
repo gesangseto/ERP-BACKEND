@@ -1,6 +1,6 @@
 const Pool = require("pg").Pool;
 const moment = require("moment");
-const { isInt, getFirstWord } = require("./utils");
+const { isInt, getFirstWord, strBetween } = require("./utils");
 
 var db_config = {
   host: process.env.DB_HOST,
@@ -150,6 +150,60 @@ async function get_query(query_sql, generate_approval = true) {
   _where = _where[1].split("LIMIT") || _where[1].split("limit");
   _where[0] = _where[0].split("ORDER BY")[0] || _where[0].split("order by")[0];
   var count = `SELECT COUNT(1) OVER() AS total FROM ${_where[0]}`;
+  count = await exec_query(count);
+  if (count.error) {
+    _data.error = true;
+    _data.message = count.message;
+    return _data;
+  } else if (count.total === 0) {
+    _data.error = false;
+    _data.message = count.message;
+    return _data;
+  }
+  count = count.data[0].total ? count.data[0].total : 0;
+  let table = getFirstWord(_where[0]);
+  let _data_db = await new Promise((resolve) =>
+    pool.query(query_sql, function (err, rows) {
+      if (err) {
+        if (err.code == 42703) {
+          _data.data = [];
+          _data.total = 0;
+          _data.grand_total = 0;
+          return resolve(_data);
+        }
+        _data.error = true;
+        _data.message = `GET_QUERY: ${err.message}` || "Oops, something wrong";
+        return resolve(_data);
+      }
+      _data.data = rows.rows;
+      _data.total = rows.rowCount;
+      _data.grand_total = parseInt(count);
+      return resolve(_data);
+    })
+  );
+  if (!generate_approval) {
+    return _data;
+  }
+  _res = [];
+  for (const it of _data_db.data) {
+    let approval = await getApprovalFlow(table, it[`${table}_id`]);
+    it.approval = approval;
+    _res.push(it);
+  }
+  _data.data = _res;
+  return _data;
+}
+async function get_query2(query_sql, generate_approval = true) {
+  let _data = JSON.parse(JSON.stringify(data_set));
+  // Generate COUNT
+  var _where = query_sql.split("FROM") || query_sql.split("from");
+  _where = _where[1].split("LIMIT") || _where[1].split("limit");
+  _where[0] = _where[0].split("ORDER BY")[0] || _where[0].split("order by")[0];
+  var count = `SELECT COUNT(1) OVER() AS total ${strBetween(
+    query_sql,
+    "FROM",
+    "WHERE"
+  )}`;
   count = await exec_query(count);
   if (count.error) {
     _data.error = true;
@@ -521,6 +575,7 @@ module.exports = {
   get_configuration,
   exec_query,
   get_query,
+  get_query2,
   insert_query,
   update_query,
   delete_query,

@@ -51,7 +51,6 @@ function treeify(list, idAttr, parentAttr, childrenAttr) {
       if (lookup[obj[parentAttr]] !== undefined) {
         lookup[obj[parentAttr]][childrenAttr].push(obj);
       } else {
-        //console.log('Missing Parent Data: ' + obj[parentAttr]);
         treeList.push(obj);
       }
     } else {
@@ -70,7 +69,6 @@ async function encrypt({ string = null }) {
       .digest("hex");
     return encryptedData;
   } catch (error) {
-    console.log(error);
     return false;
   }
 }
@@ -141,6 +139,22 @@ function isInt(value) {
   );
 }
 
+function isArray(value) {
+  if (value === undefined || value.length == 0 || !Array.isArray(value)) {
+    return false;
+  } else {
+    return true;
+  }
+}
+
+function isString(value) {
+  if (typeof value === "string" || value instanceof String) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
 function generateId() {
   return moment().format("x");
 }
@@ -209,6 +223,20 @@ function haveRole(item) {
   }
   return true;
 }
+const strToBool = (str) => {
+  let res = false;
+  if (str === "true" || str === "True" || str === "TRUE" || str === true) {
+    res = true;
+  }
+  return res;
+};
+const strBetween = (string = String, strStart, strEnd) => {
+  string = string.toLowerCase();
+  strStart = strStart.toLowerCase();
+  strEnd = strEnd.toLowerCase();
+
+  return string.substring(string.indexOf(strStart), string.lastIndexOf(strEnd));
+};
 
 const sqlInjectionPrevention = (obj) => {
   let sqlRegex = "/[\t\r\n]|(--[^\r\n]*)|(/*[wW]*?(?=*)*/)/gi";
@@ -224,6 +252,7 @@ const sqlInjectionPrevention = (obj) => {
 };
 
 module.exports = {
+  strToBool,
   isJsonString,
   numberPercent,
   diffDate,
@@ -232,6 +261,8 @@ module.exports = {
   encrypt,
   super_menu,
   isInt,
+  isArray,
+  isString,
   treeify,
   hasDuplicatesArray,
   getFirstWord,
@@ -241,4 +272,5 @@ module.exports = {
   getOnlyParent,
   haveRole,
   sqlInjectionPrevention,
+  strBetween,
 };

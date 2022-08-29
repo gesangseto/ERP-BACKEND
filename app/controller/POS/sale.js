@@ -8,27 +8,37 @@ const {
   getTrxDetailItem,
   getCashier,
   getSale,
-  getSaleByCashier,
-  getItem,
   getCustomer,
+  getPosUserBranchCode,
 } = require("./get_data");
-const e = require("cors");
 
 exports.get = async function (req, res) {
   var data = { data: req.query };
   try {
+    let check = await getSale(req.query);
+    if (check.data.length == 1 && req.query.pos_trx_sale_id) {
+      let it = check.data[0];
+      it.pos_trx_ref_id = req.query.pos_trx_sale_id;
+      let _detail = await getTrxDetailItem(it);
+      check.data[0].detail = _detail.data;
+    }
+    return response.response(check, res, false);
+  } catch (error) {
+    data.error = true;
+    data.message = `${error}`;
+    return response.response(data, res);
+  }
+};
+
+exports.getByBranch = async function (req, res) {
+  var data = { data: req.query };
+  try {
     // LINE WAJIB DIBAWA
 
-    const require_data = [];
-    for (const row of require_data) {
-      if (!req.query[`${row}`]) {
-        data.error = true;
-        data.message = `${row} is required!`;
-        return response.response(data, res);
-      }
-    }
-    // LINE WAJIB DIBAWA
-    let check = await getSale(req.query);
+    let user_id = req.headers.user_id;
+    let branch = await getPosUserBranchCode({ user_id: user_id });
+    let check = await getSale({ ...req.query, pos_branch_code: branch });
+
     if (check.data.length == 1 && req.query.pos_trx_sale_id) {
       let it = check.data[0];
       it.pos_trx_ref_id = req.query.pos_trx_sale_id;
@@ -56,7 +66,7 @@ exports.newSale = async function (req, res) {
     if (_check.error || _check.data.length == 0) {
       throw new Error(`Please open cashier first!`);
     }
-    var require_data = ["sale_item"];
+    var require_data = ["sale_item", "pos_branch_code"];
     for (const row of require_data) {
       if (!body[`${row}`]) {
         throw new Error(`${row} is required!`);
@@ -186,6 +196,8 @@ exports.updateSale = async function (req, res) {
         });
       }
     }
+    // console.log(`${_updateHeader}${_updateDetail}`);
+    // throw new Error(`MY ERROR`);
     let _res = await models.exec_query(`${_updateHeader}${_updateDetail}`);
     _res.data = [_calculate];
     return response.response(_res, res);
@@ -259,7 +271,6 @@ exports.payment = async function (req, res) {
       }
     }
     let sale = await getSale(body);
-    console.log(sale);
     if (sale.error || sale.data.length == 0) {
       throw new Error(`Sale not found!`);
     }
@@ -286,7 +297,10 @@ exports.payment = async function (req, res) {
       sum: "qty_stock",
     });
     for (const it of _details) {
-      let _stock = await getStockItem(it);
+      let _stock = await getStockItem({
+        ...it,
+        pos_branch_code: sale.pos_branch_code,
+      });
       _stock = _stock.data[0];
       _stock.qty = _stock.qty - (it.qty_stock ?? it.qty);
       _update_stock += await models.generate_query_update({

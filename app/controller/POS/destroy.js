@@ -37,6 +37,26 @@ exports.get = async function (req, res) {
   }
 };
 
+exports.getByBranch = async function (req, res) {
+  var data = { data: req.query };
+  try {
+    let user_id = req.headers.user_id;
+    let branch = await getPosUserBranchCode({ user_id: user_id });
+    const check = await getDestroy({ ...req.query, pos_branch_code: branch });
+    if (check.total > 0 && req.query.hasOwnProperty("pos_trx_destroy_id")) {
+      let child = await getTrxDetailItem({
+        pos_trx_ref_id: req.query.pos_trx_destroy_id,
+      });
+      check.data[0].detail = child.data;
+    }
+    return response.response(check, res);
+  } catch (error) {
+    data.error = true;
+    data.message = `${error}`;
+    return response.response(data, res);
+  }
+};
+
 exports.insert = async function (req, res) {
   var data = { data: req.body };
   try {
@@ -47,12 +67,15 @@ exports.insert = async function (req, res) {
     if (!body.item || Array.isArray(body.item) == false) {
       throw new Error(`Item must be an array!`);
     }
+    if (!body.pos_branch_code) {
+      throw new Error(`Branch is required!`);
+    }
 
     for (const it of body.item) {
       if (!it["mst_item_variant_id"] && !it["barcode"]) {
         throw new Error(`Item (barcode or mst_item_variant_id) is required!`);
       } else {
-        let _getItem = await getItem(it);
+        let _getItem = await getItem();
         if (_getItem.error || _getItem.data.length == 0) {
           throw new Error(`Item not found!`);
         }
@@ -142,6 +165,8 @@ exports.approve = async function (req, res) {
     }
     _body.status = "1";
     _body.is_destroyed = true;
+    _body.pos_branch_code = body.pos_branch_code;
+
     var update_data = await models.update_query({
       data: _body,
       table: "pos_trx_destroy",
@@ -149,6 +174,9 @@ exports.approve = async function (req, res) {
       onlyQuery: true,
     });
     let _stock = await proccessToStock(_body);
+    if (_stock.hasOwnProperty("error")) {
+      throw new Error(_stock.message);
+    }
     let _res = await models.exec_query(`${update_data}${_stock}`);
     if (_res.error) {
       throw new Error(_res.message);

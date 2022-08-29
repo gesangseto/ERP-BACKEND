@@ -9,7 +9,6 @@ exports.get = async function (req, res) {
   try {
     let _data = [];
     let check = await getItem(req.query);
-    console.log("DISINI===============", req.query);
     for (const it of check.data) {
       let _variant = `SELECT *,a.status AS status
       FROM mst_item_variant AS a 
@@ -154,8 +153,6 @@ exports.update = async function (req, res) {
     // let _get_item = await models.exec_query(
     //   `SELECT * FROM mst_item WHERE mst_item_id = '${mst_item_id}' LIMIT 1`
     // );
-    // console.log(_get_item);
-
     let _res = await models.exec_query(query);
     return response.response(_res, res);
   } catch (error) {

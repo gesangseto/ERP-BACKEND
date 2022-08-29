@@ -1,0 +1,2 @@
+sudo -i -u postgres
+psql -h localhost -p 5432 -U postgres -d erp_dev -f /directory/to/file.sql

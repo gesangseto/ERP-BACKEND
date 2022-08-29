@@ -84,28 +84,32 @@ module.exports = function (app) {
   var _pos_utils = require("./controller/POS/utils");
   app.route("/api/transaction/pos/cleanup").post(_pos_utils.cleanup);
   var _pos_in = require("./controller/POS/inbound");
-  app.route("/api/transaction/pos/inbound").get(_pos_in.getInbound);
+  app.route("/api/transaction/pos/inbound").get(_pos_in.get);
+  app.route("/api/transaction/pos/inbound/by-branch").get(_pos_in.getByBranch);
   var _pos_stock = require("./controller/POS/stock");
   app.route("/api/transaction/pos/stock").get(_pos_stock.get);
+  app.route("/api/transaction/pos/stock/by-branch").get(_pos_stock.getByBranch);
 
   /*
   MASTER
   */
   // BRANCH *CABANG
-  // var _pos_brc = require("./controller/POS/branch");
-  // app.route("/api/master/pos/branch").get(_pos_brc.get);
-  // app.route("/api/master/pos/branch").put(_pos_brc.insert);
-  // app.route("/api/master/pos/branch").post(_pos_brc.update);
-  // app.route("/api/master/pos/branch").delete(_pos_brc.delete);
+  var _pos_brc = require("./controller/POS/branch");
+  app.route("/api/master/pos/branch").get(_pos_brc.get);
+  app.route("/api/master/pos/branch/by-branch").get(_pos_brc.getByBranch);
+  app.route("/api/master/pos/branch").put(_pos_brc.insert);
+  app.route("/api/master/pos/branch").post(_pos_brc.update);
+  app.route("/api/master/pos/branch").delete(_pos_brc.delete);
   // USER BRANCH
-  // var _pos_ub = require("./controller/POS/user_branch");
-  // app.route("/api/master/pos/user-branch").get(_pos_ub.get);
-  // app.route("/api/master/pos/user-branch").put(_pos_ub.insert);
-  // app.route("/api/master/pos/user-branch").post(_pos_ub.update);
-  // app.route("/api/master/pos/user-branch").delete(_pos_ub.delete);
+  var _pos_ub = require("./controller/POS/user_branch");
+  app.route("/api/master/pos/user-branch").get(_pos_ub.get);
+  app.route("/api/master/pos/user-branch").put(_pos_ub.insert);
+  app.route("/api/master/pos/user-branch").post(_pos_ub.update);
+  app.route("/api/master/pos/user-branch").delete(_pos_ub.delete);
   // DISCOUNT
   var _pos_dis = require("./controller/POS/discount");
   app.route("/api/master/pos/discount").get(_pos_dis.get);
+  app.route("/api/master/pos/discount/by-branch").get(_pos_dis.getByBranch);
   app.route("/api/master/pos/discount").put(_pos_dis.insert);
   app.route("/api/master/pos/discount").post(_pos_dis.update);
   app.route("/api/master/pos/discount").delete(_pos_dis.delete);
@@ -115,27 +119,32 @@ module.exports = function (app) {
   */
   // RECEIVE
   var _pos_report = require("./controller/POS/report");
-  app.route("/api/report/pos/sale").get(_pos_report.reportSale);
+  app.route("/api/report/pos/sale").get(_pos_report.get);
+  app.route("/api/report/pos/sale/by-branch").get(_pos_report.getByBranch);
   app.route("/api/report/pos/sale-cashier").get(_pos_report.reportCashierSale);
   // RECEIVE
   var _pos_rec = require("./controller/POS/receive");
   app.route("/api/transaction/pos/receive").get(_pos_rec.get);
+  app.route("/api/transaction/pos/receive/by-branch").get(_pos_rec.getByBranch);
   app.route("/api/transaction/pos/receive").put(_pos_rec.insert);
   app.route("/api/transaction/pos/receive").post(_pos_rec.approve);
   // SALE
   var _pos_sale = require("./controller/POS/sale");
   app.route("/api/transaction/pos/sale").get(_pos_sale.get);
+  app.route("/api/transaction/pos/sale/by-branch").get(_pos_sale.getByBranch);
   app.route("/api/transaction/pos/sale").put(_pos_sale.newSale);
   app.route("/api/transaction/pos/sale").post(_pos_sale.updateSale);
   app.route("/api/transaction/pos/sale").delete(_pos_sale.deleteSale);
   app.route("/api/transaction/pos/sale/payment").post(_pos_sale.payment);
   // RETURN
   var _pos_ret = require("./controller/POS/return");
-  app.route("/api/transaction/pos/return").get(_pos_ret.getReturn);
-  app.route("/api/transaction/pos/return").put(_pos_ret.newReturn);
-  app.route("/api/transaction/pos/return").post(_pos_ret.approveReturn);
+  app.route("/api/transaction/pos/return").get(_pos_ret.get);
+  app.route("/api/transaction/pos/return/by-branch").get(_pos_ret.getByBranch);
+  app.route("/api/transaction/pos/return").put(_pos_ret.insert);
+  app.route("/api/transaction/pos/return").post(_pos_ret.approve);
   var _pos_des = require("./controller/POS/destroy");
   app.route("/api/transaction/pos/destroy").get(_pos_des.get);
+  app.route("/api/transaction/pos/destroy/by-branch").get(_pos_des.getByBranch);
   app.route("/api/transaction/pos/destroy").put(_pos_des.insert);
   app.route("/api/transaction/pos/destroy").post(_pos_des.approve);
   // CASHIER
