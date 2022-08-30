@@ -7,6 +7,7 @@ const {
   proccessToStock,
   getDestroy,
   getTrxDetailItem,
+  getPosUserBranchCode,
 } = require("./get_data");
 const { calculateSale } = require("./utils");
 
@@ -42,6 +43,7 @@ exports.getByBranch = async function (req, res) {
   try {
     let user_id = req.headers.user_id;
     let branch = await getPosUserBranchCode({ user_id: user_id });
+    console.log(branch);
     const check = await getDestroy({ ...req.query, pos_branch_code: branch });
     if (check.total > 0 && req.query.hasOwnProperty("pos_trx_destroy_id")) {
       let child = await getTrxDetailItem({
