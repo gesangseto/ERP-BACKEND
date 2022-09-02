@@ -3,6 +3,8 @@ const dotenv = require("dotenv");
 const cors = require("cors");
 const fileUpload = require("express-fileupload");
 const { sqlInjectionPrevention } = require("./app/utils");
+require("express-group-routes");
+
 dotenv.config();
 var express = require("express"),
   app = express(),

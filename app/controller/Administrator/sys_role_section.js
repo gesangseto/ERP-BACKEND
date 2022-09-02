@@ -1,7 +1,7 @@
 "use strict";
-const response = require("../response");
-const models = require("../models");
-const utils = require("../utils");
+const response = require("../../response");
+const models = require("../../models");
+const utils = require("../../utils");
 const { getSysMenu } = require("./get_data");
 
 const _flag = {

@@ -1100,14 +1100,14 @@
 											}
 										],
 										"url": {
-											"raw": "{{dev}}/api/master/pos/branch",
+											"raw": "{{dev}}/api/pos/master/branch",
 											"host": [
 												"{{dev}}"
 											],
 											"path": [
 												"api",
-												"master",
 												"pos",
+												"master",
 												"branch"
 											],
 											"query": [
@@ -1133,14 +1133,14 @@
 											}
 										],
 										"url": {
-											"raw": "{{dev}}/api/master/pos/branch/by-branch?page=1&limit=10",
+											"raw": "{{dev}}/api/pos/master/branch/by-branch?page=1&limit=10",
 											"host": [
 												"{{dev}}"
 											],
 											"path": [
 												"api",
-												"master",
 												"pos",
+												"master",
 												"branch",
 												"by-branch"
 											],
@@ -1184,14 +1184,14 @@
 											}
 										},
 										"url": {
-											"raw": "{{dev}}/api/master/pos/branch",
+											"raw": "{{dev}}/api/pos/master/branch",
 											"host": [
 												"{{dev}}"
 											],
 											"path": [
 												"api",
-												"master",
 												"pos",
+												"master",
 												"branch"
 											]
 										}
@@ -1219,14 +1219,14 @@
 											}
 										},
 										"url": {
-											"raw": "{{dev}}/api/master/pos/branch",
+											"raw": "{{dev}}/api/pos/master/branch",
 											"host": [
 												"{{dev}}"
 											],
 											"path": [
 												"api",
-												"master",
 												"pos",
+												"master",
 												"branch"
 											]
 										}
@@ -1255,14 +1255,14 @@
 											]
 										},
 										"url": {
-											"raw": "{{dev}}/api/master/pos/branch",
+											"raw": "{{dev}}/api/pos/master/branch",
 											"host": [
 												"{{dev}}"
 											],
 											"path": [
 												"api",
-												"master",
 												"pos",
+												"master",
 												"branch"
 											]
 										}
@@ -1286,14 +1286,14 @@
 											}
 										],
 										"url": {
-											"raw": "{{dev}}/api/master/pos/user-branch",
+											"raw": "{{dev}}/api/pos/master/user-branch",
 											"host": [
 												"{{dev}}"
 											],
 											"path": [
 												"api",
-												"master",
 												"pos",
+												"master",
 												"user-branch"
 											],
 											"query": [
@@ -1339,14 +1339,14 @@
 											]
 										},
 										"url": {
-											"raw": "{{dev}}/api/master/pos/user-branch",
+											"raw": "{{dev}}/api/pos/master/user-branch",
 											"host": [
 												"{{dev}}"
 											],
 											"path": [
 												"api",
-												"master",
 												"pos",
+												"master",
 												"user-branch"
 											]
 										}
@@ -1374,14 +1374,14 @@
 											}
 										},
 										"url": {
-											"raw": "{{dev}}/api/master/pos/user-branch",
+											"raw": "{{dev}}/api/pos/master/user-branch",
 											"host": [
 												"{{dev}}"
 											],
 											"path": [
 												"api",
-												"master",
 												"pos",
+												"master",
 												"user-branch"
 											]
 										}
@@ -1410,14 +1410,14 @@
 											]
 										},
 										"url": {
-											"raw": "{{dev}}/api/master/pos/user-branch",
+											"raw": "{{dev}}/api/pos/master/user-branch",
 											"host": [
 												"{{dev}}"
 											],
 											"path": [
 												"api",
-												"master",
 												"pos",
+												"master",
 												"user-branch"
 											]
 										}
@@ -1441,14 +1441,14 @@
 											}
 										],
 										"url": {
-											"raw": "{{dev}}/api/master/pos/discount",
+											"raw": "{{dev}}/api/pos/master/discount",
 											"host": [
 												"{{dev}}"
 											],
 											"path": [
 												"api",
-												"master",
 												"pos",
+												"master",
 												"discount"
 											],
 											"query": [
@@ -1479,14 +1479,14 @@
 											}
 										],
 										"url": {
-											"raw": "{{dev}}/api/master/pos/discount/by-branch",
+											"raw": "{{dev}}/api/pos/master/discount/by-branch",
 											"host": [
 												"{{dev}}"
 											],
 											"path": [
 												"api",
-												"master",
 												"pos",
+												"master",
 												"discount",
 												"by-branch"
 											],
@@ -1548,14 +1548,14 @@
 											]
 										},
 										"url": {
-											"raw": "{{dev}}/api/master/pos/discount",
+											"raw": "{{dev}}/api/pos/master/discount",
 											"host": [
 												"{{dev}}"
 											],
 											"path": [
 												"api",
-												"master",
 												"pos",
+												"master",
 												"discount"
 											]
 										}
@@ -1589,14 +1589,14 @@
 											]
 										},
 										"url": {
-											"raw": "{{dev}}/api/master/pos/discount",
+											"raw": "{{dev}}/api/pos/master/discount",
 											"host": [
 												"{{dev}}"
 											],
 											"path": [
 												"api",
-												"master",
 												"pos",
+												"master",
 												"discount"
 											]
 										}
@@ -1625,14 +1625,14 @@
 											]
 										},
 										"url": {
-											"raw": "{{dev}}/api/master/pos/discount",
+											"raw": "{{dev}}/api/pos/master/discount",
 											"host": [
 												"{{dev}}"
 											],
 											"path": [
 												"api",
-												"master",
 												"pos",
+												"master",
 												"discount"
 											]
 										}
@@ -1661,14 +1661,14 @@
 											}
 										],
 										"url": {
-											"raw": "{{dev}}/api/transaction/pos/receive",
+											"raw": "{{dev}}/api/pos/transaction/receive",
 											"host": [
 												"{{dev}}"
 											],
 											"path": [
 												"api",
-												"transaction",
 												"pos",
+												"transaction",
 												"receive"
 											],
 											"query": [
@@ -1694,14 +1694,14 @@
 											}
 										],
 										"url": {
-											"raw": "{{dev}}/api/transaction/pos/receive/by-branch",
+											"raw": "{{dev}}/api/pos/transaction/receive/by-branch",
 											"host": [
 												"{{dev}}"
 											],
 											"path": [
 												"api",
-												"transaction",
 												"pos",
+												"transaction",
 												"receive",
 												"by-branch"
 											],
@@ -1737,14 +1737,14 @@
 											}
 										},
 										"url": {
-											"raw": "{{dev}}/api/transaction/pos/receive",
+											"raw": "{{dev}}/api/pos/transaction/receive",
 											"host": [
 												"{{dev}}"
 											],
 											"path": [
 												"api",
-												"transaction",
 												"pos",
+												"transaction",
 												"receive"
 											]
 										}
@@ -1783,14 +1783,14 @@
 											]
 										},
 										"url": {
-											"raw": "{{dev}}/api/transaction/pos/receive",
+											"raw": "{{dev}}/api/pos/transaction/receive",
 											"host": [
 												"{{dev}}"
 											],
 											"path": [
 												"api",
-												"transaction",
 												"pos",
+												"transaction",
 												"receive"
 											]
 										}
@@ -1814,14 +1814,14 @@
 											}
 										],
 										"url": {
-											"raw": "{{dev}}/api/transaction/pos/inbound",
+											"raw": "{{dev}}/api/pos/transaction/inbound",
 											"host": [
 												"{{dev}}"
 											],
 											"path": [
 												"api",
-												"transaction",
 												"pos",
+												"transaction",
 												"inbound"
 											]
 										}
@@ -1840,14 +1840,14 @@
 											}
 										],
 										"url": {
-											"raw": "{{dev}}/api/transaction/pos/inbound/by-branch",
+											"raw": "{{dev}}/api/pos/transaction/inbound/by-branch",
 											"host": [
 												"{{dev}}"
 											],
 											"path": [
 												"api",
-												"transaction",
 												"pos",
+												"transaction",
 												"inbound",
 												"by-branch"
 											]
@@ -1872,14 +1872,14 @@
 											}
 										],
 										"url": {
-											"raw": "{{dev}}/api/transaction/pos/cashier",
+											"raw": "{{dev}}/api/pos/transaction/cashier",
 											"host": [
 												"{{dev}}"
 											],
 											"path": [
 												"api",
-												"transaction",
 												"pos",
+												"transaction",
 												"cashier"
 											]
 										}
@@ -1913,14 +1913,14 @@
 											]
 										},
 										"url": {
-											"raw": "{{dev}}/api/transaction/pos/cashier",
+											"raw": "{{dev}}/api/pos/transaction/cashier",
 											"host": [
 												"{{dev}}"
 											],
 											"path": [
 												"api",
-												"transaction",
 												"pos",
+												"transaction",
 												"cashier"
 											],
 											"query": [
@@ -1956,14 +1956,14 @@
 											]
 										},
 										"url": {
-											"raw": "{{dev}}/api/transaction/pos/cashier?pos_cashier_id=12345",
+											"raw": "{{dev}}/api/pos/transaction/cashier?pos_cashier_id=12345",
 											"host": [
 												"{{dev}}"
 											],
 											"path": [
 												"api",
-												"transaction",
 												"pos",
+												"transaction",
 												"cashier"
 											],
 											"query": [
@@ -1993,14 +1993,14 @@
 											}
 										],
 										"url": {
-											"raw": "{{dev}}/api/transaction/pos/sale?pos_trx_sale_id=1660103858010",
+											"raw": "{{dev}}/api/pos/transaction/sale?pos_trx_sale_id=1660103858010",
 											"host": [
 												"{{dev}}"
 											],
 											"path": [
 												"api",
-												"transaction",
 												"pos",
+												"transaction",
 												"sale"
 											],
 											"query": [
@@ -2030,14 +2030,14 @@
 											}
 										],
 										"url": {
-											"raw": "{{dev}}/api/transaction/pos/sale/by-branch",
+											"raw": "{{dev}}/api/pos/transaction/sale/by-branch",
 											"host": [
 												"{{dev}}"
 											],
 											"path": [
 												"api",
-												"transaction",
 												"pos",
+												"transaction",
 												"sale",
 												"by-branch"
 											],
@@ -2078,14 +2078,14 @@
 											}
 										},
 										"url": {
-											"raw": "{{dev}}/api/transaction/pos/sale",
+											"raw": "{{dev}}/api/pos/transaction/sale",
 											"host": [
 												"{{dev}}"
 											],
 											"path": [
 												"api",
-												"transaction",
 												"pos",
+												"transaction",
 												"sale"
 											]
 										}
@@ -2113,14 +2113,14 @@
 											}
 										},
 										"url": {
-											"raw": "{{dev}}/api/transaction/pos/sale",
+											"raw": "{{dev}}/api/pos/transaction/sale",
 											"host": [
 												"{{dev}}"
 											],
 											"path": [
 												"api",
-												"transaction",
 												"pos",
+												"transaction",
 												"sale"
 											]
 										}
@@ -2149,14 +2149,14 @@
 											]
 										},
 										"url": {
-											"raw": "{{dev}}/api/transaction/pos/sale",
+											"raw": "{{dev}}/api/pos/transaction/sale",
 											"host": [
 												"{{dev}}"
 											],
 											"path": [
 												"api",
-												"transaction",
 												"pos",
+												"transaction",
 												"sale"
 											]
 										}
@@ -2190,14 +2190,14 @@
 											]
 										},
 										"url": {
-											"raw": "{{dev}}/api/transaction/pos/sale/payment",
+											"raw": "{{dev}}/api/pos/transaction/sale/payment",
 											"host": [
 												"{{dev}}"
 											],
 											"path": [
 												"api",
-												"transaction",
 												"pos",
+												"transaction",
 												"sale",
 												"payment"
 											]
@@ -2222,14 +2222,14 @@
 											}
 										],
 										"url": {
-											"raw": "{{dev}}/api/transaction/pos/return?pos_trx_return_id=1659669854175",
+											"raw": "{{dev}}/api/pos/transaction/return?pos_trx_return_id=1659669854175",
 											"host": [
 												"{{dev}}"
 											],
 											"path": [
 												"api",
-												"transaction",
 												"pos",
+												"transaction",
 												"return"
 											],
 											"query": [
@@ -2254,14 +2254,14 @@
 											}
 										],
 										"url": {
-											"raw": "{{dev}}/api/transaction/pos/return/by-branch",
+											"raw": "{{dev}}/api/pos/transaction/return/by-branch",
 											"host": [
 												"{{dev}}"
 											],
 											"path": [
 												"api",
-												"transaction",
 												"pos",
+												"transaction",
 												"return",
 												"by-branch"
 											],
@@ -2297,14 +2297,14 @@
 											}
 										},
 										"url": {
-											"raw": "{{dev}}/api/transaction/pos/return",
+											"raw": "{{dev}}/api/pos/transaction/return",
 											"host": [
 												"{{dev}}"
 											],
 											"path": [
 												"api",
-												"transaction",
 												"pos",
+												"transaction",
 												"return"
 											]
 										}
@@ -2344,14 +2344,14 @@
 											]
 										},
 										"url": {
-											"raw": "{{dev}}/api/transaction/pos/return",
+											"raw": "{{dev}}/api/pos/transaction/return",
 											"host": [
 												"{{dev}}"
 											],
 											"path": [
 												"api",
-												"transaction",
 												"pos",
+												"transaction",
 												"return"
 											]
 										}
@@ -2375,14 +2375,14 @@
 											}
 										],
 										"url": {
-											"raw": "{{dev}}/api/transaction/pos/destroy",
+											"raw": "{{dev}}/api/pos/transaction/destroy",
 											"host": [
 												"{{dev}}"
 											],
 											"path": [
 												"api",
-												"transaction",
 												"pos",
+												"transaction",
 												"destroy"
 											],
 											"query": [
@@ -2415,14 +2415,14 @@
 											}
 										],
 										"url": {
-											"raw": "{{dev}}/api/transaction/pos/destroy/by-branch",
+											"raw": "{{dev}}/api/pos/transaction/destroy/by-branch",
 											"host": [
 												"{{dev}}"
 											],
 											"path": [
 												"api",
-												"transaction",
 												"pos",
+												"transaction",
 												"destroy",
 												"by-branch"
 											],
@@ -2458,14 +2458,14 @@
 											}
 										},
 										"url": {
-											"raw": "{{dev}}/api/transaction/pos/destroy",
+											"raw": "{{dev}}/api/pos/transaction/destroy",
 											"host": [
 												"{{dev}}"
 											],
 											"path": [
 												"api",
-												"transaction",
 												"pos",
+												"transaction",
 												"destroy"
 											]
 										}
@@ -2504,14 +2504,14 @@
 											]
 										},
 										"url": {
-											"raw": "{{dev}}/api/transaction/pos/destroy",
+											"raw": "{{dev}}/api/pos/transaction/destroy",
 											"host": [
 												"{{dev}}"
 											],
 											"path": [
 												"api",
-												"transaction",
 												"pos",
+												"transaction",
 												"destroy"
 											]
 										}
@@ -2537,7 +2537,7 @@
 									}
 								],
 								"url": {
-									"raw": "{{dev}}/api/transaction/pos/stock",
+									"raw": "{{dev}}/api/pos/transaction/stock",
 									"host": [
 										"{{dev}}"
 									],
@@ -2580,7 +2580,7 @@
 									}
 								],
 								"url": {
-									"raw": "{{dev}}/api/transaction/pos/stock/by-user",
+									"raw": "{{dev}}/api/pos/transaction/stock/by-user",
 									"host": [
 										"{{dev}}"
 									],
@@ -2690,7 +2690,7 @@
 							}
 						],
 						"url": {
-							"raw": "{{dev}}/api/transaction/pos/cleanup",
+							"raw": "{{dev}}/api/pos/transaction/cleanup",
 							"host": [
 								"{{dev}}"
 							],

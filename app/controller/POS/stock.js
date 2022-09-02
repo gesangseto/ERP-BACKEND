@@ -3,7 +3,7 @@ const response = require("../../response");
 const models = require("../../models");
 const utils = require("../../utils");
 const { getStockItem, getPosUserBranchCode } = require("./get_data");
-const { getVariantItem } = require("../get_data");
+const { getVariantItem } = require("../Administrator/get_data");
 
 exports.get = async function (req, res) {
   var data = { data: req.query };

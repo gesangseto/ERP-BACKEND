@@ -1,7 +1,7 @@
 "use strict";
-const response = require("../response");
-const models = require("../models");
-const utils = require("../utils");
+const response = require("../../response");
+const models = require("../../models");
+const utils = require("../../utils");
 const { getItem, getVariantItem } = require("./get_data");
 
 exports.get = async function (req, res) {

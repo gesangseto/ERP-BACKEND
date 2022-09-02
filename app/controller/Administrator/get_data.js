@@ -1,5 +1,5 @@
-const { get_query, getLimitOffset } = require("../models");
-const { isJsonString } = require("../utils");
+const { get_query, getLimitOffset } = require("../../models");
+const { isJsonString } = require("../../utils");
 
 async function getVariantItem(data = Object, onlyQuery = false) {
   const genSearch = (search) => {
