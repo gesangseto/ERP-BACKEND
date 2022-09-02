@@ -3,80 +3,80 @@
 module.exports = function (app) {
   app.group("/api/administrator", (router) => {
     var authentication = require("./controller/Administrator/authentication");
-    app.route("/api/login/user").post(authentication.user_login);
+    router.post("/login/user", authentication.user_login);
 
     var genBarcode = require("./controller/Administrator/generate_barcode");
-    app.route("/api/generate-barcode").post(genBarcode.generateBarcode);
-    app.route("/api/generate-barcode").get(genBarcode.generateBarcode);
+    router.post("/generate-barcode", genBarcode.generateBarcode);
+    router.get("/generate-barcode", genBarcode.generateBarcode);
 
     var audit_log = require("./controller/Administrator/audit_log");
-    app.route("/api/audit/log").get(audit_log.get);
+    router.get("/audit/log", audit_log.get);
 
     var sys_configuration = require("./controller/Administrator/sys_configuration");
-    app.route("/api/configuration").get(sys_configuration.get);
-    app.route("/api/configuration").post(sys_configuration.update);
+    router.get("/configuration", sys_configuration.get);
+    router.post("/configuration", sys_configuration.update);
 
     var sys_relation = require("./controller/Administrator/sys_relation");
-    app.route("/api/config-relation").get(sys_relation.get);
-    app.route("/api/config-relation-list").get(sys_relation.getRelationList);
-    app.route("/api/config-relation").post(sys_relation.update);
+    router.get("/config-relation", sys_relation.get);
+    router.get("/config-relation-list", sys_relation.getRelationList);
+    router.post("/config-relation", sys_relation.update);
 
     var sys_role_section = require("./controller/Administrator/sys_role_section");
-    app.route("/api/role/section").get(sys_role_section.getRoleMenu);
-    app.route("/api/role/section").post(sys_role_section.insertUpdateRoleMenu);
+    router.get("/role/section", sys_role_section.getRoleMenu);
+    router.post("/role/section", sys_role_section.insertUpdateRoleMenu);
 
     var user_department = require("./controller/Administrator/user_department");
-    app.route("/api/master/user_department").get(user_department.get);
-    app.route("/api/master/user_department").put(user_department.insert);
-    app.route("/api/master/user_department").post(user_department.update);
-    app.route("/api/master/user_department").delete(user_department.delete);
+    router.get("/master/user_department", user_department.get);
+    router.put("/master/user_department", user_department.insert);
+    router.post("/master/user_department", user_department.update);
+    router.delete("/master/user_department", user_department.delete);
 
     var user_section = require("./controller/Administrator/user_section");
-    app.route("/api/master/user_section").get(user_section.get);
-    app.route("/api/master/user_section").put(user_section.insert);
-    app.route("/api/master/user_section").post(user_section.update);
-    app.route("/api/master/user_section").delete(user_section.delete);
+    router.get("/master/user_section", user_section.get);
+    router.put("/master/user_section", user_section.insert);
+    router.post("/master/user_section", user_section.update);
+    router.delete("/master/user_section", user_section.delete);
 
     var user = require("./controller/Administrator/user");
-    app.route("/api/master/user").get(user.get);
-    app.route("/api/master/user").put(user.insert);
-    app.route("/api/master/user").post(user.update);
-    app.route("/api/master/user").delete(user.delete);
+    router.get("/master/user", user.get);
+    router.put("/master/user", user.insert);
+    router.post("/master/user", user.update);
+    router.delete("/master/user", user.delete);
 
     var approval = require("./controller/Administrator/approval");
-    app.route("/api/approval/main-approval").get(approval.get);
-    app.route("/api/approval/main-approval").put(approval.insert);
-    app.route("/api/approval/main-approval").post(approval.update);
-    app.route("/api/approval/main-approval").delete(approval.delete);
+    router.get("/approval/main-approval", approval.get);
+    router.put("/approval/main-approval", approval.insert);
+    router.post("/approval/main-approval", approval.update);
+    router.delete("/approval/main-approval", approval.delete);
 
     var approval_flow = require("./controller/Administrator/approval_flow");
-    app.route("/api/approval/flow-approval").get(approval_flow.get);
-    app.route("/api/approval/flow-approval").post(approval_flow.update);
+    router.get("/approval/flow-approval", approval_flow.get);
+    router.post("/approval/flow-approval", approval_flow.update);
 
     var mst_item = require("./controller/Administrator/mst_item");
-    app.route("/api/master/item").get(mst_item.get);
-    app.route("/api/master/item-variant").get(mst_item.getVariant);
-    app.route("/api/master/item").put(mst_item.insert);
-    app.route("/api/master/item").post(mst_item.update);
-    app.route("/api/master/item").delete(mst_item.delete);
+    router.get("/master/item", mst_item.get);
+    router.get("/master/item-variant", mst_item.getVariant);
+    router.put("/master/item", mst_item.insert);
+    router.post("/master/item", mst_item.update);
+    router.delete("/master/item", mst_item.delete);
 
     var mst_packaging = require("./controller/Administrator/mst_packaging");
-    app.route("/api/master/packaging").get(mst_packaging.get);
-    app.route("/api/master/packaging").put(mst_packaging.insert);
-    app.route("/api/master/packaging").post(mst_packaging.update);
-    app.route("/api/master/packaging").delete(mst_packaging.delete);
+    router.get("/master/packaging", mst_packaging.get);
+    router.put("/master/packaging", mst_packaging.insert);
+    router.post("/master/packaging", mst_packaging.update);
+    router.delete("/master/packaging", mst_packaging.delete);
 
     var mst_supplier = require("./controller/Administrator/mst_supplier");
-    app.route("/api/master/supplier").get(mst_supplier.get);
-    app.route("/api/master/supplier").put(mst_supplier.insert);
-    app.route("/api/master/supplier").post(mst_supplier.update);
-    app.route("/api/master/supplier").delete(mst_supplier.delete);
+    router.get("/master/supplier", mst_supplier.get);
+    router.put("/master/supplier", mst_supplier.insert);
+    router.post("/master/supplier", mst_supplier.update);
+    router.delete("/master/supplier", mst_supplier.delete);
 
     var mst_customer = require("./controller/Administrator/mst_customer");
-    app.route("/api/master/customer").get(mst_customer.get);
-    app.route("/api/master/customer").put(mst_customer.insert);
-    app.route("/api/master/customer").post(mst_customer.update);
-    app.route("/api/master/customer").delete(mst_customer.delete);
+    router.get("/master/customer", mst_customer.get);
+    router.put("/master/customer", mst_customer.insert);
+    router.post("/master/customer", mst_customer.update);
+    router.delete("/master/customer", mst_customer.delete);
   });
   /*
   This all route for POS Module
