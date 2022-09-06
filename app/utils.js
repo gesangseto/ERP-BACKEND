@@ -251,7 +251,17 @@ const sqlInjectionPrevention = (obj) => {
   return obj;
 };
 
+function humanizeText(str) {
+  var i,
+    frags = str.split("_");
+  for (i = 0; i < frags.length; i++) {
+    frags[i] = frags[i].charAt(0).toUpperCase() + frags[i].slice(1);
+  }
+  return frags.join(" ");
+}
+
 module.exports = {
+  humanizeText,
   strToBool,
   isJsonString,
   numberPercent,

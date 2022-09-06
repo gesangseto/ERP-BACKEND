@@ -150,4 +150,26 @@ module.exports = function (app) {
     router.get("/report/sale/by-branch", report.getByBranch);
     router.get("/report/sale-cashier", report.reportCashierSale);
   });
+  /*
+  This all route for WAREHOUSE Module
+  */
+  app.group("/api/warehouse", (router) => {
+    var wh_type = require("./controller/Warehouse/wh_type");
+    router.get("/master/wh-type", wh_type.get);
+    router.put("/master/wh-type", wh_type.insert);
+    router.post("/master/wh-type", wh_type.update);
+    router.delete("/master/wh-type", wh_type.delete);
+
+    var branch = require("./controller/Warehouse/branch");
+    router.get("/master/branch", branch.get);
+    router.put("/master/branch", branch.insert);
+    router.post("/master/branch", branch.update);
+    router.delete("/master/branch", branch.delete);
+
+    var wh = require("./controller/Warehouse/wh");
+    router.get("/master/wh", wh.get);
+    router.put("/master/wh", wh.insert);
+    router.post("/master/wh", wh.update);
+    router.delete("/master/wh", wh.delete);
+  });
 };
