@@ -1,8 +1,8 @@
 "use strict";
-const response = require("../response");
+const response = require("../../response");
 const bwipjs = require("bwip-js");
-const { get_configuration } = require("../models");
-const { isJsonString } = require("../utils");
+const { get_configuration } = require("../../models");
+const { isJsonString } = require("../../utils");
 
 exports.generateBarcode = async function (req, res) {
   var data = { data: req.query };

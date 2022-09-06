@@ -1,158 +1,153 @@
 "use strict";
 
 module.exports = function (app) {
-  var authentication = require("./controller/authentication");
-  app.route("/api/login/user").post(authentication.user_login);
+  app.group("/api/administrator", (router) => {
+    var authentication = require("./controller/Administrator/authentication");
+    router.post("/login/user", authentication.user_login);
 
-  var genBarcode = require("./controller/generate_barcode");
-  app.route("/api/generate-barcode").post(genBarcode.generateBarcode);
-  app.route("/api/generate-barcode").get(genBarcode.generateBarcode);
+    var genBarcode = require("./controller/Administrator/generate_barcode");
+    router.post("/generate-barcode", genBarcode.generateBarcode);
+    router.get("/generate-barcode", genBarcode.generateBarcode);
 
-  var audit_log = require("./controller/audit_log");
-  app.route("/api/audit/log").get(audit_log.get);
+    var audit_log = require("./controller/Administrator/audit_log");
+    router.get("/audit/log", audit_log.get);
 
-  var sys_configuration = require("./controller/sys_configuration");
-  app.route("/api/configuration").get(sys_configuration.get);
-  app.route("/api/configuration").post(sys_configuration.update);
+    var sys_configuration = require("./controller/Administrator/sys_configuration");
+    router.get("/configuration", sys_configuration.get);
+    router.post("/configuration", sys_configuration.update);
 
-  var sys_relation = require("./controller/sys_relation");
-  app.route("/api/config-relation").get(sys_relation.get);
-  app.route("/api/config-relation-list").get(sys_relation.getRelationList);
-  app.route("/api/config-relation").post(sys_relation.update);
+    var sys_relation = require("./controller/Administrator/sys_relation");
+    router.get("/config-relation", sys_relation.get);
+    router.get("/config-relation-list", sys_relation.getRelationList);
+    router.post("/config-relation", sys_relation.update);
 
-  var sys_role_section = require("./controller/sys_role_section");
-  app.route("/api/role/section").get(sys_role_section.getRoleMenu);
-  app.route("/api/role/section").post(sys_role_section.insertUpdateRoleMenu);
+    var sys_role_section = require("./controller/Administrator/sys_role_section");
+    router.get("/role/section", sys_role_section.getRoleMenu);
+    router.post("/role/section", sys_role_section.insertUpdateRoleMenu);
 
-  var user_department = require("./controller/user_department");
-  app.route("/api/master/user_department").get(user_department.get);
-  app.route("/api/master/user_department").put(user_department.insert);
-  app.route("/api/master/user_department").post(user_department.update);
-  app.route("/api/master/user_department").delete(user_department.delete);
+    var user_department = require("./controller/Administrator/user_department");
+    router.get("/master/user_department", user_department.get);
+    router.put("/master/user_department", user_department.insert);
+    router.post("/master/user_department", user_department.update);
+    router.delete("/master/user_department", user_department.delete);
 
-  var user_section = require("./controller/user_section");
-  app.route("/api/master/user_section").get(user_section.get);
-  app.route("/api/master/user_section").put(user_section.insert);
-  app.route("/api/master/user_section").post(user_section.update);
-  app.route("/api/master/user_section").delete(user_section.delete);
+    var user_section = require("./controller/Administrator/user_section");
+    router.get("/master/user_section", user_section.get);
+    router.put("/master/user_section", user_section.insert);
+    router.post("/master/user_section", user_section.update);
+    router.delete("/master/user_section", user_section.delete);
 
-  var user = require("./controller/user");
-  app.route("/api/master/user").get(user.get);
-  app.route("/api/master/user").put(user.insert);
-  app.route("/api/master/user").post(user.update);
-  app.route("/api/master/user").delete(user.delete);
+    var user = require("./controller/Administrator/user");
+    router.get("/master/user", user.get);
+    router.put("/master/user", user.insert);
+    router.post("/master/user", user.update);
+    router.delete("/master/user", user.delete);
 
-  var approval = require("./controller/approval");
-  app.route("/api/approval/main-approval").get(approval.get);
-  app.route("/api/approval/main-approval").put(approval.insert);
-  app.route("/api/approval/main-approval").post(approval.update);
-  app.route("/api/approval/main-approval").delete(approval.delete);
+    var approval = require("./controller/Administrator/approval");
+    router.get("/approval/main-approval", approval.get);
+    router.put("/approval/main-approval", approval.insert);
+    router.post("/approval/main-approval", approval.update);
+    router.delete("/approval/main-approval", approval.delete);
 
-  var approval_flow = require("./controller/approval_flow");
-  app.route("/api/approval/flow-approval").get(approval_flow.get);
-  app.route("/api/approval/flow-approval").post(approval_flow.update);
+    var approval_flow = require("./controller/Administrator/approval_flow");
+    router.get("/approval/flow-approval", approval_flow.get);
+    router.post("/approval/flow-approval", approval_flow.update);
 
-  var mst_item = require("./controller/mst_item");
-  app.route("/api/master/item").get(mst_item.get);
-  app.route("/api/master/item-variant").get(mst_item.getVariant);
-  app.route("/api/master/item").put(mst_item.insert);
-  app.route("/api/master/item").post(mst_item.update);
-  app.route("/api/master/item").delete(mst_item.delete);
+    var mst_item = require("./controller/Administrator/mst_item");
+    router.get("/master/item", mst_item.get);
+    router.get("/master/item-variant", mst_item.getVariant);
+    router.put("/master/item", mst_item.insert);
+    router.post("/master/item", mst_item.update);
+    router.delete("/master/item", mst_item.delete);
 
-  var mst_packaging = require("./controller/mst_packaging");
-  app.route("/api/master/packaging").get(mst_packaging.get);
-  app.route("/api/master/packaging").put(mst_packaging.insert);
-  app.route("/api/master/packaging").post(mst_packaging.update);
-  app.route("/api/master/packaging").delete(mst_packaging.delete);
+    var mst_packaging = require("./controller/Administrator/mst_packaging");
+    router.get("/master/packaging", mst_packaging.get);
+    router.put("/master/packaging", mst_packaging.insert);
+    router.post("/master/packaging", mst_packaging.update);
+    router.delete("/master/packaging", mst_packaging.delete);
 
-  var mst_supplier = require("./controller/mst_supplier");
-  app.route("/api/master/supplier").get(mst_supplier.get);
-  app.route("/api/master/supplier").put(mst_supplier.insert);
-  app.route("/api/master/supplier").post(mst_supplier.update);
-  app.route("/api/master/supplier").delete(mst_supplier.delete);
+    var mst_supplier = require("./controller/Administrator/mst_supplier");
+    router.get("/master/supplier", mst_supplier.get);
+    router.put("/master/supplier", mst_supplier.insert);
+    router.post("/master/supplier", mst_supplier.update);
+    router.delete("/master/supplier", mst_supplier.delete);
 
-  var mst_customer = require("./controller/mst_customer");
-  app.route("/api/master/customer").get(mst_customer.get);
-  app.route("/api/master/customer").put(mst_customer.insert);
-  app.route("/api/master/customer").post(mst_customer.update);
-  app.route("/api/master/customer").delete(mst_customer.delete);
-
+    var mst_customer = require("./controller/Administrator/mst_customer");
+    router.get("/master/customer", mst_customer.get);
+    router.put("/master/customer", mst_customer.insert);
+    router.post("/master/customer", mst_customer.update);
+    router.delete("/master/customer", mst_customer.delete);
+  });
   /*
   This all route for POS Module
-  ==========================================================================
   */
-  var _pos_utils = require("./controller/POS/utils");
-  app.route("/api/transaction/pos/cleanup").post(_pos_utils.cleanup);
-  var _pos_in = require("./controller/POS/inbound");
-  app.route("/api/transaction/pos/inbound").get(_pos_in.get);
-  app.route("/api/transaction/pos/inbound/by-branch").get(_pos_in.getByBranch);
-  var _pos_stock = require("./controller/POS/stock");
-  app.route("/api/transaction/pos/stock").get(_pos_stock.get);
-  app.route("/api/transaction/pos/stock/by-branch").get(_pos_stock.getByBranch);
-
-  /*
-  MASTER
-  */
-  // BRANCH *CABANG
-  var _pos_brc = require("./controller/POS/branch");
-  app.route("/api/master/pos/branch").get(_pos_brc.get);
-  app.route("/api/master/pos/branch/by-branch").get(_pos_brc.getByBranch);
-  app.route("/api/master/pos/branch").put(_pos_brc.insert);
-  app.route("/api/master/pos/branch").post(_pos_brc.update);
-  app.route("/api/master/pos/branch").delete(_pos_brc.delete);
-  // USER BRANCH
-  var _pos_ub = require("./controller/POS/user_branch");
-  app.route("/api/master/pos/user-branch").get(_pos_ub.get);
-  app.route("/api/master/pos/user-branch").put(_pos_ub.insert);
-  app.route("/api/master/pos/user-branch").post(_pos_ub.update);
-  app.route("/api/master/pos/user-branch").delete(_pos_ub.delete);
-  // DISCOUNT
-  var _pos_dis = require("./controller/POS/discount");
-  app.route("/api/master/pos/discount").get(_pos_dis.get);
-  app.route("/api/master/pos/discount/by-branch").get(_pos_dis.getByBranch);
-  app.route("/api/master/pos/discount").put(_pos_dis.insert);
-  app.route("/api/master/pos/discount").post(_pos_dis.update);
-  app.route("/api/master/pos/discount").delete(_pos_dis.delete);
-
-  /*
-  TRANSACTION
-  */
-  // RECEIVE
-  var _pos_report = require("./controller/POS/report");
-  app.route("/api/report/pos/sale").get(_pos_report.get);
-  app.route("/api/report/pos/sale/by-branch").get(_pos_report.getByBranch);
-  app.route("/api/report/pos/sale-cashier").get(_pos_report.reportCashierSale);
-  // RECEIVE
-  var _pos_rec = require("./controller/POS/receive");
-  app.route("/api/transaction/pos/receive").get(_pos_rec.get);
-  app.route("/api/transaction/pos/receive/by-branch").get(_pos_rec.getByBranch);
-  app.route("/api/transaction/pos/receive").put(_pos_rec.insert);
-  app.route("/api/transaction/pos/receive").post(_pos_rec.approve);
-  // SALE
-  var _pos_sale = require("./controller/POS/sale");
-  app.route("/api/transaction/pos/sale").get(_pos_sale.get);
-  app.route("/api/transaction/pos/sale/by-branch").get(_pos_sale.getByBranch);
-  app.route("/api/transaction/pos/sale").put(_pos_sale.newSale);
-  app.route("/api/transaction/pos/sale").post(_pos_sale.updateSale);
-  app.route("/api/transaction/pos/sale").delete(_pos_sale.deleteSale);
-  app.route("/api/transaction/pos/sale/payment").post(_pos_sale.payment);
-  // RETURN
-  var _pos_ret = require("./controller/POS/return");
-  app.route("/api/transaction/pos/return").get(_pos_ret.get);
-  app.route("/api/transaction/pos/return/by-branch").get(_pos_ret.getByBranch);
-  app.route("/api/transaction/pos/return").put(_pos_ret.insert);
-  app.route("/api/transaction/pos/return").post(_pos_ret.approve);
-  var _pos_des = require("./controller/POS/destroy");
-  app.route("/api/transaction/pos/destroy").get(_pos_des.get);
-  app.route("/api/transaction/pos/destroy/by-branch").get(_pos_des.getByBranch);
-  app.route("/api/transaction/pos/destroy").put(_pos_des.insert);
-  app.route("/api/transaction/pos/destroy").post(_pos_des.approve);
-  // CASHIER
-  var _pos_cashier = require("./controller/POS/cashier");
-  app.route("/api/transaction/pos/cashier").get(_pos_cashier.get);
-  app.route("/api/transaction/pos/cashier").put(_pos_cashier.openCashier);
-  app.route("/api/transaction/pos/cashier").post(_pos_cashier.closeCashier);
-  /*
-  ==========================================================================
-  */
+  app.group("/api/pos", (router) => {
+    // Utils
+    var utils = require("./controller/POS/utils");
+    router.post("/transaction/cleanup", utils.cleanup);
+    // Inbound
+    var inbound = require("./controller/POS/inbound");
+    router.get("/transaction/inbound", inbound.get);
+    router.get("/transaction/inbound/by-branch", inbound.getByBranch);
+    // Stock
+    var stock = require("./controller/POS/stock");
+    router.get("/transaction/stock", stock.get);
+    router.get("/transaction/stock/by-branch", stock.getByBranch);
+    // Cabang
+    var branch = require("./controller/POS/branch");
+    router.get("/master/branch", branch.get);
+    router.get("/master/branch/by-branch", branch.getByBranch);
+    router.put("/master/branch", branch.insert);
+    router.post("/master/branch", branch.update);
+    router.delete("/master/branch", branch.delete);
+    // User Cabang
+    var user_branch = require("./controller/POS/user_branch");
+    router.get("/master/user-branch", user_branch.get);
+    router.put("/master/user-branch", user_branch.insert);
+    router.post("/master/user-branch", user_branch.update);
+    router.delete("/master/user-branch", user_branch.delete);
+    // Discount
+    var discount = require("./controller/POS/discount");
+    router.get("/master/discount", discount.get);
+    router.get("/master/discount/by-branch", discount.getByBranch);
+    router.put("/master/discount", discount.insert);
+    router.post("/master/discount", discount.update);
+    router.delete("/master/discount", discount.delete);
+    // RECEIVE
+    var receive = require("./controller/POS/receive");
+    router.get("/transaction/receive", receive.get);
+    router.get("/transaction/receive/by-branch", receive.getByBranch);
+    router.put("/transaction/receive", receive.insert);
+    router.post("/transaction/receive", receive.approve);
+    // SALE
+    var sale = require("./controller/POS/sale");
+    router.get("/transaction/sale", sale.get);
+    router.get("/transaction/sale/by-branch", sale.getByBranch);
+    router.put("/transaction/sale", sale.newSale);
+    router.post("/transaction/sale", sale.updateSale);
+    router.delete("/transaction/sale", sale.deleteSale);
+    router.post("/transaction/sale/payment", sale.payment);
+    // RETURN
+    var _return = require("./controller/POS/return");
+    router.get("/transaction/return", _return.get);
+    router.get("/transaction/return/by-branch", _return.getByBranch);
+    router.put("/transaction/return", _return.insert);
+    router.post("/transaction/return", _return.approve);
+    // DESTROY
+    var destroy = require("./controller/POS/destroy");
+    router.get("/transaction/destroy", destroy.get);
+    router.get("/transaction/destroy/by-branch", destroy.getByBranch);
+    router.put("/transaction/destroy", destroy.insert);
+    router.post("/transaction/destroy", destroy.approve);
+    // CASHIER
+    var cashier = require("./controller/POS/cashier");
+    router.get("/transaction/cashier", cashier.get);
+    router.put("/transaction/cashier", cashier.openCashier);
+    router.post("/transaction/cashier", cashier.closeCashier);
+    // REPORT
+    var report = require("./controller/POS/report");
+    router.get("/report/sale", report.get);
+    router.get("/report/sale/by-branch", report.getByBranch);
+    router.get("/report/sale-cashier", report.reportCashierSale);
+  });
 };

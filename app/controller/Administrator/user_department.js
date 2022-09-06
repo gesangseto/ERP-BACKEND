@@ -1,14 +1,11 @@
 "use strict";
-const response = require("../response");
-const models = require("../models");
-const utils = require("../utils");
-const { getCustomer } = require("./get_data");
+const response = require("../../response");
+const models = require("../../models");
+const { getDepartment } = require("./get_data");
 
 exports.get = async function (req, res) {
   var data = { data: req.query };
   try {
-    // LINE WAJIB DIBAWA
-
     const require_data = [];
     for (const row of require_data) {
       if (!req.query[`${row}`]) {
@@ -17,26 +14,21 @@ exports.get = async function (req, res) {
         return response.response(data, res);
       }
     }
-
-    let check = await getCustomer(req.query);
-    return response.response(check, res);
+    // LINE WAJIB DIBAWA
+    let getData = await getDepartment(req.query);
+    return response.response(getData, res);
   } catch (error) {
     data.error = true;
     data.message = `${error}`;
     return response.response(data, res);
   }
+  // LINE WAJIB DIBAWA
 };
 
 exports.insert = async function (req, res) {
   var data = { data: req.body };
   try {
-    req.body.created_by = req.headers.user_id;
-    var require_data = [
-      "mst_customer_name",
-      "mst_customer_email",
-      "mst_customer_phone",
-      "mst_customer_address",
-    ];
+    const require_data = ["user_department_name", "user_department_code"];
     for (const row of require_data) {
       if (!req.body[`${row}`]) {
         data.error = true;
@@ -44,11 +36,15 @@ exports.insert = async function (req, res) {
         return response.response(data, res);
       }
     }
-
+    req.body.created_by = req.headers.user_id;
     var _res = await models.insert_query({
       data: req.body,
-      table: "mst_customer",
+      table: "user_department",
     });
+
+    if (_res.error) {
+      return response.response(_res, res);
+    }
     return response.response(_res, res);
   } catch (error) {
     data.error = true;
@@ -60,13 +56,7 @@ exports.insert = async function (req, res) {
 exports.update = async function (req, res) {
   var data = { data: req.body };
   try {
-    const require_data = [
-      "mst_customer_id",
-      "mst_customer_name",
-      "mst_customer_email",
-      "mst_customer_phone",
-      "mst_customer_address",
-    ];
+    const require_data = ["user_department_id"];
     for (const row of require_data) {
       if (!req.body[`${row}`]) {
         data.error = true;
@@ -74,11 +64,15 @@ exports.update = async function (req, res) {
         return response.response(data, res);
       }
     }
+
     var _res = await models.update_query({
       data: req.body,
-      key: "mst_customer_id",
-      table: "mst_customer",
+      key: "user_department_id",
+      table: "user_department",
     });
+    if (_res.error) {
+      return response.response(_res, res);
+    }
     return response.response(_res, res);
   } catch (error) {
     data.error = true;
@@ -90,7 +84,7 @@ exports.update = async function (req, res) {
 exports.delete = async function (req, res) {
   var data = { data: req.body };
   try {
-    const require_data = ["mst_customer_id"];
+    const require_data = ["user_department_id"];
     for (const row of require_data) {
       if (!req.body[`${row}`]) {
         data.error = true;
@@ -98,12 +92,12 @@ exports.delete = async function (req, res) {
         return response.response(data, res);
       }
     }
-    // LINE WAJIB DIBAWA
+
     var _res = await models.delete_query({
       data: req.body,
-      table: "mst_customer",
-      key: "mst_customer_id",
-      deleted: false,
+      key: "user_department_id",
+      table: "user_department",
+      deleted: true,
     });
     return response.response(_res, res);
   } catch (error) {

@@ -1,7 +1,7 @@
 "use strict";
-const response = require("../response");
-const models = require("../models");
-const utils = require("../utils");
+const response = require("../../response");
+const models = require("../../models");
+const utils = require("../../utils");
 
 const moment = require("moment");
 const dotenv = require("dotenv");

@@ -3,6 +3,8 @@ const dotenv = require("dotenv");
 const cors = require("cors");
 const fileUpload = require("express-fileupload");
 const { sqlInjectionPrevention } = require("./app/utils");
+require("express-group-routes");
+
 dotenv.config();
 var express = require("express"),
   app = express(),
@@ -41,9 +43,10 @@ app.use(async function (req, res, next) {
     req.body = sqlInjectionPrevention(req.body);
   }
   if (
-    req.originalUrl == "/api/login/user" ||
-    req.originalUrl.includes("/api/generate-barcode") ||
-    (req.originalUrl == "/api/configuration" && req.method == "GET")
+    req.originalUrl == "/api/administrator/login/user" ||
+    req.originalUrl.includes("/api/administrator/generate-barcode") ||
+    (req.originalUrl == "/api/administrator/configuration" &&
+      req.method == "GET")
   ) {
     next();
     return;
