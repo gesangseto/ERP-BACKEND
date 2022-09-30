@@ -2,8 +2,7 @@
 const response = require("../../response");
 const { humanizeText } = require("../../utils");
 const { limitOffset, search, exactSearch } = require("../../model/helper");
-const { AdmUser } = require("../../model/Administrator/user");
-const { AdmSection } = require("../../model/Administrator/section");
+const { AdmDepartment } = require("../../model/Administrator/department");
 
 exports.get = async function (req, res) {
   var data = { rows: [req.query] };
@@ -15,15 +14,8 @@ exports.get = async function (req, res) {
         ...exactSearch(body, ["id"]),
       },
       ...limitOffset(body),
-      include: [
-        {
-          model: AdmSection,
-          as: "_adm_section",
-          include: ["_adm_department"],
-        },
-      ],
     };
-    const getData = await AdmUser.findAndCountAll({
+    const getData = await AdmDepartment.findAndCountAll({
       ...filter,
     });
     return response.response(getData, res);
@@ -38,7 +30,7 @@ exports.insert = async function (req, res) {
   var data = { rows: [req.body] };
   try {
     let body = req.body;
-    let _res = await AdmUser.create(body);
+    let _res = await AdmDepartment.create(body);
     return response.response(_res, res);
   } catch (error) {
     data.error = true;
@@ -57,7 +49,7 @@ exports.update = async function (req, res) {
         throw new Error(`${humanizeText(row)} is required!`);
       }
     }
-    let _res = await AdmUser.update(body, {
+    let _res = await AdmDepartment.update(body, {
       where: { id: body.id },
     });
     return response.response(_res, res);
@@ -78,7 +70,7 @@ exports.delete = async function (req, res) {
         throw new Error(`${humanizeText(row)} is required!`);
       }
     }
-    let _res = await AdmUser.destroy({ where: { id: body.id } });
+    let _res = await AdmDepartment.destroy({ where: { id: body.id } });
     return response.response(_res, res);
   } catch (error) {
     data.error = true;

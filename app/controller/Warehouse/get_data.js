@@ -41,6 +41,9 @@ async function getWhType(data = Object, onlyQuery = false) {
   if (data.hasOwnProperty("wh_mst_wh_type_code")) {
     _sql += ` AND a.wh_mst_wh_type_code = '${data.wh_mst_wh_type_code}'`;
   }
+  if (data.hasOwnProperty("wh_mst_wh_type_id")) {
+    _sql += ` AND a.wh_mst_wh_type_id = '${data.wh_mst_wh_type_id}'`;
+  }
   if (data.hasOwnProperty("search")) {
     _sql += genSearch(data.search);
   }

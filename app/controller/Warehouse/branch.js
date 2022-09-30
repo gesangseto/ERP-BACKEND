@@ -1,17 +1,25 @@
 "use strict";
-const response = require("../../response");
+const response = require("../../responseV2");
 const models = require("../../models");
 const { humanizeText } = require("../../utils");
-const moment = require("moment");
-const { getBranch } = require("./get_data");
+const { limitOffset, search, exactSearch } = require("../../model/helper");
+const { WhMstBranch } = require("../../model/Warehouse/branch");
 
 exports.get = async function (req, res) {
-  var data = { data: req.query };
+  var data = { rows: [req.query] };
   try {
-    // LINE WAJIB DIBAWA
-
-    let data = await getBranch(req.query);
-    return response.response(data, res);
+    let body = req.query;
+    let filter = {
+      where: {
+        ...search(body, ["name", "code", "desc"]),
+        ...exactSearch(body, ["id"]),
+      },
+      ...limitOffset(body),
+    };
+    const getData = await WhMstBranch.findAndCountAll({
+      ...filter,
+    });
+    return response.response(getData, res);
   } catch (error) {
     data.error = true;
     data.message = `${error}`;
@@ -20,19 +28,10 @@ exports.get = async function (req, res) {
 };
 
 exports.insert = async function (req, res) {
-  var data = { data: req.body };
+  var data = { rows: [req.body] };
   try {
     let body = req.body;
-    var require_data = ["wh_mst_branch_code", "wh_mst_branch_name"];
-    for (const row of require_data) {
-      if (!body[`${row}`]) {
-        throw new Error(`${humanizeText(row)} is required!`);
-      }
-    }
-    var _res = await models.insert_query({
-      data: body,
-      table: "wh_mst_branch",
-    });
+    let _res = await WhMstBranch.create(body);
     return response.response(_res, res);
   } catch (error) {
     data.error = true;
@@ -45,20 +44,14 @@ exports.update = async function (req, res) {
   var data = { data: req.body };
   try {
     let body = req.body;
-    var require_data = [
-      "wh_mst_branch_id",
-      "wh_mst_branch_code",
-      "wh_mst_branch_name",
-    ];
+    var require_data = ["id", "code", "name"];
     for (const row of require_data) {
       if (!body[`${row}`]) {
         throw new Error(`${humanizeText(row)} is required!`);
       }
     }
-    var _res = await models.update_query({
-      data: body,
-      table: "wh_mst_branch",
-      key: "wh_mst_branch_id",
+    let _res = await WhMstBranch.update(body, {
+      where: { id: body.id },
     });
     return response.response(_res, res);
   } catch (error) {
@@ -71,21 +64,14 @@ exports.update = async function (req, res) {
 exports.delete = async function (req, res) {
   var data = { data: req.body };
   try {
-    const require_data = ["wh_mst_branch_id"];
+    let body = req.body;
+    const require_data = ["id"];
     for (const row of require_data) {
-      if (!req.body[`${row}`]) {
-        data.error = true;
-        data.message = `${row} is required!`;
-        return response.response(data, res);
+      if (!body[`${row}`]) {
+        throw new Error(`${humanizeText(row)} is required!`);
       }
     }
-    // LINE WAJIB DIBAWA
-    var _res = await models.delete_query({
-      data: req.body,
-      table: "wh_mst_branch",
-      key: "wh_mst_branch_id",
-      deleted: true,
-    });
+    let _res = await WhMstBranch.destroy({ where: { id: body.id } });
     return response.response(_res, res);
   } catch (error) {
     data.error = true;

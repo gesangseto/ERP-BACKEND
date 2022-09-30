@@ -260,7 +260,12 @@ function humanizeText(str) {
   return frags.join(" ");
 }
 
+function removeFirstSpace(str) {
+  if (!str) return str;
+  return str.replace(/^\s+/g, "");
+}
 module.exports = {
+  removeFirstSpace,
   humanizeText,
   strToBool,
   isJsonString,
